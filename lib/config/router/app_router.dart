@@ -18,13 +18,24 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
       GoRoute(
         name: HomeScreen.name,
-        path: basePath,
-        builder: (context, state) => const HomeScreen(),
+        path: '$homePath/:page',
+        builder: (context, state) {
+          final pageIndex = state.pathParameters['page'] ?? '0';
+          return HomeScreen(
+            pageIndex: int.parse(pageIndex),
+            homeView: HomeView(),
+            exploreView: ExploreScreen(),
+          );
+        },
       ),
       GoRoute(path: '/', redirect: (_, __) => basePath),
     ],
     redirect: (context, state) {
       final isGoingTo = state.matchedLocation;
+      if (isGoingTo == basePath) {
+        return '/home/0';
+      }
+
       return isGoingTo;
     },
   );

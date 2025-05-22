@@ -9,6 +9,7 @@ export 'package:spotted/config/constants/regular_expressions.dart';
 export 'package:spotted/config/theme/app_theme.dart';
 
 // Plugins
+export 'package:spotted/config/plugins/shared_prefs_plugin.dart';
 
 // Locale
 export 'package:spotted/config/locale/supported_localisations.dart';

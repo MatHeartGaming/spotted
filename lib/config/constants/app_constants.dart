@@ -3,8 +3,12 @@ import 'package:logger/logger.dart';
 
 // Paths
 const String basePath = '/';
+const String homePath = '/home';
+const String explorePath = '/explore';
 const String loadingPath = '/loading';
 
+// Shared prefs
+const String isDarkTheme = "dark_theme";
 
 // Colors
 const String defaultHexColor = "#62B9E9";
