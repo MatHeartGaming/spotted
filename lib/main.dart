@@ -4,17 +4,20 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/config/config.dart';
 import 'package:spotted/config/helpers/firebase/firebase_configs.dart';
-import 'package:spotted/config/locale/supported_localisations.dart';
 import 'package:spotted/config/router/app_router.dart';
+import 'package:spotted/flavors.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 
 Future<void> main() async {
   await _initialConfigs();
-  runApp(EasyLocalization(
+  runApp(
+    EasyLocalization(
       supportedLocales: supportedLocalisations,
       path: 'assets/translations',
       fallbackLocale: fallbackLocale,
-      child: const ProviderScope(child: MainApp())));
+      child: const ProviderScope(child: MainApp()),
+    ),
+  );
 }
 
 Future<void> _initialConfigs() async {
@@ -23,7 +26,8 @@ Future<void> _initialConfigs() async {
   //ConnectionStatusSingleton.getInstance().initialize();
 
   await EasyLocalization.ensureInitialized();
-  await FirebaseConfigs.initializeFCM();
+  logger.i('Flavor: ${F.appFlavor ?? Flavor.prod}');
+  await FirebaseConfigs.initializeFCM(F.appFlavor ?? Flavor.prod);
   await FirebaseConfigs.initFirebaseMessaging();
   FirebaseConfigs.initAnalAndCrashlytics();
 }
@@ -116,12 +120,11 @@ class MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
       debugShowCheckedModeBanner: false,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
-      locale: appLanguage!.localeCode.isEmpty
-          ? context.locale
-          : Locale(appLanguage.localeCode),
-      theme: appTheme.getTheme(
-        isDarkMode: appTheme.isDarkMode,
-      ),
+      locale:
+          appLanguage!.localeCode.isEmpty
+              ? context.locale
+              : Locale(appLanguage.localeCode),
+      theme: appTheme.getTheme(isDarkMode: appTheme.isDarkMode),
       routerConfig: appRouterProvider,
     );
   }

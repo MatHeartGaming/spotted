@@ -1,0 +1,6 @@
+#include "../../Flutter/prodDebug.xcconfig"
+#include "Warnings.xcconfig"
+
+ASSET_PREFIX=prod
+BUNDLE_NAME=Spotted
+BUNDLE_DISPLAY_NAME=Spotted

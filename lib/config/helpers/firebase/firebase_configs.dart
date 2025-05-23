@@ -5,11 +5,14 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:spotted/config/constants/app_constants.dart';
 import 'package:spotted/config/helpers/firebase/firebase_options.dart';
+import 'package:spotted/flavors.dart';
 
 class FirebaseConfigs {
-  static Future<void> initializeFCM() async {
+  static Future<void> initializeFCM(Flavor f) async {
     await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
+      options: f == Flavor.prod
+          ? DefaultFirebaseOptionsProd.currentPlatform
+          : DefaultFirebaseOptionsDev.currentPlatform,
     );
   }
 

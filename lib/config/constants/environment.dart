@@ -1,6 +1,8 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Environment {
+
+  // Prod
   static final String firebaseApiKeyAndroid =
       dotenv.env['FIREBASE_API_KEY_ANDROID'] ??
           "No Firebase api key for Android";
@@ -15,6 +17,20 @@ class Environment {
       dotenv.env['MESSAGE_SENDER_ID'] ?? "No message sender key";
   static final String webClientId =
       dotenv.env['WEB_CLIENT_ID'] ?? "No web client ID found";
+
+       // Dev
+  static final String firebaseApiKeyAndroidDev =
+      dotenv.env['FIREBASE_API_KEY_ANDROID_DEV'] ??
+          "No Firebase api key for Android";
+  static final String firebaseApiKeyIosDev =
+      dotenv.env['FIREBASE_API_KEY_IOS_DEV'] ?? "No Firebase api key for iOS";
+  static final String firebaseApiKeyWebDev =
+      dotenv.env['FIREBASE_API_KEY_WEB_DEV'] ?? "No Firebase api key for iOS";
+  static final String appIdIosDev = dotenv.env['APP_ID_IOS_DEV'] ?? "No appId iOS key";
+  static final String appIdAndroidDev =
+      dotenv.env['APP_ID_ANDROID_DEV'] ?? "No appId Android key";
+  static final String messageSenderIdDev =
+      dotenv.env['MESSAGE_SENDER_ID_DEV'] ?? "No message sender key";
 
   // Images
   static final String verificationEmailSentGif =

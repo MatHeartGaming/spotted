@@ -1,0 +1,36 @@
+flavors:
+  prod:
+    app:
+      name: "Spotted"
+
+    android:
+      applicationId: "com.example.spotted"
+      customConfig:
+          versionCode: 1
+          minSdkVersion: 28
+      firebase:
+        config: ".firebase/prod/google-services.json"
+    ios:
+      bundleId: "com.example.spotted"
+      firebase:
+        config: ".firebase/prod/GoogleService-Info.plist"
+    macos:
+      bundleId: "com.example.spotted"
+      firebase:
+        config: ".firebase/prod/GoogleService-Info.plist"
+  dev:
+    app:
+      name: "Spotted Dev"
+  
+    android:
+      applicationId: "com.example.spotted.dev"
+      firebase:
+        config: ".firebase/dev/google-services.json"
+    ios:
+      bundleId: "com.example.spotted.dev"
+      firebase:
+        config: ".firebase/dev/GoogleService-Info.plist"
+    macos:
+      bundleId: "com.example.spotted.dev"
+      firebase:
+        config: ".firebase/dev/GoogleService-Info.plist"

@@ -15,7 +15,7 @@ import 'package:spotted/config/constants/environment.dart';
 ///   options: DefaultFirebaseOptions.currentPlatform,
 /// );
 /// ```
-class DefaultFirebaseOptions {
+class DefaultFirebaseOptionsProd {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       throw UnsupportedError(
@@ -65,5 +65,58 @@ class DefaultFirebaseOptions {
     projectId: 'spotted-53119',
     storageBucket: 'spotted-53119.firebasestorage.app',
     iosBundleId: 'com.example.spotted',
+  );
+}
+
+class DefaultFirebaseOptionsDev {
+  static FirebaseOptions get currentPlatform {
+    if (kIsWeb) {
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
+    }
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return android;
+      case TargetPlatform.iOS:
+        return ios;
+      case TargetPlatform.macOS:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+      case TargetPlatform.windows:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+      case TargetPlatform.linux:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for linux - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+      default:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions are not supported for this platform.',
+        );
+    }
+  }
+
+  static FirebaseOptions android = FirebaseOptions(
+    apiKey: Environment.firebaseApiKeyAndroidDev,
+    appId: Environment.appIdAndroidDev,
+    messagingSenderId: Environment.messageSenderIdDev,
+    projectId: 'spotted-dev-db593',
+    storageBucket: 'spotted-dev-db593.firebasestorage.app',
+  );
+
+  static FirebaseOptions ios = FirebaseOptions(
+    apiKey: Environment.firebaseApiKeyIosDev,
+    appId: Environment.appIdIosDev,
+    messagingSenderId: Environment.messageSenderIdDev,
+    projectId: 'spotted-dev-db593',
+    storageBucket: 'spotted-dev-db593.firebasestorage.app',
+    iosBundleId: 'com.example.spotted.dev',
   );
 }

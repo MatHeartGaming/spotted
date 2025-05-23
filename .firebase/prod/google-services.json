@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1045955459028",
+    "project_id": "spotted-53119",
+    "storage_bucket": "spotted-53119.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1045955459028:android:f6742787815231aff10841",
+        "android_client_info": {
+          "package_name": "com.example.spotted"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAczL3RFpxv-gY2sR2i5LrQVACHJpTbThk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
