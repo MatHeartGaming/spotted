@@ -1,9 +1,12 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 class Comment {
   final String id;
-  final String createdBy;
+  final String postId;
+  final String createdById;
+  final String createdByUsername;
   final String? postedIn;
   final DateTime dateCreated;
   final List<String> replies;
@@ -11,17 +14,22 @@ class Comment {
 
   Comment({
     String? id,
-    required this.createdBy,
+    String? postId,
+    required this.createdById,
+    required this.createdByUsername,
     DateTime? dateCreated,
     this.postedIn,
     this.replies = const [],
     this.reactions = const {},
   }) : id = id ?? const Uuid().v6(),
+       postId = id ?? const Uuid().v6(),
        dateCreated = dateCreated ?? DateTime.now();
 
   Comment.empty()
     : id = const Uuid().v6(),
-      createdBy = '',
+      postId = const Uuid().v6(),
+      createdById = '',
+      createdByUsername = '',
       postedIn = null,
       dateCreated = DateTime.now(),
       replies = const [],
@@ -40,10 +48,12 @@ class Comment {
 
     return Comment(
       id: map['id'] as String,
-      createdBy: map['createdBy'] as String,
-      postedIn: map['postedIn'] as String?,
+      postId: map['post_id'] as String,
+      createdById: map['created_by_id'] as String,
+      createdByUsername: map['created_by_username'] as String,
+      postedIn: map['posted_in'] as String?,
       dateCreated:
-          (map['dateCreated'] as Timestamp?)?.toDate() ?? DateTime.now(),
+          (map['date_created'] as Timestamp?)?.toDate() ?? DateTime.now(),
       replies: List<String>.from(map['replies'] ?? const []),
       reactions: reactionsMap,
     );
@@ -52,9 +62,11 @@ class Comment {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'createdBy': createdBy,
-      'postedIn': postedIn,
-      'dateCreated': dateCreated,
+      'post_id': postId,
+      'created_by_id': createdById,
+      'created_by_username': createdByUsername,
+      'posted_in': postedIn,
+      'date_created': dateCreated,
       'replies': replies,
       'reactions': reactions,
     };
@@ -62,7 +74,9 @@ class Comment {
 
   Comment copyWith({
     String? id,
-    String? createdBy,
+    String? postId,
+    String? createdById,
+    String? createdByUsername,
     String? postedIn,
     DateTime? dateCreated,
     List<String>? replies,
@@ -70,7 +84,9 @@ class Comment {
   }) {
     return Comment(
       id: id ?? this.id,
-      createdBy: createdBy ?? this.createdBy,
+      postId: postId ?? this.postId,
+      createdById: createdById ?? this.createdById,
+      createdByUsername: createdByUsername ?? this.createdByUsername,
       postedIn: postedIn ?? this.postedIn,
       dateCreated: dateCreated ?? this.dateCreated,
       replies: replies ?? this.replies,

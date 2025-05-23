@@ -51,7 +51,8 @@ final mockUsers = [
 final mockPosts = [
   Post(
     id: 'post_001',
-    createdBy: 'user_001',
+    createdById: 'user_001',
+    createdByUsername: 'janedoe',
     postedIn: 'community_001',
     dateCreated: DateTime.now().subtract(const Duration(hours: 6)),
     title: 'Exploring Florence',
@@ -62,7 +63,8 @@ final mockPosts = [
   ),
   Post(
     id: 'post_002',
-    createdBy: 'user_002',
+    createdById: 'user_002',
+    createdByUsername: 'johnny',
     postedIn: 'community_002',
     dateCreated: DateTime.now(),
     title: 'Morning Run',
@@ -73,7 +75,8 @@ final mockPosts = [
   ),
   Post(
     id: 'post_003',
-    createdBy: 'user_003',
+    createdById: 'user_003',
+    createdByUsername: 'emmalee',
     postedIn: 'community_003',
     dateCreated: DateTime.now().subtract(const Duration(days: 1)),
     title: 'Weekend Plans',

@@ -6,7 +6,8 @@ class Post {
   final String id;
   final String title;
   final String content;
-  final String createdBy;
+  final String createdById;
+  final String createdByUsername;
   final String? postedIn;
   final DateTime dateCreated;
   final List<String> comments;
@@ -15,7 +16,8 @@ class Post {
 
   Post({
     id,
-    required this.createdBy,
+    required this.createdById,
+    required this.createdByUsername,
     required this.title,
     required this.content,
     dateCreated,
@@ -28,7 +30,8 @@ class Post {
 
   Post.empty({
     id,
-    this.createdBy = '',
+    this.createdById = '',
+    this.createdByUsername = '',
     this.title = '',
     this.content = '',
     dateCreated,
@@ -52,12 +55,13 @@ class Post {
 
     return Post(
       id: map['id'] as String,
-      createdBy: map['createdBy'] as String,
+      createdById: map['created_by_id'] as String,
+      createdByUsername: map['created_by_username'] as String,
       title: map['title'] as String,
       content: map['content'] as String,
-      postedIn: map['postedIn'] as String?,
+      postedIn: map['posted_in'] as String?,
       dateCreated:
-          (map['dateCreated'] as Timestamp?)?.toDate() ?? DateTime.now(),
+          (map['date_created'] as Timestamp?)?.toDate() ?? DateTime.now(),
       comments: List<String>.from(map['comments'] ?? const []),
       pictureUrls: List<String>.from(map['picture_urls'] ?? const []),
       reactions: reactionsMap,
@@ -67,11 +71,12 @@ class Post {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'createdBy': createdBy,
+      'created_by_id': createdById,
+      'created_by_username': createdByUsername,
       'title': title,
       'content': content,
-      'postedIn': postedIn,
-      'dateCreated': dateCreated,
+      'posted_in': postedIn,
+      'date_created': dateCreated,
       'comments': comments,
       'picture_urls': pictureUrls,
       'reactions': reactions,
@@ -82,7 +87,8 @@ class Post {
     String? id,
     String? title,
     String? content,
-    String? createdBy,
+    String? createdById,
+    String? createdByUsername,
     String? postedIn,
     DateTime? dateCreated,
     List<String>? comments,
@@ -93,7 +99,8 @@ class Post {
       id: id ?? this.id,
       title: title ?? this.title,
       content: content ?? this.content,
-      createdBy: createdBy ?? this.createdBy,
+      createdById: createdById ?? this.createdById,
+      createdByUsername: createdByUsername ?? this.createdByUsername,
       postedIn: postedIn ?? this.postedIn,
       dateCreated: dateCreated ?? this.dateCreated,
       comments: comments ?? this.comments,
