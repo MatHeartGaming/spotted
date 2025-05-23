@@ -3,6 +3,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
@@ -22,80 +24,82 @@ class DrawerContent extends ConsumerWidget {
         children: [
           signedInUser == null
               ? SafeArea(
-                  child: ZoomIn(
-                    child: TextButton(
-                      onPressed: () {
-                        /*final loginProvider = ref.read(loginSignupProvider);
+                child: ZoomIn(
+                  child: TextButton(
+                    onPressed: () {
+                      /*final loginProvider = ref.read(loginSignupProvider);
                         loginProvider.logout().then(
                         (value) => loginProvider.login(),
                       );*/
-                        //loginProvider.login();
-                        //pushToLoginSignupScreen(context);
-                      },
-                      child: Text('login_text').tr(),
-                    ),
-                  ),
-                )
-              : DrawerHeader(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CirclePicture(
-                            urlPicture: user.isProfileUrlValid
-                                ? user.profileImageUrl
-                                : '',
-                            minRadius: 20,
-                            maxRadius: 20,
-                          ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(FontAwesomeIcons.gears),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        user.completeName,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        user.username,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
-                        ),
-                      ),
-                      Text(
-                        'drawer_following_count',
-                      ).tr(args: ['${user.communitiesSubs.length}']),
-                    ],
+                      //loginProvider.login();
+                      //pushToLoginSignupScreen(context);
+                    },
+                    child: Text('login_text').tr(),
                   ),
                 ),
+              )
+              : DrawerHeader(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CirclePicture(
+                          urlPicture:
+                              user.isProfileUrlValid
+                                  ? user.profileImageUrl
+                                  : '',
+                          minRadius: 20,
+                          maxRadius: 20,
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: Icon(FontAwesomeIcons.gears),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      user.completeName,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      user.username,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      'drawer_following_count',
+                    ).tr(args: ['${user.communitiesSubs.length}']),
+                  ],
+                ),
+              ),
 
           // Expanding the list of menu items to push the toggle button to the bottom
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
-              children: _getMenuItems()
-                  .entries
-                  .map(
-                    (item) => SlideInLeft(
-                      child: ListTile(
-                        leading: Icon(item.value),
-                        title: Text(
-                          item.key,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+              children:
+                  getDrawerItems()
+                      .map(
+                        (item) => SlideInLeft(
+                          child: ListTile(
+                            leading: Icon(item.icon),
+                            title: Text(
+                              item.title,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                            onTap: () => _navigateToSelectedItem(context, item),
                           ),
                         ),
-                      ),
-                    ),
-                  )
-                  .toList(),
+                      )
+                      .toList(),
             ),
           ),
 
@@ -112,9 +116,10 @@ class DrawerContent extends ConsumerWidget {
                       .read(isDarkModeProvider.notifier)
                       .update((state) => isDark);
                 },
-                icon: isDarkMode
-                    ? FadeIn(child: Icon(Icons.light_mode))
-                    : FadeIn(child: Icon(Icons.dark_mode)),
+                icon:
+                    isDarkMode
+                        ? FadeIn(child: Icon(Icons.light_mode))
+                        : FadeIn(child: Icon(Icons.dark_mode)),
               ),
             ),
           ),
@@ -123,11 +128,13 @@ class DrawerContent extends ConsumerWidget {
     );
   }
 
-  Map<String, IconData> _getMenuItems() {
-    return {
-      'drawer_profile_item'.tr(): Icons.person,
-      'drawer_premium_item'.tr(): FontAwesomeIcons.x,
-      'drawer_saved_item'.tr(): FontAwesomeIcons.bookmark,
-    };
+  void _navigateToSelectedItem(BuildContext context, DrawerItem item) {
+    Navigator.of(context).pop(); // Closes the drawer first
+
+    if (item.path.startsWith(homePath)) {
+      context.replace(item.path);
+      return;
+    }
+    context.push(item.path);
   }
 }

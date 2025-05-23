@@ -1,5 +1,18 @@
-
+// Home
 export 'package:spotted/presentation/screens/home/home_screen.dart';
 export 'package:spotted/presentation/screens/home/home_view.dart';
+
+// Loading
 export 'package:spotted/presentation/screens/loading/loading_screen.dart';
+
+// Explore
 export 'package:spotted/presentation/screens/explore/explore_screen.dart';
+
+// Profile
+export 'package:spotted/presentation/screens/profile/profile_screen.dart';
+
+// Chats
+export 'package:spotted/presentation/screens/chats/chats_screen.dart';
+
+// Settings
+export 'package:spotted/presentation/screens/settings/setttings_list_screen.dart';

@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
@@ -24,8 +26,11 @@ class HomeAppBar extends ConsumerWidget {
             maxRadius: 15,
           ),
         ),
-        Icon(FontAwesomeIcons.twitter),
-        Icon(FontAwesomeIcons.gear),
+        Text('app_name').tr(),
+        IconButton(
+          onPressed: () => pushToChatsScreen(context),
+          icon: Icon(FontAwesomeIcons.solidMessage),
+        ),
       ],
     );
   }

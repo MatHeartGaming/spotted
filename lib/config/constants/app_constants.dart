@@ -6,6 +6,9 @@ const String basePath = '/';
 const String homePath = '/home';
 const String explorePath = '/explore';
 const String loadingPath = '/loading';
+const String settingsListPath = '/settings_list_screen';
+const String profilePath = '/profile_screen';
+const String chatsPath = '/chats_screen';
 
 // Shared prefs
 const String isDarkTheme = "dark_theme";

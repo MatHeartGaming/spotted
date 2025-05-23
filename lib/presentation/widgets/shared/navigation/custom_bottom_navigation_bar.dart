@@ -43,8 +43,8 @@ class CustomBottomNavigationBar extends ConsumerWidget {
           icon: const Icon(FontAwesomeIcons.house),
         ),
         BottomNavigationBarItem(
-          label: "nav_bar_search_item".tr(),
-          tooltip: "nav_bar_search_tooltip".tr(),
+          label: "nav_bar_explore_item".tr(),
+          tooltip: "nav_bar_explore_tooltip".tr(),
           icon: const Icon(Icons.explore),
         ),
       ],

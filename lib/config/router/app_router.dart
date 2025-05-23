@@ -17,6 +17,24 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
+        name: SettingsListScreen.name,
+        path: settingsListPath,
+        builder: (context, state) => const SettingsListScreen(),
+      ),
+
+      GoRoute(
+        name: ProfileScreen.name,
+        path: profilePath,
+        builder: (context, state) => const ProfileScreen(),
+      ),
+
+      GoRoute(
+        name: ChatsScreen.name,
+        path: chatsPath,
+        builder: (context, state) => const ChatsScreen(),
+      ),
+
+      GoRoute(
         name: HomeScreen.name,
         path: '$homePath/:page',
         builder: (context, state) {
@@ -33,7 +51,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final isGoingTo = state.matchedLocation;
       if (isGoingTo == basePath) {
-        return '/home/0';
+        return '$homePath/0';
       }
 
       return isGoingTo;

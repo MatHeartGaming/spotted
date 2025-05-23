@@ -1,6 +1,19 @@
 {   
     "app_name": "Spotted",
 
+    "login_text": "Accedi",
+
     "loading_screen_loading_and_redirecting_txt": "Caricamento e reindirizzamento...",
-    "loading_screen_please_wait_txt": "Per favore, aspetta qualche momento"
+    "loading_screen_please_wait_txt": "Per favore, aspetta qualche momento",
+
+    "nav_bar_home_item": "Inizio",
+    "nav_bar_explore_item": "Esplora",
+
+    "nav_bar_home_tooltip": "Contenuti da bacheche seguite",
+    "nav_bar_explore_tooltip": "Contenuti da tutta la community",
+
+    "drawer_profile_item": "Profilo",
+    "drawer_home_item": "Inizio",
+    "drawer_explore_item": "Esplora",
+    "drawer_settings_item": "Impostazioni"
 }
