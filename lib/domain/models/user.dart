@@ -17,6 +17,7 @@ class User {
   final List<String> communitiesSubs;
   final List<String> friends;
   final List<String> posted;
+  final List<String> comments;
   final Map<String, String> reactions;
 
   User({
@@ -31,6 +32,7 @@ class User {
     this.communitiesSubs = const [],
     this.friends = const [],
     this.posted = const [],
+    this.comments = const [],
     this.reactions = const {},
   }) : id = const Uuid().v6(),
        dateCreated = DateTime.now();
@@ -47,6 +49,7 @@ class User {
     this.communitiesSubs = const [],
     this.friends = const [],
     this.posted = const [],
+    this.comments = const [],
     this.reactions = const {},
   }) : id = const Uuid().v6(),
        dateCreated = DateTime.now();
@@ -101,6 +104,10 @@ class User {
           map.containsKey('posted')
               ? List<String>.from(map['posted'] as List<String>)
               : [],
+      comments:
+          map.containsKey('comments')
+              ? List<String>.from(map['comments'] as List<String>)
+              : [],
       reactions: reactionsMap,
     );
   }
@@ -119,6 +126,7 @@ class User {
       'friends': friends,
       'posted': posted,
       'reactions': reactions,
+      'comments': comments,
     };
   }
 
@@ -147,6 +155,10 @@ class User {
           map.containsKey('posted')
               ? List<String>.from(map['posted'] as List<String>)
               : [],
+      comments:
+          map.containsKey('comments')
+              ? List<String>.from(map['comments'] as List<String>)
+              : [],
       reactions:
           map.containsKey('reactions')
               ? Map<String, String>.from(
@@ -173,6 +185,7 @@ class User {
     List<String>? communitiesSubs,
     List<String>? friends,
     List<String>? posted,
+    List<String>? comments,
     Map<String, String>? reactions,
   }) {
     return User(
@@ -187,6 +200,7 @@ class User {
       communitiesSubs: communitiesSubs ?? this.communitiesSubs,
       friends: friends ?? this.friends,
       posted: posted ?? this.posted,
+      comments: comments ?? this.comments,
       reactions: reactions ?? this.reactions,
     );
   }
