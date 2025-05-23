@@ -5,6 +5,9 @@ export 'package:spotted/presentation/widgets/shared/navigation/drawer_content.da
 export 'package:spotted/presentation/widgets/shared/navigation/custom_bottom_navigation_bar.dart';
 export 'package:spotted/presentation/widgets/shared/navigation/app_bar.dart';
 
+// Shared - Post
+export 'package:spotted/presentation/widgets/shared/post/post_widget.dart';
+
 // Models
 export 'package:spotted/presentation/widgets/shared/navigation/models/drawer_item.dart';
 

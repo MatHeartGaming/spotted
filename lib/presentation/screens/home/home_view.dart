@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotted/domain/preview_data/mock_data.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 class HomeView extends ConsumerStatefulWidget {
@@ -32,8 +33,8 @@ class HomeViewState extends ConsumerState<HomeView>
           },
           child: ListView.builder(
             controller: scrollController, // ← from the mixin
-            itemCount: 1000,
-            itemBuilder: (_, i) => Text('Item $i'),
+            itemCount: 3,
+            itemBuilder: (_, i) => PostWidget(post: mockPosts[i], author: mockUsers[i]),
           ),
         ),
       ),
