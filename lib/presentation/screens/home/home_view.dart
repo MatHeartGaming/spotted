@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
@@ -13,28 +14,47 @@ class HomeView extends ConsumerStatefulWidget {
 }
 
 class HomeViewState extends ConsumerState<HomeView> {
+  late final ScrollController _scrollController;
+  bool _isScrollingDown = false;
+
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
     _loadData();
+  }
+
+  void _onScroll() {
+    final direction = _scrollController.position.userScrollDirection;
+
+    if (direction == ScrollDirection.reverse && !_isScrollingDown) {
+      _isScrollingDown = true;
+      ref.read(tabBarVisibilityProvider.notifier).state = false;
+    } else if (direction == ScrollDirection.forward && _isScrollingDown) {
+      _isScrollingDown = false;
+      ref.read(tabBarVisibilityProvider.notifier).state = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future _loadData() async {
     Future.delayed(Duration.zero, () async {
-      /*final signedInUser = ref.read(signedInUserProvider);
-      await ref
-          .read(loadPostsProvider.notifier)
-          .fetchAllSignedInuserPosts(username: signedInUser?.username ?? '');*/
+      // Load your data here
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    final signedInUser = ref.watch(signedInUserProvider);
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: null,
         appBar: PreferredSize(
           preferredSize: Size(size.width, 50),
           child: Padding(
@@ -47,10 +67,10 @@ class HomeViewState extends ConsumerState<HomeView> {
           ),
         ),
         body: RefreshIndicator(
-          onRefresh: () => _loadData(),
+          onRefresh: _loadData,
           child: ListView.builder(
-            itemCount: 10,
-            //prototypeItem: PostWidget(post: Post.empty()),
+            controller: _scrollController,
+            itemCount: 1000,
             itemBuilder: (context, index) {
               return Text('Post $index');
             },
