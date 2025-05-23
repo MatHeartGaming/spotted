@@ -29,6 +29,7 @@ Future<void> _initialConfigs() async {
   logger.i('Flavor: ${F.appFlavor ?? Flavor.prod}');
   await FirebaseConfigs.initializeFCM(F.appFlavor ?? Flavor.prod);
   await FirebaseConfigs.initFirebaseMessaging();
+  await SharedPrefsPlugin.init();
   FirebaseConfigs.initAnalAndCrashlytics();
 }
 
