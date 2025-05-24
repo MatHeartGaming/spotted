@@ -48,6 +48,30 @@ class LoadPostsNotifier extends StateNotifier<LoadPostsState> {
     );
     return postsInCommunities;
   }
+
+  Future<Post?> updatePost(Post updatedPost) async {
+    final newPost = await _postsRepository.updatePost(updatedPost);
+    if (newPost != null) {
+      // 1) Replace in postedByFriends
+      final updatedFriendsList =
+          state.postedByFriends
+              .map((p) => p.id == newPost.id ? newPost : p)
+              .toList();
+
+      // 2) Replace in postedInCommunities
+      final updatedCommunitiesList =
+          state.postedInCommunities
+              .map((p) => p.id == newPost.id ? newPost : p)
+              .toList();
+
+      // 3) Emit new state
+      state = state.copyWith(
+        postedByFriends: updatedFriendsList,
+        postedInCommunities: updatedCommunitiesList,
+      );
+    }
+    return newPost;
+  }
 }
 
 class LoadPostsState {

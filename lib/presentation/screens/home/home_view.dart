@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
@@ -25,6 +26,7 @@ class HomeViewState extends ConsumerState<HomeView>
 
   @override
   Widget build(BuildContext context) {
+    final signedInUser = ref.watch(signedInUserProvider);
     final postsProvider = ref.watch(loadPostsProvider);
     final size = MediaQuery.sizeOf(context);
     return SafeArea(
@@ -56,8 +58,16 @@ class HomeViewState extends ConsumerState<HomeView>
                         (user) =>
                             user != null
                                 ? ReactionablePostWidget(
+                                  isLiked: false,
                                   post: post,
                                   author: user,
+                                  onReaction:
+                                      (reaction) =>
+                                          _updatePostActionWithReaction(
+                                            post,
+                                            reaction,
+                                          ),
+                                  onContextMenuTap: (menuItem) {},
                                 )
                                 : Text('User not found'),
                     error:
@@ -70,5 +80,28 @@ class HomeViewState extends ConsumerState<HomeView>
         ),
       ),
     );
+  }
+
+  void _updatePostActionWithReaction(Post post, String reaction) {
+    final loadPostsNotifier = ref.read(loadPostsProvider.notifier);
+    final signedInUser = ref.read(signedInUserProvider);
+    final userId = signedInUser?.id;
+    if (userId == null) return;
+
+    // Start from the existing reactions
+    final newReactions = Map<String, String>.from(post.reactions);
+
+    // If they tapped the same reaction again, remove it; otherwise set/update it
+    if (newReactions[userId] == reaction) {
+      newReactions.remove(userId);
+    } else {
+      newReactions[userId] = reaction;
+    }
+
+    final updatedPost = post.copyWith(reactions: newReactions);
+    loadPostsNotifier.updatePost(updatedPost).then((post) {
+      // TODO: Update user with the reaction
+      if (post != null) {}
+    });
   }
 }

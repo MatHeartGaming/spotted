@@ -11,6 +11,7 @@ export 'package:spotted/presentation/widgets/shared/navigation/app_bar.dart';
 // Shared - Post
 export 'package:spotted/presentation/widgets/shared/post/post_widget.dart';
 export 'package:spotted/presentation/widgets/shared/reactions/reactionable_post_widget.dart';
+export 'package:spotted/presentation/widgets/shared/reactions/reaction_row_widget.dart';
 
 // Models
 export 'package:spotted/presentation/widgets/shared/navigation/models/drawer_item.dart';

@@ -11,7 +11,7 @@ final mockUsers = [
     dateCreated: DateTime.now().subtract(const Duration(days: 790)),
     features: ['feature3'],
     communitiesSubs: ['35321234-e3d1-47f5-a46d-86fd88890e79', '3e6e2e75-aa4f-4d6d-9520-0082016d72fd'],
-    friends: ['2', '3', 'user_001'],
+    friends: ['1', '2', '3', 'user_001'],
     posted: ['edc77ef7-dd5b-4f69-93fe-a39152cc403f', 'b61a85c3-ed49-4b78-ac94-3ea2efe06de4'],
     comments: ['98daa4ab-42fc-4eb8-9dd0-73e2986d2d12'],
     reactions: {},

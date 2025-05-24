@@ -7,8 +7,20 @@ import 'package:spotted/presentation/widgets/widgets.dart';
 class PostWidget extends StatelessWidget {
   final Post post;
   final User author;
+  final VoidCallback? onLike;
+  final VoidCallback? onComment;
+  final VoidCallback? onShare;
+  final bool isLiked;
 
-  const PostWidget({super.key, required this.post, required this.author});
+  const PostWidget({
+    super.key,
+    required this.post,
+    required this.author,
+    this.onLike,
+    this.onComment,
+    this.onShare,
+    this.isLiked = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +40,12 @@ class PostWidget extends StatelessWidget {
           children: [
             Visibility(
               visible: post.postedIn != null,
-              child: Text(post.postedIn ?? '', style: texts.labelLarge?.copyWith(color: colors.onPrimaryContainer),)
+              child: Text(
+                post.postedIn ?? '',
+                style: texts.labelLarge?.copyWith(
+                  color: colors.onPrimaryContainer,
+                ),
+              ),
             ),
             SizedBox(height: 8),
             // Author row
@@ -69,26 +86,37 @@ class PostWidget extends StatelessWidget {
             // Title
             if (post.title.isNotEmpty) ...[
               const SizedBox(height: 12),
-              Text(post.title, style: texts.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                post.title,
+                style: texts.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+              ),
             ],
 
             // Content
             const SizedBox(height: 8),
             Text(post.content, style: texts.bodySmall),
 
-            // (Future) reactions/comments indicators
-            // const SizedBox(height: 12),
-            // Row(
-            //   children: [
-            //     Icon(Icons.comment, size: 16),
-            //     SizedBox(width: 4),
-            //     Text('${post.comments.length}'),
-            //     SizedBox(width: 16),
-            //     Icon(Icons.favorite_border, size: 16),
-            //     SizedBox(width: 4),
-            //     Text('${post.reactions.length}'),
-            //   ],
-            // ),
+            Visibility(
+              visible: onLike != null && onComment != null && onShare != null,
+              child: ReactionRowWidget(
+                isLiked: isLiked,
+                onLike: () {
+                  if (onLike != null) {
+                    onLike!();
+                  }
+                },
+                onComment: () {
+                  if (onComment != null) {
+                    onComment!();
+                  }
+                },
+                onShare: () {
+                  if (onShare != null) {
+                    onShare!();
+                  }
+                },
+              ),
+            ),
           ],
         ),
       ),

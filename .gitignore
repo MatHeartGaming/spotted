@@ -1,9 +1,9 @@
 # Environment variables
 .env
 
-# Firebase config files
-/ios/Runner/GoogleService-Info.plist
-/android/app/google-services.json
+# Firebase config files, in any folder
+**/GoogleService-Info.plist
+**/google-services.json
 
 # Miscellaneous
 *.class

@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_reactions/flutter_chat_reactions.dart';
+import 'package:flutter_chat_reactions/model/menu_item.dart';
+import 'package:flutter_chat_reactions/utilities/default_data.dart';
 import 'package:flutter_chat_reactions/utilities/hero_dialog_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
-import 'package:spotted/presentation/widgets/shared/post/post_widget.dart';
+import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 class ReactionablePostWidget extends ConsumerWidget {
+  final bool isLiked;
   final Post post;
   final User author;
+  final Function(String) onReaction;
+  final Function(MenuItem) onContextMenuTap;
 
   const ReactionablePostWidget({
     super.key,
+    this.isLiked = false,
     required this.post,
     required this.author,
+    required this.onReaction,
+    required this.onContextMenuTap,
   });
 
   @override
@@ -31,20 +39,19 @@ class ReactionablePostWidget extends ConsumerWidget {
                 return ReactionsDialogWidget(
                   id: post.id, // unique id for message
                   messageWidget: PostWidget(post: post, author: author),
+                  menuItems: _getPossiblePostActions(ref),
+                  reactions: ['👍', '❤️', '🚀', '😂', '😭', '😡', '🤯'],
                   onReactionTap: (reaction) {
                     logger.i('reaction: $reaction');
 
                     if (reaction == '➕') {
-                      // show emoji picker container
                     } else {
-                      // add reaction to message
+                      onReaction(reaction);
                     }
                   },
                   onContextMenuTap: (menuItem) {
                     logger.i('menu item: $menuItem');
-                    post.reactions.addAll({
-                      post.createdByUsername: menuItem.label,
-                    });
+                    onContextMenuTap(menuItem);
                     // handle context menu item
                   },
                 );
@@ -54,20 +61,41 @@ class ReactionablePostWidget extends ConsumerWidget {
         },
         child: Stack(
           children: [
-            PostWidget(post: post, author: author),
+            PostWidget(
+              isLiked: isLiked,
+              post: post,
+              author: author,
+              onLike: () => onReaction('👍'),
+              onComment: () {
+                
+              },
+              onShare: () {
+                
+              },
+            ),
             // reactions
             Positioned(
               bottom: 4,
               right: 20,
               child: StackedReactions(
                 reactions: post.reactions.values.toList(),
-                stackedValue: 16, // Value used to calculate the horizontal offset of each reaction
+                stackedValue:
+                    16, // Value used to calculate the horizontal offset of each reaction
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  List<MenuItem> _getPossiblePostActions(WidgetRef ref) {
+    final signedInUser = ref.read(signedInUserProvider);
+    final menuItems = <MenuItem>[DefaultData.reply, DefaultData.copy];
+    if (post.createdById == signedInUser?.id) {
+      menuItems.add(DefaultData.delete);
+    }
+    return menuItems;
   }
 }
 
