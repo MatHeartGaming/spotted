@@ -26,4 +26,8 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
     throw UnimplementedError();
   }
 
+  @override
+  Future<List<User>?> getUsersByUsername(String username) async {
+    return [];
+  }
 }

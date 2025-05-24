@@ -1,25 +1,58 @@
+import 'dart:math';
+
 import 'package:spotted/domain/datasources/datasources.dart';
 import 'package:spotted/domain/models/models.dart';
+import 'package:spotted/domain/preview_data/mock_data.dart';
 
 class UsersDatasourceMockImpl implements UsersDatasource {
   
   @override
   Future<List<User>> getAllUsers() async {
-    return [];
+    var rng = Random();
+    int randomTime = rng.nextInt(500);
+    return await Future.delayed(
+      Duration(milliseconds: randomTime),
+      () => mockUsers,
+    );
   }
 
   @override
   Future<User?> getUserById(String id) async {
-    return null;
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(
+      Duration(milliseconds: randomTime),
+      () => mockUsers.where((p) => p.id == id).toList().firstOrNull,
+    );
   }
 
   @override
   Future<User?> getUserByUsername(String username) async {
-    return null;
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(
+      Duration(milliseconds: randomTime),
+      () => mockUsers.where((u) => u.username == username).toList().firstOrNull,
+    );
+  }
+
+  @override
+  Future<List<User>?> getUsersByUsername(String username) async {
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(
+      Duration(milliseconds: randomTime),
+      () => mockUsers.where((u) => u.username.toLowerCase().trim().contains(username)).toList(),
+    );
   }
 
   @override
   Future<User?> getUserByEmail(String email) async {
-    return null;
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(
+      Duration(milliseconds: randomTime),
+      () => mockUsers.where((u) => u.email == email).toList().firstOrNull,
+    );
   }
 }
