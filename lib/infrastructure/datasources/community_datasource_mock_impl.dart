@@ -5,6 +5,35 @@ import 'package:spotted/domain/models/community.dart';
 import 'package:spotted/domain/preview_data/mock_data.dart';
 
 class CommunityDatasourceMockImpl implements CommunityDatasource {
+
+  @override
+  Future<Community?> createCommunity(Community community) async {
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      mockCommunities.add(community);
+      return community;
+    });
+  }
+
+  @override
+  Future<Community?> updateCommunity(Community community) async {
+    final rng = Random();
+    final randomTime = rng.nextInt(300);
+
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      // find index of existing user
+      final idx = mockCommunities.indexWhere((p) => p.id == community.id);
+      if (idx != -1) {
+        // replace the old user
+        mockCommunities[idx] = community;
+        return community;
+      }
+      // not found: nothing to update
+      return null;
+    });
+  }
+
   @override
   Future<List<Community>> getAllCommunities() async {
     var rng = Random();

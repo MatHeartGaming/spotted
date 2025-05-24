@@ -31,5 +31,17 @@ class CommentsDatasourceFirebaseImpl implements CommentsDatasource {
     // TODO: implement getCommentsByPostedInCommunity
     throw UnimplementedError();
   }
+  
+  @override
+  Future<Comment?> createComment(Comment comment) {
+    // TODO: implement createComment
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<Comment?> updateComment(Comment comment) {
+    // TODO: implement updateComment
+    throw UnimplementedError();
+  }
 
 }

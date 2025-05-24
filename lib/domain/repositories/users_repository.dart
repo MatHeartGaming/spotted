@@ -5,4 +5,6 @@ abstract class UsersRepository {
   Future<User?> getUserById(String id);
   Future<User?> getUserByUsername(String username);
   Future<User?> getUserByEmail(String email);
+  Future<User?> createUser(User user);
+  Future<User?> updateUser(User user);
 }

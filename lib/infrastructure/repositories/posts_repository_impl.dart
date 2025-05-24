@@ -38,4 +38,34 @@ class PostsRepositoryImplementation implements PostsRepository {
   Future<List<Post>> getPostById(String id) {
     return _db.getPostById(id);
   }
+
+  @override
+  Future<List<Post>> getPostsUsingUsernamesList(List<String> refs) {
+    return _db.getPostsUsingUsernamesList(refs);
+  }
+
+  @override
+  Future<List<Post>> getPostsUsingUsersIdListRef(List<String> refs) {
+    return _db.getPostsUsingUsersIdListRef(refs);
+  }
+
+  @override
+  Future<List<Post>> getAllPostsByPostedIn(String postedIn) {
+    return _db.getAllPostsByPostedIn(postedIn);
+  }
+
+  @override
+  Future<List<Post>> getPostsUsingPostedInList(List<String> refs) {
+    return _db.getPostsUsingPostedInList(refs);
+  }
+
+  @override
+  Future<Post?> createPost(Post post) {
+    return _db.createPost(post);
+  }
+
+  @override
+  Future<Post?> updatePost(Post post) {
+    return _db.updatePost(post);
+  }
 }

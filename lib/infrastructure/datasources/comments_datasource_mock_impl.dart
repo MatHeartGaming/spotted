@@ -5,6 +5,35 @@ import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/preview_data/mock_data.dart';
 
 class CommentsDatasourceMockImpl implements CommentsDatasource {
+
+  @override
+  Future<Comment?> createComment(Comment comment) async {
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      mockComments.add(comment);
+      return comment;
+    });
+  }
+
+  @override
+  Future<Comment?> updateComment(Comment comment) async {
+    final rng = Random();
+    final randomTime = rng.nextInt(300);
+
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      // find index of existing user
+      final idx = mockComments.indexWhere((c) => c.id == comment.id);
+      if (idx != -1) {
+        // replace the old user
+        mockComments[idx] = comment;
+        return comment;
+      }
+      // not found: nothing to update
+      return null;
+    });
+  }
+
   @override
   Future<List<Comment>> getCommentsByPostId(String postId) async {
     var rng = Random();

@@ -3,6 +3,10 @@
 // Users
 export 'package:spotted/presentation/providers/users/signed_in_user_provider.dart';
 
+// Posts
+export 'package:spotted/presentation/providers/posts/posts_repository_provider.dart';
+export 'package:spotted/presentation/providers/posts/load_posts_provider.dart';
+
 // Lifecycle
 export 'package:spotted/presentation/providers/lifecycle/app_state_provider.dart';
 

@@ -5,7 +5,35 @@ import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/preview_data/mock_data.dart';
 
 class UsersDatasourceMockImpl implements UsersDatasource {
-  
+
+  @override
+  Future<User?> createUser(User user) async {
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      mockUsers.add(user);
+      return user;
+    });
+  }
+
+  @override
+  Future<User?> updateUser(User user) async {
+    final rng = Random();
+    final randomTime = rng.nextInt(300);
+
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      // find index of existing user
+      final idx = mockUsers.indexWhere((u) => u.id == user.id);
+      if (idx != -1) {
+        // replace the old user
+        mockUsers[idx] = user;
+        return user;
+      }
+      // not found: nothing to update
+      return null;
+    });
+  }
+
   @override
   Future<List<User>> getAllUsers() async {
     var rng = Random();
@@ -42,7 +70,10 @@ class UsersDatasourceMockImpl implements UsersDatasource {
     int randomTime = rng.nextInt(300);
     return await Future.delayed(
       Duration(milliseconds: randomTime),
-      () => mockUsers.where((u) => u.username.toLowerCase().trim().contains(username)).toList(),
+      () =>
+          mockUsers
+              .where((u) => u.username.toLowerCase().trim().contains(username))
+              .toList(),
     );
   }
 

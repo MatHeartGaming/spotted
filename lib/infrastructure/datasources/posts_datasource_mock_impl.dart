@@ -5,6 +5,35 @@ import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/preview_data/mock_data.dart';
 
 class PostsDatasourceMockImpl implements PostsDatasource {
+
+  @override
+  Future<Post?> createPost(Post post) async {
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      mockPosts.add(post);
+      return post;
+    });
+  }
+
+  @override
+  Future<Post?> updatePost(Post post) async {
+    final rng = Random();
+    final randomTime = rng.nextInt(300);
+
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      // find index of existing user
+      final idx = mockPosts.indexWhere((p) => p.id == post.id);
+      if (idx != -1) {
+        // replace the old user
+        mockPosts[idx] = post;
+        return post;
+      }
+      // not found: nothing to update
+      return null;
+    });
+  }
+
   @override
   Future<List<Post>> getAllPosts() async {
     var rng = Random();
@@ -33,6 +62,42 @@ class PostsDatasourceMockImpl implements PostsDatasource {
   }
 
   @override
+  Future<List<Post>> getPostsUsingPostedInList(List<String> refs) async {
+    List<Future<List<Post>>> futures = [];
+
+    for (String r in refs) {
+      Future<List<Post>> future = getAllPostsByPostedIn(r);
+      futures.add(future);
+    }
+    List<List<Post>> listOfLists = await Future.wait(futures);
+    List<Post> allPosts = listOfLists.expand((posts) => posts).toList();
+    return allPosts;
+  }
+
+  @override
+  Future<List<Post>> getAllPostsByPostedIn(String postedIn) async {
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(
+      Duration(milliseconds: randomTime),
+      () => mockPosts.where((p) => p.postedIn == postedIn).toList(),
+    );
+  }
+
+  @override
+  Future<List<Post>> getPostsUsingUsersIdListRef(List<String> refs) async {
+    List<Future<List<Post>>> futures = [];
+
+    for (String r in refs) {
+      Future<List<Post>> future = getAllPostsByCreatedById(r);
+      futures.add(future);
+    }
+    List<List<Post>> listOfLists = await Future.wait(futures);
+    List<Post> allPosts = listOfLists.expand((posts) => posts).toList();
+    return allPosts;
+  }
+
+  @override
   Future<List<Post>> getAllPostsByCreatedById(String id) async {
     var rng = Random();
     int randomTime = rng.nextInt(300);
@@ -40,6 +105,19 @@ class PostsDatasourceMockImpl implements PostsDatasource {
       Duration(milliseconds: randomTime),
       () => mockPosts.where((p) => p.createdById == id).toList(),
     );
+  }
+
+  @override
+  Future<List<Post>> getPostsUsingUsernamesList(List<String> refs) async {
+    List<Future<List<Post>>> futures = [];
+
+    for (String r in refs) {
+      Future<List<Post>> future = getAllPostsByCreatedByUsername(r);
+      futures.add(future);
+    }
+    List<List<Post>> listOfLists = await Future.wait(futures);
+    List<Post> allPosts = listOfLists.expand((posts) => posts).toList();
+    return allPosts;
   }
 
   @override

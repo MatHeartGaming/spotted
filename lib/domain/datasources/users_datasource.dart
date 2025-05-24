@@ -6,4 +6,6 @@ abstract class UsersDatasource {
   Future<User?> getUserByUsername(String username);
   Future<List<User>?> getUsersByUsername(String username);
   Future<User?> getUserByEmail(String email);
+  Future<User?> createUser(User user);
+  Future<User?> updateUser(User user);
 }

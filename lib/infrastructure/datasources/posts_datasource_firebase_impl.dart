@@ -37,5 +37,41 @@ class PostsDatasourceFirebaseImpl implements PostsDatasource {
     // TODO: implement getPostById
     throw UnimplementedError();
   }
+  
+  @override
+  Future<List<Post>> getPostsUsingUsernamesList(List<String> refs) {
+    // TODO: implement getPostsUsingUsernamesListRef
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<List<Post>> getPostsUsingUsersIdListRef(List<String> refs) {
+    // TODO: implement getPostsUsingUsersIdListRef
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<List<Post>> getAllPostsByPostedIn(String postedIn) {
+    // TODO: implement getAllPostsByPostedIn
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<List<Post>> getPostsUsingPostedInList(List<String> refs) {
+    // TODO: implement getPostsUsingPostedInList
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<Post?> createPost(Post post) {
+    // TODO: implement createPost
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<Post?> updatePost(Post post) {
+    // TODO: implement updatePost
+    throw UnimplementedError();
+  }
 
 }

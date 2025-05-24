@@ -35,4 +35,14 @@ class CommentsRepositoryImplementation implements CommentsRepository {
   Future<List<Comment>> getCommentsByPostedInCommunity(String postedIn) {
     return _db.getCommentsByPostedInCommunity(postedIn);
   }
+
+  @override
+  Future<Comment?> createComment(Comment comment) {
+    return _db.createComment(comment);
+  }
+
+  @override
+  Future<Comment?> updateComment(Comment comment) {
+    return _db.updateComment(comment);
+  }
 }

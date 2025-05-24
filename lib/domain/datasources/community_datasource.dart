@@ -8,4 +8,6 @@ abstract class CommunityDatasource {
     String createdByUsername,
   );
   Future<Community?> getCommunityById(String id);
+  Future<Community?> createCommunity(Community community);
+  Future<Community?> updateCommunity(Community community);
 }

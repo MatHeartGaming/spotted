@@ -30,4 +30,16 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
   Future<List<User>?> getUsersByUsername(String username) async {
     return [];
   }
+  
+  @override
+  Future<User?> createUser(User user) {
+    // TODO: implement createUser
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<User?> updateUser(User user) {
+    // TODO: implement updateUser
+    throw UnimplementedError();
+  }
 }

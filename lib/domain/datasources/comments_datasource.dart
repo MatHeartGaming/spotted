@@ -8,4 +8,6 @@ abstract class CommentsDatasource {
   Future<List<Comment>> getCommentsByCreatedByUsername(
     String createdByUsername,
   );
+  Future<Comment?> createComment(Comment comment);
+  Future<Comment?> updateComment(Comment comment);
 }

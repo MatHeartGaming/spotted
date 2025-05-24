@@ -7,4 +7,10 @@ abstract class PostsRepository {
   Future<List<Post>> getAllPostsByCreatedByUsername(String username);
   Future<List<Post>> getAllPostsByTitle(String title);
   Future<List<Post>> getAllPostsByContent(String content);
+  Future<List<Post>> getPostsUsingUsersIdListRef(List<String> refs);
+  Future<List<Post>> getPostsUsingUsernamesList(List<String> refs);
+  Future<List<Post>> getAllPostsByPostedIn(String postedIn);
+  Future<List<Post>> getPostsUsingPostedInList(List<String> refs);
+  Future<Post?> createPost(Post post);
+  Future<Post?> updatePost(Post post);
 }

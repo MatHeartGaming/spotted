@@ -35,4 +35,14 @@ class CommunityRepositoryImplementation implements CommunityRepository {
   Future<Community?> getCommunityById(String id) {
     return _db.getCommunityById(id);
   }
+
+  @override
+  Future<Community?> createCommunity(Community community) {
+    return _db.createCommunity(community);
+  }
+
+  @override
+  Future<Community?> updateCommunity(Community community) {
+    return _db.updateCommunity(community);
+  }
 }
