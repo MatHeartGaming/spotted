@@ -19,6 +19,7 @@ dependencies:
   flex_color_picker: ^3.7.1
   flutter:
     sdk: flutter
+  flutter_chat_reactions: ^0.1.1
   flutter_context_menu: ^0.2.0
   flutter_dotenv: ^5.2.1
   flutter_riverpod: ^2.6.1
@@ -28,6 +29,7 @@ dependencies:
   google_sign_in: ^6.3.0
   intl: ^0.19.0
   logger: ^2.5.0
+  multi_dropdown: ^3.0.1
   rotation_three_d_effect: ^0.2.1
   share_plus: ^11.0.0
   shared_preferences: ^2.5.3
@@ -36,10 +38,10 @@ dependencies:
   uuid: ^4.5.1
 
 dev_dependencies:
+  flutter_flavorizr: ^2.4.1
+  flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
-  flutter_flavorizr: ^2.4.1
 
 flutter:
   uses-material-design: true
@@ -47,3 +49,6 @@ flutter:
   assets:
     - .env
     - assets/translations/
+    
+dependency_overrides:
+  animate_do: ^4.2.0
