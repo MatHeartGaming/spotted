@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:spotted/domain/models/models.dart';
+import 'package:spotted/presentation/widgets/widgets.dart';
 
 /// A widget that displays a Post along with its author information.
 class PostWidget extends StatelessWidget {
@@ -14,6 +15,7 @@ class PostWidget extends StatelessWidget {
     // Format the date
     final formattedDate = DateFormat.yMMMd().add_jm().format(post.dateCreated);
     final texts = Theme.of(context).textTheme;
+    final colors = Theme.of(context).colorScheme;
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -24,13 +26,19 @@ class PostWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Visibility(
+              visible: post.postedIn != null,
+              child: Text(post.postedIn ?? '', style: texts.labelLarge?.copyWith(color: colors.onPrimaryContainer),)
+            ),
+            SizedBox(height: 8),
             // Author row
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(author.profileImageUrl),
+                CirclePicture(
+                  minRadius: 20,
+                  maxRadius: 20,
+                  urlPicture: author.profileImageUrl,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -38,10 +46,10 @@ class PostWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${author.name} ${author.surname}',
+                        author.completeName,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 14,
                         ),
                       ),
                       Text(
@@ -61,7 +69,7 @@ class PostWidget extends StatelessWidget {
             // Title
             if (post.title.isNotEmpty) ...[
               const SizedBox(height: 12),
-              Text(post.title, style: texts.headlineSmall),
+              Text(post.title, style: texts.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
             ],
 
             // Content

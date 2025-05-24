@@ -30,15 +30,12 @@ class CirclePicture extends StatelessWidget {
       child: CircleAvatar(
           minRadius: minRadius,
           maxRadius: maxRadius,
+          backgroundImage: imageBytes != null ? MemoryImage(imageBytes!) : null,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(borderRadius),
             child: imageBytes == null
                 ? _renderPicutreOrPlaceholder()
-                : FadeInImage(
-                    placeholder: MemoryImage(kTransparentImage),
-                    image: MemoryImage(imageBytes!),
-                    fit: BoxFit.cover,
-                  ),
+                : null
           )),
     );
   }

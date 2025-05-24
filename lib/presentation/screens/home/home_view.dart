@@ -33,7 +33,7 @@ class HomeViewState extends ConsumerState<HomeView>
           },
           child: ListView.builder(
             controller: scrollController, // ← from the mixin
-            itemCount: 3,
+            itemCount: mockPosts.length,
             itemBuilder: (_, i) => PostWidget(post: mockPosts[i], author: mockUsers[i]),
           ),
         ),
