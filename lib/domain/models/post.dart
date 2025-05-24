@@ -15,32 +15,32 @@ class Post {
   final Map<String, String> reactions;
 
   Post({
-    id,
+    String? id,
     required this.createdById,
     required this.createdByUsername,
     required this.title,
     required this.content,
-    dateCreated,
+    DateTime? dateCreated,
     this.postedIn,
     this.comments = const [],
     this.pictureUrls = const [],
     this.reactions = const {},
-  }) : id = const Uuid().v6(),
-       dateCreated = DateTime.now();
+  }) : id = id ?? const Uuid().v6(),
+       dateCreated = dateCreated ?? DateTime.now();
 
   Post.empty({
-    id,
+    String? id,
     this.createdById = '',
     this.createdByUsername = '',
     this.title = '',
     this.content = '',
-    dateCreated,
+    DateTime? dateCreated,
     this.postedIn,
     this.comments = const [],
     this.pictureUrls = const [],
     this.reactions = const {},
-  }) : id = const Uuid().v6(),
-       dateCreated = DateTime.now();
+  }) : id = id ?? const Uuid().v6(),
+       dateCreated = dateCreated ?? DateTime.now();
 
   factory Post.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,

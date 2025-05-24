@@ -1,11 +1,11 @@
 import 'dart:math';
 
+import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/datasources/datasources.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/preview_data/mock_data.dart';
 
 class UsersDatasourceMockImpl implements UsersDatasource {
-
   @override
   Future<User?> createUser(User user) async {
     var rng = Random();
@@ -48,10 +48,19 @@ class UsersDatasourceMockImpl implements UsersDatasource {
   Future<User?> getUserById(String id) async {
     var rng = Random();
     int randomTime = rng.nextInt(300);
-    return await Future.delayed(
-      Duration(milliseconds: randomTime),
-      () => mockUsers.where((p) => p.id == id).toList().firstOrNull,
-    );
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      final user =
+          mockUsers
+              .where((u) {
+                logger.i('Scanning: ${u.id}');
+                return u.id == id;
+              })
+              .toList()
+              .firstOrNull;
+      logger.i('User: $user');
+      logger.i('User to look for id: $id');
+      return user;
+    });
   }
 
   @override

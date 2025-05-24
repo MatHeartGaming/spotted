@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotted/domain/preview_data/mock_data.dart';
+import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 class HomeView extends ConsumerStatefulWidget {
@@ -12,7 +12,20 @@ class HomeView extends ConsumerStatefulWidget {
 class HomeViewState extends ConsumerState<HomeView>
     with ScrollHideTabBarBaseScreen<HomeView> {
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      _loadFriendsPosts();
+    });
+  }
+
+  void _loadFriendsPosts() {
+    ref.read(loadPostsProvider.notifier).loadPostedByFriendsId();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final postsProvider = ref.watch(loadPostsProvider);
     final size = MediaQuery.sizeOf(context);
     return SafeArea(
       child: Scaffold(
@@ -29,16 +42,30 @@ class HomeViewState extends ConsumerState<HomeView>
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            /* load data */
+            _loadFriendsPosts();
           },
           child: ListView.builder(
             controller: scrollController, // ← from the mixin
-            itemCount: mockPosts.length,
-            itemBuilder:
-                (_, i) => ReactionablePostWidget(
-                  post: mockPosts[i],
-                  author: mockUsers[i],
-                ),
+            itemCount: postsProvider.postedByFriends.length,
+            itemBuilder: (_, i) {
+              final post = postsProvider.postedByFriends[i];
+              return ref
+                  .watch(userFutureByIdProvider(post.createdById))
+                  .when(
+                    data:
+                        (user) =>
+                            user != null
+                                ? ReactionablePostWidget(
+                                  post: post,
+                                  author: user,
+                                )
+                                : Text('User not found'),
+                    error:
+                        (error, stackTrace) =>
+                            Text('Error while loading user: $error'),
+                    loading: () => LoadingDefaultWidget(),
+                  );
+            },
           ),
         ),
       ),

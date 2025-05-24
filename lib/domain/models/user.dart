@@ -21,12 +21,12 @@ class User {
   final Map<String, String> reactions;
 
   User({
-    id,
+    String? id,
     required this.email,
     required this.name,
     required this.surname,
     required this.username,
-    dateCreated,
+    DateTime? dateCreated,
     this.profileImageUrl = '',
     this.features = const [],
     this.communitiesSubs = const [],
@@ -34,16 +34,16 @@ class User {
     this.posted = const [],
     this.comments = const [],
     this.reactions = const {},
-  }) : id = const Uuid().v6(),
-       dateCreated = DateTime.now();
+  }) : id = id ?? const Uuid().v6(),
+       dateCreated = dateCreated ?? DateTime.now();
 
   User.empty({
-    id,
+    String? id,
     this.email = '',
     this.name = '',
     this.surname = '',
     this.username = '',
-    dateCreated,
+    DateTime? dateCreated,
     this.profileImageUrl = '',
     this.features = const [],
     this.communitiesSubs = const [],
@@ -51,8 +51,8 @@ class User {
     this.posted = const [],
     this.comments = const [],
     this.reactions = const {},
-  }) : id = const Uuid().v6(),
-       dateCreated = DateTime.now();
+  }) : id = id ?? const Uuid().v6(),
+       dateCreated = dateCreated ?? DateTime.now();
 
   String get completeName => '$name $surname';
 

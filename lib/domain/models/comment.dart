@@ -22,7 +22,7 @@ class Comment {
     this.replies = const [],
     this.reactions = const {},
   }) : id = id ?? const Uuid().v6(),
-       postId = id ?? const Uuid().v6(),
+       postId = postId ?? const Uuid().v6(),
        dateCreated = dateCreated ?? DateTime.now();
 
   Comment.empty()

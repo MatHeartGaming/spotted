@@ -14,17 +14,17 @@ class Community {
   final List<String> posts;
 
   Community({
-    id,
+    String? id,
     required this.title,
     required this.description,
     this.createdById,
     this.createdByUsername,
-    dateCreated,
+    DateTime? dateCreated,
     this.pictureUrl,
     this.admins = const [],
     this.posts = const [],
-  }) : id = const Uuid().v6(),
-       dateCreated = DateTime.now();
+  }) : id = id ?? const Uuid().v6(),
+       dateCreated = dateCreated ?? DateTime.now();
 
   Community.empty({
     id,
@@ -36,8 +36,8 @@ class Community {
     this.pictureUrl,
     this.admins = const [],
     this.posts = const [],
-  }) : id = const Uuid().v6(),
-       dateCreated = DateTime.now();
+  }) : id = id ?? const Uuid().v6(),
+       dateCreated = dateCreated ?? DateTime.now();
 
 
        /// Creates a Community from Firestore
