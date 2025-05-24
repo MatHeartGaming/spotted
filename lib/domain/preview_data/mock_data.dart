@@ -59,7 +59,7 @@ final mockUsers = [
     friends: ['user_002', 'user_003'],
     posted: ['post_001'],
     comments: ['comment_001'],
-    reactions: {'post_002': 'like'},
+    reactions: {'post_002': '👍'},
   ),
   User(
     id: 'user_002',
@@ -74,7 +74,7 @@ final mockUsers = [
     friends: ['user_001'],
     posted: ['post_002'],
     comments: ['comment_002'],
-    reactions: {'post_001': 'love'},
+    reactions: {'post_001': '💕'},
   ),
   User(
     id: 'user_003',
@@ -104,7 +104,7 @@ final mockPosts = [
     content: 'The Uffizi Gallery was amazing today!',
     comments: ['comment_001'],
     pictureUrls: [],
-    reactions: {'user_002': 'love', 'user_003': 'like'},
+    reactions: {'user_002': '💙', 'user_003': '👍'},
   ),
   Post(
     id: 'post_002',
@@ -116,7 +116,7 @@ final mockPosts = [
     content: 'Ran 5k in the park, feeling refreshed!',
     comments: ['comment_002'],
     pictureUrls: [],
-    reactions: {'user_001': 'like'},
+    reactions: {'user_001': '👍'},
   ),
   Post(
     id: 'post_003',

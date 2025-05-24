@@ -34,7 +34,11 @@ class HomeViewState extends ConsumerState<HomeView>
           child: ListView.builder(
             controller: scrollController, // ← from the mixin
             itemCount: mockPosts.length,
-            itemBuilder: (_, i) => PostWidget(post: mockPosts[i], author: mockUsers[i]),
+            itemBuilder:
+                (_, i) => ReactionablePostWidget(
+                  post: mockPosts[i],
+                  author: mockUsers[i],
+                ),
           ),
         ),
       ),
