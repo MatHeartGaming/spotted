@@ -30,6 +30,7 @@ class ReactionablePostWidget extends ConsumerWidget {
     return Hero(
       tag: post.id,
       child: GestureDetector(
+        onDoubleTap: () => onReaction('👍'),
         // wrap your message widget with a [GestureDectector] or [InkWell]
         onLongPress: () {
           // navigate with a custom [HeroDialogRoute] to [ReactionsDialogWidget]
