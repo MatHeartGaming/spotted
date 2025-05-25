@@ -54,10 +54,6 @@ class DrawerContent extends ConsumerWidget {
                           minRadius: 20,
                           maxRadius: 20,
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(FontAwesomeIcons.gears),
-                        ),
                       ],
                     ),
                     Text(
