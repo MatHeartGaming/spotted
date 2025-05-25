@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/providers/providers.dart';
+import 'package:spotted/presentation/screens/screens.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 class HomeView extends ConsumerStatefulWidget {
@@ -72,9 +73,10 @@ class HomeViewState extends ConsumerState<HomeView>
                                   author: user,
                                   onReaction:
                                       (reaction) =>
-                                          _updatePostActionWithReaction(
+                                          updatePostActionWithReaction(
                                             post,
                                             reaction,
+                                            ref
                                           ),
                                   onContextMenuTap: (menuItem) {},
                                 )
@@ -89,28 +91,5 @@ class HomeViewState extends ConsumerState<HomeView>
         ),
       ),
     );
-  }
-
-  void _updatePostActionWithReaction(Post post, String reaction) {
-    final loadPostsNotifier = ref.read(loadPostsProvider.notifier);
-    final signedInUser = ref.read(signedInUserProvider);
-    final userId = signedInUser?.id;
-    if (userId == null) return;
-
-    // Start from the existing reactions
-    final newReactions = Map<String, String>.from(post.reactions);
-
-    // If they tapped the same reaction again, remove it; otherwise set/update it
-    if (newReactions[userId] == reaction) {
-      newReactions.remove(userId);
-    } else {
-      newReactions[userId] = reaction;
-    }
-
-    final updatedPost = post.copyWith(reactions: newReactions);
-    loadPostsNotifier.updatePost(updatedPost).then((post) {
-      // TODO: Update user with the reaction
-      if (post != null) {}
-    });
   }
 }

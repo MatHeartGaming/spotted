@@ -16,3 +16,6 @@ export 'package:spotted/presentation/screens/chats/chats_screen.dart';
 
 // Settings
 export 'package:spotted/presentation/screens/settings/setttings_list_screen.dart';
+
+// Helpers
+export 'package:spotted/presentation/screens/helpers/reaction_functions.dart';
