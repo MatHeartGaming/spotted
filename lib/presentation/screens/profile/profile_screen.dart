@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotted/domain/models/models.dart';
 
-class ProfileScreen extends ConsumerWidget {
-  static const name = 'ProfileScreen';
+class ProfileScreen extends StatelessWidget {
+  final User user;
 
-  const ProfileScreen({super.key});
+  const ProfileScreen({super.key, required this.user});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(body: Center(child: Text('Profile Screen')));
+  Widget build(BuildContext context) {
+    return Scaffold(body: Center(child: Text('Profile Screen ${user.username}')));
   }
 }

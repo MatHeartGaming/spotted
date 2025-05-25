@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotted/config/constants/app_constants.dart';
+import 'package:spotted/domain/models/models.dart';
 
 import '../../presentation/screens/screens.dart';
 
@@ -23,9 +25,36 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
-        name: ProfileScreen.name,
-        path: profilePath,
-        builder: (context, state) => const ProfileScreen(),
+        name: ProfileHandlerScreen.name,
+        path: '$profilePath/:userId',
+        builder: (context, state) {
+          Map<String, dynamic>? mapExtras =
+              state.extra as Map<String, dynamic>?;
+          String? id =
+              state.pathParameters.containsKey('userId')
+                  ? state.pathParameters['userId'].toString()
+                  : 'no-id';
+            logger.i('Zoccolone id: $id');
+
+          if (id == 'no-id') {
+            User? user = mapExtras?['user'];
+            String? username = mapExtras?['username'];
+            logger.i('Zoccolone username: $username');
+            if (user == null && username == null) {
+              final errorMsg = 'error_texts_no_product_or_id_sent'.tr();
+              return ErrorScreen(message: errorMsg);
+            } else if (username != null && username.isNotEmpty) {
+              return ProfileHandlerScreen(
+                user: user,
+                username: username,
+                userId: null,
+              );
+            }
+            logger.i('Zoccolone user: ${user?.username}');
+            return ProfileHandlerScreen(user: user, userId: null);
+          }
+          return ProfileHandlerScreen(user: null, userId: id);
+        },
       ),
 
       GoRoute(

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/domain/models/models.dart';
+import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/screens/screens.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
@@ -71,12 +72,17 @@ class HomeViewState extends ConsumerState<HomeView>
                                   isLiked: false,
                                   post: post,
                                   author: user,
+                                  onUserInfoTapped:
+                                      () => pushToProfileScreen(
+                                        context,
+                                        user: user,
+                                      ),
                                   onReaction:
                                       (reaction) =>
                                           updatePostActionWithReaction(
                                             post,
                                             reaction,
-                                            ref
+                                            ref,
                                           ),
                                   onContextMenuTap: (menuItem) {},
                                 )

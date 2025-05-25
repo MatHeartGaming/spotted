@@ -58,6 +58,8 @@ class User {
 
   bool get isProfileUrlValid => profileImageUrl.startsWith('https');
 
+  bool get isEmpty => username.isEmpty || id.isEmpty || email.isEmpty;
+
   @override
   bool operator ==(covariant User other) {
     if (identical(this, other)) return true;
@@ -76,8 +78,7 @@ class User {
   ) {
     final map = snapshot.data()!;
     final reactionsMap = (map['reactions'] as Map).map(
-      (key, value) =>
-          MapEntry(key.toString(), value.toString()),
+      (key, value) => MapEntry(key.toString(), value.toString()),
     );
     logger.i('Reactions: $map');
     return User(

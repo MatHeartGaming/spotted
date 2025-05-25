@@ -13,6 +13,7 @@ class ReactionablePostWidget extends ConsumerWidget {
   final bool isLiked;
   final Post post;
   final User author;
+  final VoidCallback onUserInfoTapped;
   final Function(String) onReaction;
   final Function(MenuItem) onContextMenuTap;
 
@@ -23,6 +24,7 @@ class ReactionablePostWidget extends ConsumerWidget {
     required this.author,
     required this.onReaction,
     required this.onContextMenuTap,
+    required this.onUserInfoTapped,
   });
 
   @override
@@ -39,7 +41,7 @@ class ReactionablePostWidget extends ConsumerWidget {
               builder: (context) {
                 return ReactionsDialogWidget(
                   id: post.id, // unique id for message
-                  messageWidget: PostWidget(post: post, author: author),
+                  messageWidget: PostWidget(post: post, author: author, onUserInfoTapped: onUserInfoTapped,),
                   menuItems: _getPossiblePostActions(ref),
                   reactions: ['👍', '❤️', '🚀', '😂', '😭', '😡', '🤯'],
                   onReactionTap: (reaction) {
@@ -64,6 +66,7 @@ class ReactionablePostWidget extends ConsumerWidget {
           children: [
             PostWidget(
               isLiked: isLiked,
+              onUserInfoTapped: onUserInfoTapped,
               post: post,
               author: author,
               onLike: () => onReaction('👍'),

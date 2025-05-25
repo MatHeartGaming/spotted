@@ -4,6 +4,7 @@
 export 'package:spotted/presentation/providers/users/signed_in_user_provider.dart';
 export 'package:spotted/presentation/providers/users/user_future_providers.dart';
 export 'package:spotted/presentation/providers/users/users_repository_provider.dart';
+export 'package:spotted/presentation/providers/users/load_users_provider.dart';
 
 // Posts
 export 'package:spotted/presentation/providers/posts/posts_repository_provider.dart';

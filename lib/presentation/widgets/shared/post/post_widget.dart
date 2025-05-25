@@ -7,6 +7,7 @@ import 'package:spotted/presentation/widgets/widgets.dart';
 class PostWidget extends StatelessWidget {
   final Post post;
   final User author;
+  final VoidCallback onUserInfoTapped;
   final VoidCallback? onLike;
   final VoidCallback? onComment;
   final VoidCallback? onShare;
@@ -16,6 +17,7 @@ class PostWidget extends StatelessWidget {
     super.key,
     required this.post,
     required this.author,
+    required this.onUserInfoTapped,
     this.onLike,
     this.onComment,
     this.onShare,
@@ -49,38 +51,42 @@ class PostWidget extends StatelessWidget {
             ),
             SizedBox(height: 8),
             // Author row
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CirclePicture(
-                  minRadius: 20,
-                  maxRadius: 20,
-                  urlPicture: author.profileImageUrl,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        author.completeName,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                      Text(
-                        '@${author.username}',
-                        style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                      ),
-                    ],
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: onUserInfoTapped,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CirclePicture(
+                    minRadius: 20,
+                    maxRadius: 20,
+                    urlPicture: author.profileImageUrl,
                   ),
-                ),
-                Text(
-                  formattedDate,
-                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          author.completeName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        Text(
+                          '@${author.username}',
+                          style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    formattedDate,
+                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                  ),
+                ],
+              ),
             ),
 
             // Title
