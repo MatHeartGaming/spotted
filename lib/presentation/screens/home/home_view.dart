@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/domain/models/models.dart';
@@ -31,6 +32,14 @@ class HomeViewState extends ConsumerState<HomeView>
     final size = MediaQuery.sizeOf(context);
     return SafeArea(
       child: Scaffold(
+        floatingActionButton: AnimatedOpacityFab(
+          show: animateFabsOut,
+          child: AddFab(
+            onTap: () {},
+            heroTag: 1,
+            tooltip: 'add_fab_home_tooltip_text'.tr(),
+          ),
+        ),
         appBar: PreferredSize(
           preferredSize: Size(size.width, 50),
           child: Padding(

@@ -2,6 +2,8 @@
 export 'package:spotted/presentation/widgets/shared/custom_snackbars.dart';
 export 'package:spotted/presentation/widgets/shared/circle_picture.dart';
 export 'package:spotted/presentation/widgets/shared/loading_default_widget.dart';
+export 'package:spotted/presentation/widgets/shared/buttons/add_fab.dart';
+export 'package:spotted/presentation/widgets/shared/animated_opacity_fab.dart';
 
 // Navigation
 export 'package:spotted/presentation/widgets/shared/navigation/drawer_content.dart';
