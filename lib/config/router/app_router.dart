@@ -25,6 +25,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
+        name: CreatePostsScreen.name,
+        path: createPostPath,
+        builder: (context, state) => const CreatePostsScreen(),
+      ),
+
+      GoRoute(
+        name: CreateCommunityScreen.name,
+        path: createCommunityPath,
+        builder: (context, state) => const CreateCommunityScreen(),
+      ),
+
+      GoRoute(
         name: ProfileHandlerScreen.name,
         path: '$profilePath/:userId',
         builder: (context, state) {

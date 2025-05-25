@@ -13,6 +13,16 @@ void goToHomeScreenUsingContext(BuildContext context) {
   context.go(basePath);
 }
 
+void pushToCreatePostScreen(BuildContext context) {
+  if (!context.mounted) return;
+  context.push(createPostPath);
+}
+
+void pushToCreateCommunityScreen(BuildContext context) {
+  if (!context.mounted) return;
+  context.push(createCommunityPath);
+}
+
 void pushToProfileScreen(
   BuildContext context, {
   User? user,

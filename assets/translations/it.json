@@ -13,10 +13,15 @@
 
     "nav_bar_home_tooltip": "Contenuti da bacheche seguite",
     "nav_bar_explore_tooltip": "Contenuti da tutta la community",
+    
+    "create_post_list_tile_title": "Crea Post",
+    "create_community_list_tile_title": "Crea Community",
 
     "drawer_following_count": "Mi seguono: {}",
     "drawer_profile_item": "Profilo",
     "drawer_home_item": "Inizio",
     "drawer_explore_item": "Esplora",
-    "drawer_settings_item": "Impostazioni"
+    "drawer_settings_item": "Impostazioni",
+    
+    "close_text": "Chiudi"
 }

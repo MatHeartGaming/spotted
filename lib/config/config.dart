@@ -10,6 +10,7 @@ export 'package:spotted/config/theme/app_theme.dart';
 
 // Plugins
 export 'package:spotted/config/plugins/shared_prefs_plugin.dart';
+export 'package:spotted/config/plugins/camera_gallery_service_impl.dart';
 
 // Locale
 export 'package:spotted/config/locale/supported_localisations.dart';

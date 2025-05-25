@@ -37,7 +37,7 @@ class HomeViewState extends ConsumerState<HomeView>
         floatingActionButton: AnimatedOpacityFab(
           show: animateFabsOut,
           child: AddFab(
-            onTap: () {},
+            onTap: () => _showAddPostOrCommunitySheet(),
             heroTag: 1,
             tooltip: 'add_fab_home_tooltip_text'.tr(),
           ),
@@ -97,5 +97,9 @@ class HomeViewState extends ConsumerState<HomeView>
         ),
       ),
     );
+  }
+
+  void _showAddPostOrCommunitySheet() {
+    showNavigatableSheet(context, child: CreatePostOrCommunityScreen());
   }
 }
