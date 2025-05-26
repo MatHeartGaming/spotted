@@ -18,6 +18,11 @@ void pushToCreatePostScreen(BuildContext context) {
   context.push(createPostPath);
 }
 
+void popContext(BuildContext context) {
+  if (!context.mounted) return;
+  context.pop();
+}
+
 void pushToCreateCommunityScreen(BuildContext context) {
   if (!context.mounted) return;
   context.push(createCommunityPath);

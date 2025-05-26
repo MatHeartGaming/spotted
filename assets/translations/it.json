@@ -15,6 +15,11 @@
     "nav_bar_explore_tooltip": "Contenuti da tutta la community",
     
     "create_post_list_tile_title": "Crea Post",
+    "create_post_screen_publish_btn_text": "Pubblica",
+    "create_post_screen_title_textfield_placeholder": "Titolo",
+    "create_post_screen_content_textfield_placeholder": "Contenuto",
+    "create_post_screen_add_images_btn_tooltip": "Aggiungi immagini",
+
     "create_community_list_tile_title": "Crea Community",
 
     "drawer_following_count": "Mi seguono: {}",
@@ -22,6 +27,14 @@
     "drawer_home_item": "Inizio",
     "drawer_explore_item": "Esplora",
     "drawer_settings_item": "Impostazioni",
+
+    "modal_bottom_photo_choose_from": "Scegli da:",
+    "modal_bottom_photo_gallery": "Galleria",
+    "modal_bottom_photo_camera": "Scatta foto",
+
+    "form_error_generic_text_field_cant_be_empty": "Il campo non può essere vuoto",
+    "form_error_generic_text_field_must_have_lenght": "Il campo deve avere almeno {} caratteri",
+    "form_error_email_not_valid": "Email non valida",
     
     "close_text": "Chiudi"
 }
