@@ -39,8 +39,9 @@ class Community {
   }) : id = id ?? const Uuid().v6(),
        dateCreated = dateCreated ?? DateTime.now();
 
+  bool get isEmpty => id.isEmpty || title.isEmpty || description.isEmpty;
 
-       /// Creates a Community from Firestore
+  /// Creates a Community from Firestore
   factory Community.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
@@ -52,7 +53,8 @@ class Community {
       description: map['description'] as String,
       createdById: map['created_by_id'] as String?,
       createdByUsername: map['created_by_username'] as String?,
-      dateCreated: (map['date_created'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      dateCreated:
+          (map['date_created'] as Timestamp?)?.toDate() ?? DateTime.now(),
       pictureUrl: map['picture_url'] as String?,
       admins: List<String>.from(map['admins'] ?? const []),
       posts: List<String>.from(map['posts'] ?? const []),

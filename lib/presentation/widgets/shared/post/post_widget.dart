@@ -7,6 +7,7 @@ import 'package:spotted/presentation/widgets/widgets.dart';
 class PostWidget extends StatelessWidget {
   final Post post;
   final User author;
+  final VoidCallback? onCommunityTapped;
   final VoidCallback onUserInfoTapped;
   final VoidCallback? onLike;
   final VoidCallback? onComment;
@@ -18,6 +19,7 @@ class PostWidget extends StatelessWidget {
     required this.post,
     required this.author,
     required this.onUserInfoTapped,
+    this.onCommunityTapped,
     this.onLike,
     this.onComment,
     this.onShare,
@@ -42,10 +44,13 @@ class PostWidget extends StatelessWidget {
           children: [
             Visibility(
               visible: post.postedIn != null,
-              child: Text(
-                post.postedIn ?? '',
-                style: texts.labelLarge?.copyWith(
-                  color: colors.onPrimaryContainer,
+              child: GestureDetector(
+                onTap: onCommunityTapped,
+                child: Text(
+                  post.postedIn ?? '',
+                  style: texts.labelLarge?.copyWith(
+                    color: colors.onPrimaryContainer,
+                  ),
                 ),
               ),
             ),

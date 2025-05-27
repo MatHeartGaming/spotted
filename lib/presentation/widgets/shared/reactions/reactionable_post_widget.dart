@@ -14,6 +14,7 @@ class ReactionablePostWidget extends ConsumerWidget {
   final Post post;
   final User author;
   final VoidCallback onUserInfoTapped;
+  final VoidCallback? onCommunityTapped;
   final Function(String) onReaction;
   final Function(MenuItem) onContextMenuTap;
 
@@ -25,6 +26,7 @@ class ReactionablePostWidget extends ConsumerWidget {
     required this.onReaction,
     required this.onContextMenuTap,
     required this.onUserInfoTapped,
+    this.onCommunityTapped,
   });
 
   @override
@@ -66,6 +68,7 @@ class ReactionablePostWidget extends ConsumerWidget {
           children: [
             PostWidget(
               isLiked: isLiked,
+              onCommunityTapped: onCommunityTapped,
               onUserInfoTapped: onUserInfoTapped,
               post: post,
               author: author,

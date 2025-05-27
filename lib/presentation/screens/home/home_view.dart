@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotted/config/constants/app_constants.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
@@ -72,6 +73,8 @@ class HomeViewState extends ConsumerState<HomeView>
                                   isLiked: false,
                                   post: post,
                                   author: user,
+                                  onCommunityTapped:
+                                      () => _actionCommunityTap(post.postedIn),
                                   onUserInfoTapped:
                                       () => pushToProfileScreen(
                                         context,
@@ -101,5 +104,17 @@ class HomeViewState extends ConsumerState<HomeView>
 
   void _showAddPostOrCommunitySheet() {
     showNavigatableSheet(context, child: CreatePostOrCommunityScreen());
+  }
+
+  Future<void> _actionCommunityTap(String? postedIn) async {
+    logger.i('Community: $postedIn');
+    if (postedIn == null) return;
+    final loadCommunity = ref.read(loadCommunitiesProvider.notifier);
+    loadCommunity.loadUsersCommunityByTitle(postedIn).then((communities) {
+      if (communities == null || communities.isEmpty) return;
+      logger.i('Community: ${communities.first}');
+      // ignore: use_build_context_synchronously
+      pushToCommunityScreen(context, community: communities.first);
+    });
   }
 }

@@ -195,7 +195,7 @@ final mockComments = [
 final mockCommunities = [
   Community(
     id: '35321234-e3d1-47f5-a46d-86fd88890e79',
-    title: 'Community 1',
+    title: 'community_123',
     description: 'A sample community description.',
     createdById: '1',
     createdByUsername: 'user0',

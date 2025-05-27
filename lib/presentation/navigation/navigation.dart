@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotted/config/config.dart';
+import 'package:spotted/domain/models/community.dart';
 import 'package:spotted/domain/models/user.dart';
 
 void pushToChatsScreen(BuildContext context) {
@@ -37,4 +38,15 @@ void pushToProfileScreen(
   if (!context.mounted) return;
   Map<String, dynamic> mapExtras = {'user': user, 'username': username};
   context.push('$profilePath/$userId', extra: mapExtras);
+}
+
+void pushToCommunityScreen(
+  BuildContext context, {
+  Community? community,
+  String communityId = 'no-id',
+  String? title,
+}) {
+  if (!context.mounted) return;
+  Map<String, dynamic> mapExtras = {'community': community, 'title': title};
+  context.push('$communityPath/$communityId', extra: mapExtras);
 }

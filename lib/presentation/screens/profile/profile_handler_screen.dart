@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/domain/models/models.dart';
@@ -69,7 +70,7 @@ class _ProfileScreenState extends ConsumerState<ProfileHandlerScreen> {
     return loadUserState.isLoadingUser
         ? LoadingDefaultWidget()
         : (currentUser.isEmpty)
-        ? ErrorScreen(message: 'User not found')
+        ? ErrorScreen(message: 'community_screen_user_not_found_error'.tr())
         : ProfileScreen(user: currentUser);
   }
 }

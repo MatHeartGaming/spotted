@@ -27,6 +27,10 @@
 
     "create_community_list_tile_title": "Crea Community",
 
+    "community_screen_user_not_found_error": "Utente non trovato.",
+    
+    "community_screen_community_not_found_error": "Community non trovata.",
+
     "drawer_following_count": "Mi seguono: {}",
     "drawer_profile_item": "Profilo",
     "drawer_home_item": "Inizio",
@@ -40,6 +44,8 @@
     "form_error_generic_text_field_cant_be_empty": "Il campo non può essere vuoto",
     "form_error_generic_text_field_must_have_lenght": "Il campo deve avere almeno {} caratteri",
     "form_error_email_not_valid": "Email non valida",
+
+    "error_screen_go_back_to_home_btn_text": "Torna alla Home",
     
     "close_text": "Chiudi"
 }

@@ -46,14 +46,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               state.pathParameters.containsKey('userId')
                   ? state.pathParameters['userId'].toString()
                   : 'no-id';
-            logger.i('Zoccolone id: $id');
 
           if (id == 'no-id') {
             User? user = mapExtras?['user'];
             String? username = mapExtras?['username'];
-            logger.i('Zoccolone username: $username');
             if (user == null && username == null) {
-              final errorMsg = 'error_texts_no_product_or_id_sent'.tr();
+              final errorMsg = 'community_screen_user_not_found_error'.tr();
               return ErrorScreen(message: errorMsg);
             } else if (username != null && username.isNotEmpty) {
               return ProfileHandlerScreen(
@@ -62,10 +60,43 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 userId: null,
               );
             }
-            logger.i('Zoccolone user: ${user?.username}');
             return ProfileHandlerScreen(user: user, userId: null);
           }
           return ProfileHandlerScreen(user: null, userId: id);
+        },
+      ),
+
+      GoRoute(
+        name: CommunityScreenHandler.name,
+        path: '$communityPath/:communityId',
+        builder: (context, state) {
+          Map<String, dynamic>? mapExtras =
+              state.extra as Map<String, dynamic>?;
+          String? id =
+              state.pathParameters.containsKey('communityId')
+                  ? state.pathParameters['communityId'].toString()
+                  : 'no-id';
+
+          if (id == 'no-id') {
+            Community? community = mapExtras?['community'];
+            String? title = mapExtras?['title'];
+            if (community == null && title == null) {
+              final errorMsg =
+                  'community_screen_community_not_found_error'.tr();
+              return ErrorScreen(message: errorMsg);
+            } else if (title != null && title.isNotEmpty) {
+              return CommunityScreenHandler(
+                community: community,
+                communityId: title,
+                communityTitle: null,
+              );
+            }
+            return CommunityScreenHandler(
+              community: community,
+              communityId: null,
+            );
+          }
+          return CommunityScreenHandler(community: null, communityId: id);
         },
       ),
 

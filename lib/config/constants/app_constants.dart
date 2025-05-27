@@ -8,6 +8,7 @@ const String explorePath = '/explore';
 const String loadingPath = '/loading';
 const String settingsListPath = '/settings_list_screen';
 const String profilePath = '/profile_screen';
+const String communityPath = '/community_screen';
 const String chatsPath = '/chats_screen';
 const String createPostPath = '/create_post_screen';
 const String createCommunityPath = '/create_community_screen';

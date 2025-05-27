@@ -4,6 +4,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/repositories/repositories.dart';
+import 'package:spotted/presentation/providers/providers.dart';
+
+final communityScreenCurrentCommunityProvider =
+    StateProvider.autoDispose<Community>((ref) {
+      return Community.empty();
+    });
+
+final loadCommunitiesProvider =
+    StateNotifierProvider<LoadCommunitiesNotifier, LoadCommunitiesState>((ref) {
+      final communityRepo = ref.watch(communityRepositoryProvider);
+      final signedInUser = ref.watch(signedInUserProvider);
+      final loadCommunityNotifier = LoadCommunitiesNotifier(
+        communityRepo,
+        signedInUser ?? User.empty(),
+      );
+      return loadCommunityNotifier;
+    });
 
 class LoadCommunitiesNotifier extends StateNotifier<LoadCommunitiesState> {
   final CommunityRepository _communityRepository;
@@ -25,6 +42,18 @@ class LoadCommunitiesNotifier extends StateNotifier<LoadCommunitiesState> {
     );
 
     return usersCommmunity;
+  }
+
+  Future<Community?> loadUsersCommunityById(String id) async {
+    final community = await _communityRepository.getCommunityById(id);
+    return community;
+  }
+
+  Future<List<Community>?> loadUsersCommunityByTitle(String title) async {
+    final commmunities = await _communityRepository.getCommunitiesByTitle(
+      title,
+    );
+    return commmunities;
   }
 
   Future<Community?> updateCommunity(Community community) async {
