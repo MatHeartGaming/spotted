@@ -72,6 +72,18 @@ class LoadPostsNotifier extends StateNotifier<LoadPostsState> {
     }
     return newPost;
   }
+
+  Future<Post?> createPost(Post updatedPost) async {
+    final newPost = await _postsRepository.createPost(updatedPost);
+    if (newPost == null) return null;
+
+      // 3) Emit new state
+      state = state.copyWith(
+        postedByFriends: [newPost, ...state.postedByFriends],
+        //postedInCommunities: updatedCommunitiesList,
+      );
+    return newPost;
+  }
 }
 
 class LoadPostsState {

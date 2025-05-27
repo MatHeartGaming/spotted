@@ -10,6 +10,7 @@ class CreatePostFormState {
   final FormStatus status;
   final bool isValid;
   final GenericText title;
+  final GenericText? postedIn;
   final GenericText content;
   final List<Uint8List>? imagesBytes;
   final List<XFile>? imagesFile;
@@ -24,6 +25,7 @@ class CreatePostFormState {
     this.isValid = false,
     this.title = const GenericText.pure(),
     this.content = const GenericText.pure(),
+    this.postedIn,
     this.imagesBytes = const [],
     this.imagesFile = const [],
     this.imagesUrl = const [],
@@ -36,35 +38,39 @@ class CreatePostFormState {
   @override
   bool operator ==(covariant CreatePostFormState other) {
     if (identical(this, other)) return true;
-
-    return other.status == status &&
-        other.isValid == isValid &&
-        other.title == title &&
-        other.content == content &&
-        listEquals(other.imagesBytes, imagesBytes) &&
-        listEquals(other.imagesFile, imagesFile) &&
-        listEquals(other.imagesUrl, imagesUrl) &&
-        other.titleController == titleController &&
-        other.contentController == contentController;
+  
+    return 
+      other.status == status &&
+      other.isValid == isValid &&
+      other.title == title &&
+      other.postedIn == postedIn &&
+      other.content == content &&
+      listEquals(other.imagesBytes, imagesBytes) &&
+      listEquals(other.imagesFile, imagesFile) &&
+      listEquals(other.imagesUrl, imagesUrl) &&
+      other.titleController == titleController &&
+      other.contentController == contentController;
   }
 
   @override
   int get hashCode {
     return status.hashCode ^
-        isValid.hashCode ^
-        title.hashCode ^
-        content.hashCode ^
-        imagesBytes.hashCode ^
-        imagesFile.hashCode ^
-        imagesUrl.hashCode ^
-        titleController.hashCode ^
-        contentController.hashCode;
+      isValid.hashCode ^
+      title.hashCode ^
+      postedIn.hashCode ^
+      content.hashCode ^
+      imagesBytes.hashCode ^
+      imagesFile.hashCode ^
+      imagesUrl.hashCode ^
+      titleController.hashCode ^
+      contentController.hashCode;
   }
 
   CreatePostFormState copyWith({
     FormStatus? status,
     bool? isValid,
     GenericText? title,
+    GenericText? postedIn,
     GenericText? content,
     List<Uint8List>? imagesBytes,
     List<XFile>? imagesFile,
@@ -76,6 +82,7 @@ class CreatePostFormState {
       status: status ?? this.status,
       isValid: isValid ?? this.isValid,
       title: title ?? this.title,
+      postedIn: postedIn ?? this.postedIn,
       content: content ?? this.content,
       imagesBytes: imagesBytes ?? this.imagesBytes,
       imagesFile: imagesFile ?? this.imagesFile,

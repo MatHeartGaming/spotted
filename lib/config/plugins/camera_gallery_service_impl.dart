@@ -33,6 +33,11 @@ class CameraGalleryServiceImplementation implements CameraGalleryService {
 
   @override
   Future<List<XFile>> selectPhotos({int limit = 5}) async {
+    assert(limit > 0);
+    if (limit == 1) {
+      final photo = await selectPhoto();
+      return photo != null ? [photo] : [];
+    }
     final List<XFile> photos = await _picker.pickMultiImage(
       imageQuality: _quality,
       limit: limit,

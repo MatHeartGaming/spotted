@@ -7,7 +7,7 @@ import 'package:spotted/infrastructure/input_validations/inputs.dart';
 import 'package:spotted/presentation/providers/forms/states/create_post_form_state.dart';
 import 'package:spotted/presentation/providers/forms/states/form_status.dart';
 
-final createPostProvider =
+final createPostFormProvider =
     StateNotifierProvider.autoDispose<CreatePostNotifier, CreatePostFormState>((
       ref,
     ) {
@@ -32,13 +32,25 @@ class CreatePostNotifier extends StateNotifier<CreatePostFormState> {
   }
 
   void onSumbit({required VoidCallback onSubmit}) {
-    state = state.copyWith(
-      status: FormStatus.posting,
-      isValid: Formz.validate([state.title, state.content]),
-    );
-    if (!state.isValid) return;
+    validateFields(status: FormStatus.posting);
+    if (!state.isValid) {
+        resetFormStatus();
+    }
 
     onSubmit();
+  }
+
+  void validateFields({FormStatus status = FormStatus.invalid}) {
+    state = state.copyWith(
+      status: status,
+      isValid: Formz.validate([state.title, state.content]),
+    );
+  }
+
+   void resetFormStatus({FormStatus status = FormStatus.invalid}) {
+    state = state.copyWith(
+      status: status,
+    );
   }
 
   void onTitleChanged(String value) {
@@ -58,15 +70,15 @@ class CreatePostNotifier extends StateNotifier<CreatePostFormState> {
   }
 
   void imagesFilesChanged(XFile value) {
-    state = state.copyWith(imagesFile: [value, ...?state.imagesFile]);
+    state = state.copyWith(imagesFile: [...?state.imagesFile, value]);
   }
 
   void imagesBytesChanged(Uint8List value) {
-    state = state.copyWith(imagesBytes: [value, ...?state.imagesBytes]);
+    state = state.copyWith(imagesBytes: [...?state.imagesBytes, value]);
   }
 
   void imagesUrlsChanged(String value) {
-    state = state.copyWith(imagesUrl: [value, ...?state.imagesUrl]);
+    state = state.copyWith(imagesUrl: [value, ...?state.imagesUrl, value]);
   }
 
   /// removes the image at [index] from all of files/bytes/urls

@@ -19,6 +19,9 @@
     "create_post_screen_title_textfield_placeholder": "Titolo",
     "create_post_screen_content_textfield_placeholder": "Contenuto",
     "create_post_screen_add_images_btn_tooltip": "Aggiungi immagini",
+    "create_post_screen_check_fields_snackbar_text": "Controllare la validità dei campi",
+    "create_post_screen_post_success_snackbar_text": "Post creato con successo!",
+    "create_post_screen_post_error_snackbar_text": "Errore durante la creazione del post",
 
     "create_community_list_tile_title": "Crea Community",
 

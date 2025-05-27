@@ -3,11 +3,14 @@ import 'dart:math';
 import 'package:animate_do/animate_do.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotted/config/config.dart';
+import 'package:spotted/domain/models/models.dart';
+import 'package:spotted/presentation/providers/forms/states/form_status.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
@@ -18,7 +21,7 @@ class CreatePostsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formState = ref.watch(createPostProvider);
+    final formState = ref.watch(createPostFormProvider);
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
@@ -50,7 +53,7 @@ class CreatePostsScreen extends ConsumerWidget {
                   errorMessage: formState.title.errorMessage,
                   onChanged: (newValue) {
                     ref
-                        .read(createPostProvider.notifier)
+                        .read(createPostFormProvider.notifier)
                         .onTitleChanged(newValue);
                   },
                 ),
@@ -62,7 +65,7 @@ class CreatePostsScreen extends ConsumerWidget {
                   errorMessage: formState.content.errorMessage,
                   onChanged: (newValue) {
                     ref
-                        .read(createPostProvider.notifier)
+                        .read(createPostFormProvider.notifier)
                         .onContentChanged(newValue);
                   },
                 ),
@@ -71,7 +74,7 @@ class CreatePostsScreen extends ConsumerWidget {
                   images: formState.imagesBytes ?? [],
                   onImageDelete: (deleteIndex) {
                     ref
-                        .read(createPostProvider.notifier)
+                        .read(createPostFormProvider.notifier)
                         .removeImageAt(deleteIndex);
                   },
                   onImageTap:
@@ -102,7 +105,7 @@ class CreatePostsScreen extends ConsumerWidget {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () => _onSumbit(ref),
+                  onPressed: formState.isPosting ? null : () => _onSumbit(ref),
                   child: Text('create_post_screen_publish_btn_text').tr(),
                 ),
                 SizedBox(height: 50),
@@ -120,7 +123,7 @@ class CreatePostsScreen extends ConsumerWidget {
   ) {
     final context = ref.context;
     final picker = ref.read(imagePickerProvider);
-    final formState = ref.read(createPostProvider);
+    final formState = ref.read(createPostFormProvider);
     final currentCount =
         (formState.imagesUrl?.length ?? 0) +
         (formState.imagesBytes?.length ?? 0);
@@ -135,12 +138,6 @@ class CreatePostsScreen extends ConsumerWidget {
     displayPickImageDialog(
       context,
       onGalleryChosen: () async {
-        if (remaining < 2) {
-          await picker.selectPhoto().then((files) {
-            onImagesChosen([files].cast<XFile>());
-            //popContext(context);
-          });
-        }
         await picker.selectPhotos(limit: remaining).then((files) {
           onImagesChosen(files.cast<XFile>());
           //popContext(context);
@@ -161,7 +158,7 @@ class CreatePostsScreen extends ConsumerWidget {
     List<XFile>? imagesFiles,
   ) async {
     if (imagesFiles == null) return;
-    final createPostNotifier = ref.read(createPostProvider.notifier);
+    final createPostNotifier = ref.read(createPostFormProvider.notifier);
 
     for (var i in imagesFiles) {
       createPostNotifier.imagesFilesChanged(i);
@@ -171,6 +168,54 @@ class CreatePostsScreen extends ConsumerWidget {
   }
 
   void _onSumbit(WidgetRef ref) {
-    logger.i('Sumbit!');
+    final context = ref.context;
+    final createPostFormNotifier = ref.read(createPostFormProvider.notifier);
+    final formState = ref.read(createPostFormProvider);
+
+    createPostFormNotifier.validateFields(status: FormStatus.posting);
+
+    if (!formState.isValid) {
+      HapticFeedback.mediumImpact();
+      showCustomSnackbar(
+        context,
+        'create_post_screen_check_fields_snackbar_text'.tr(),
+        backgroundColor: colorWarning,
+      );
+      createPostFormNotifier.resetFormStatus();
+      return;
+    }
+
+    createPostFormNotifier.onSumbit(
+      onSubmit: () async {
+        final signedInUser = ref.read(signedInUserProvider);
+        final newPost = Post(
+          createdById: signedInUser?.id ?? '',
+          createdByUsername: signedInUser?.username ?? '',
+          title: formState.title.value,
+          content: formState.content.value,
+          postedIn: formState.postedIn?.value,
+        );
+        final loadPost = ref.read(loadPostsProvider.notifier);
+        loadPost.createPost(newPost).then((createdPost) {
+          if (createdPost != null) {
+            HapticFeedback.lightImpact();
+            showCustomSnackbar(
+              // ignore: use_build_context_synchronously
+              context,
+              'create_post_screen_post_success_snackbar_text'.tr(),
+              backgroundColor: colorSuccess,
+            );
+          } else {
+            HapticFeedback.heavyImpact();
+            showCustomSnackbar(
+              // ignore: use_build_context_synchronously
+              context,
+              'create_post_screen_post_error_snackbar_text'.tr(),
+              backgroundColor: colorNotOkButton,
+            );
+          }
+        });
+      },
+    );
   }
 }
