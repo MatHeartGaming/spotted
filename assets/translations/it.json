@@ -25,6 +25,13 @@
     "create_post_screen_post_success_snackbar_text": "Post creato con successo!",
     "create_post_screen_post_error_snackbar_text": "Errore durante la creazione del post",
 
+    "create_community_screen_title_textfield_placeholder": "Titolo Community",
+    "create_community_screen_content_textfield_placeholder": "Di cosa tratta?",
+    "create_community_screen_admins_textfield_placeholder": "Cerca Admins tra i tuoi amici",
+    "create_community_screen_add_bg_image_btn_tooltip": "Immagine sfondo",
+    "create_community_screen_community_success_snackbar_text": "Comunità creata con successo!",
+    "create_community_screen_community_error_snackbar_text": "Errore durante la creazione della comunità",
+
     "create_community_list_tile_title": "Crea Community",
 
     "community_screen_user_not_found_error": "Utente non trovato.",

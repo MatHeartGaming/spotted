@@ -1,9 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:math';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -51,6 +52,7 @@ class CreatePostsScreen extends ConsumerWidget {
                   controller: formState.titleController,
                   icon: Icons.title_outlined,
                   errorMessage: formState.title.errorMessage,
+                  onSubmitForm: () => _onSumbit(ref),
                   onChanged: (newValue) {
                     ref
                         .read(createPostFormProvider.notifier)
@@ -63,6 +65,7 @@ class CreatePostsScreen extends ConsumerWidget {
                   controller: formState.contentController,
                   icon: Icons.title_outlined,
                   errorMessage: formState.content.errorMessage,
+                  onSubmitForm: () => _onSumbit(ref),
                   onChanged: (newValue) {
                     ref
                         .read(createPostFormProvider.notifier)
@@ -130,10 +133,6 @@ class CreatePostsScreen extends ConsumerWidget {
     // how many more the user can pick:
     final remaining = max(5 - currentCount, 0);
 
-    logger.i('Remain: $remaining');
-    logger.i('Images: ${formState.imagesUrl?.length}');
-    logger.i('Bytes: ${formState.imagesBytes?.length}');
-
     if (!context.mounted) return;
     displayPickImageDialog(
       context,
@@ -175,7 +174,7 @@ class CreatePostsScreen extends ConsumerWidget {
     createPostFormNotifier.validateFields(status: FormStatus.posting);
 
     if (!formState.isValid) {
-      HapticFeedback.mediumImpact();
+      mediumVibration();
       showCustomSnackbar(
         context,
         'create_post_screen_check_fields_snackbar_text'.tr(),
@@ -198,17 +197,18 @@ class CreatePostsScreen extends ConsumerWidget {
         final loadPost = ref.read(loadPostsProvider.notifier);
         loadPost.createPost(newPost).then((createdPost) {
           if (createdPost != null) {
-            HapticFeedback.lightImpact();
+            smallVibration();
             showCustomSnackbar(
-              // ignore: use_build_context_synchronously
               context,
               'create_post_screen_post_success_snackbar_text'.tr(),
               backgroundColor: colorSuccess,
             );
+            Future.delayed(Duration(milliseconds: 500), () {
+              context.pop();
+            });
           } else {
-            HapticFeedback.heavyImpact();
+            hardVibration();
             showCustomSnackbar(
-              // ignore: use_build_context_synchronously
               context,
               'create_post_screen_post_error_snackbar_text'.tr(),
               backgroundColor: colorNotOkButton,

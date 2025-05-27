@@ -30,3 +30,4 @@ export 'package:spotted/presentation/providers/utility/image_picker_provider.dar
 
 // Forms
 export 'package:spotted/presentation/providers/forms/create_post_form_provider.dart';
+export 'package:spotted/presentation/providers/forms/create_community_form_provider.dart';
