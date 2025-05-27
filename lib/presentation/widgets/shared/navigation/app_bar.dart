@@ -14,6 +14,7 @@ class HomeAppBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final signedInUser = ref.watch(signedInUserProvider);
+    final texts = TextTheme.of(context);
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -26,10 +27,20 @@ class HomeAppBar extends ConsumerWidget {
             maxRadius: 15,
           ),
         ),
-        Text('app_name').tr(),
-        IconButton(
-          onPressed: () => pushToChatsScreen(context),
-          icon: Icon(FontAwesomeIcons.solidMessage),
+        Text('app_name', style: texts.titleLarge).tr(),
+        Row(
+          children: [
+            IconButton(
+              tooltip: 'app_bar_search_btn_tooltip'.tr(),
+              onPressed: () => {},
+              icon: Icon(FontAwesomeIcons.magnifyingGlass),
+            ),
+            IconButton(
+              tooltip: 'app_bar_chats_btn_tooltip'.tr(),
+              onPressed: () => pushToChatsScreen(context),
+              icon: Icon(FontAwesomeIcons.solidMessage),
+            ),
+          ],
         ),
       ],
     );

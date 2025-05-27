@@ -8,9 +8,11 @@
 
     "add_fab_home_tooltip_text": "Crea Post o una Community",
 
+    "app_bar_search_btn_tooltip": "Cerca Utenti, Post, Communità",
+    "app_bar_chats_btn_tooltip": "Messaggi",
+
     "nav_bar_home_item": "Inizio",
     "nav_bar_explore_item": "Esplora",
-
     "nav_bar_home_tooltip": "Contenuti da bacheche seguite",
     "nav_bar_explore_tooltip": "Contenuti da tutta la community",
     
