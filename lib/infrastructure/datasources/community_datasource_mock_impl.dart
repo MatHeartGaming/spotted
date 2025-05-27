@@ -5,7 +5,6 @@ import 'package:spotted/domain/models/community.dart';
 import 'package:spotted/domain/preview_data/mock_data.dart';
 
 class CommunityDatasourceMockImpl implements CommunityDatasource {
-
   @override
   Future<Community?> createCommunity(Community community) async {
     var rng = Random();
@@ -42,6 +41,26 @@ class CommunityDatasourceMockImpl implements CommunityDatasource {
       Duration(milliseconds: randomTime),
       () => mockCommunities,
     );
+  }
+
+  @override
+  Future<List<Community>> getCommunitiesUsingUsersCommunityIdList(
+    List<String> refs,
+  ) async {
+    List<Future<Community?>> futures = [];
+
+    for (String r in refs) {
+      Future<Community?> future = getCommunityById(r);
+      futures.add(future);
+    }
+    List<Community?> list = await Future.wait(futures);
+    List<Community> nonNullCommunities = [];
+    for (Community? c in list) {
+      if (c != null) {
+        nonNullCommunities.add(c);
+      }
+    }
+    return nonNullCommunities;
   }
 
   @override

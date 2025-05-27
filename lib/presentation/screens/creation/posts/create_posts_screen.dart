@@ -214,6 +214,7 @@ class CreatePostsScreen extends ConsumerWidget {
               backgroundColor: colorNotOkButton,
             );
           }
+          createPostFormNotifier.resetFormStatus();
         });
       },
     );

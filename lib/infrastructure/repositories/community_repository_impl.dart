@@ -45,4 +45,11 @@ class CommunityRepositoryImplementation implements CommunityRepository {
   Future<Community?> updateCommunity(Community community) {
     return _db.updateCommunity(community);
   }
+
+  @override
+  Future<List<Community>> getCommunitiesUsingUsersCommunityIdList(
+    List<String> refs,
+  ) {
+    return _db.getCommunitiesUsingUsersCommunityIdList(refs);
+  }
 }

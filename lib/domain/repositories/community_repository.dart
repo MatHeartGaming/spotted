@@ -7,6 +7,9 @@ abstract class CommunityRepository {
   Future<List<Community>> getCommunitiesByCreatedUsername(
     String createdByUsername,
   );
+  Future<List<Community>> getCommunitiesUsingUsersCommunityIdList(
+    List<String> refs,
+  );
   Future<Community?> getCommunityById(String id);
   Future<Community?> createCommunity(Community community);
   Future<Community?> updateCommunity(Community community);
