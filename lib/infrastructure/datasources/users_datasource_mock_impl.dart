@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/datasources/datasources.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/preview_data/mock_data.dart';
@@ -52,13 +51,10 @@ class UsersDatasourceMockImpl implements UsersDatasource {
       final user =
           mockUsers
               .where((u) {
-                logger.i('Scanning: ${u.id}');
                 return u.id == id;
               })
               .toList()
               .firstOrNull;
-      logger.i('User: $user');
-      logger.i('User to look for id: $id');
       return user;
     });
   }

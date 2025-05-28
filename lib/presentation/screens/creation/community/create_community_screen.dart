@@ -221,6 +221,7 @@ class CreateCommunityScreen extends ConsumerWidget {
               context.pop();
             })
             .catchError((error) {
+              logger.e(error);
               if (error is CommunityAlreadyExistsException) {
                 mediumVibration();
                 showCustomSnackbar(
