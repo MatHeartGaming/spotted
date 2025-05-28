@@ -56,7 +56,7 @@ final mockUsers = [
     dateCreated: DateTime.now().subtract(const Duration(days: 120)),
     features: ['verified'],
     communitiesSubs: ['community_001'],
-    friends: ['user_002', 'user_003'],
+    friends: ['user_002', 'user_003', '1'],
     posted: ['post_001'],
     comments: ['comment_001'],
     reactions: {'post_002': '👍'},

@@ -38,6 +38,14 @@
     
     "community_screen_community_not_found_error": "Community non trovata.",
 
+    "profile_screen_edit_profile_btn_text": "Modifica informazioni profilo",
+    "profile_screen_follow_btn_text": "Segui",
+    "profile_screen_follow_you_too_btn_text": "Segui anche tu",
+    "profile_screen_stop_follow_btn_text": "Smetti di seguire",
+    "profile_screen_error_follow_btn_text": "Qualcosa è andato storto... Riprova",
+    "profile_screen_success_follow_btn_text": "Ora segui {}",
+    "profile_screen_success_unfollow_btn_text": "Ora non segui più {}",
+
     "drawer_following_count": "Mi seguono: {}",
     "drawer_profile_item": "Profilo",
     "drawer_home_item": "Inizio",

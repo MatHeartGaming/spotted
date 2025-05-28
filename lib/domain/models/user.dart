@@ -2,8 +2,9 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:spotted/config/constants/app_constants.dart';
 import 'package:uuid/uuid.dart';
+
+import 'package:spotted/config/constants/app_constants.dart';
 
 class User {
   final String id;
@@ -206,5 +207,10 @@ class User {
       comments: comments ?? this.comments,
       reactions: reactions ?? this.reactions,
     );
+  }
+
+  @override
+  String toString() {
+    return 'User(id: $id, email: $email, name: $name, surname: $surname, username: $username, profileImageUrl: $profileImageUrl, dateCreated: $dateCreated, features: $features, communitiesSubs: $communitiesSubs, friends: $friends, posted: $posted, comments: $comments, reactions: $reactions)';
   }
 }
