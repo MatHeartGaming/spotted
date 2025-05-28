@@ -31,7 +31,7 @@ class AppTheme {
     brightness: isDarkMode ? Brightness.dark : Brightness.light,
     colorSchemeSeed: customColor,
     appBarTheme: const AppBarTheme(centerTitle: true),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       shadowColor: cardShadowColor,
       /*color: Colors.white,
               shape: RoundedRectangleBorder(
