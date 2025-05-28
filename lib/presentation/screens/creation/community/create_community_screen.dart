@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotted/config/config.dart';
+import 'package:spotted/domain/datasources/exceptions/exceptions.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/providers/forms/states/form_status.dart';
 import 'package:spotted/presentation/providers/providers.dart';
@@ -207,27 +208,40 @@ class CreateCommunityScreen extends ConsumerWidget {
           admins: formState.adminsRefs ?? [],
         );
         final loadCommunity = ref.read(loadCommunitiesProvider.notifier);
-        loadCommunity.createCommunity(newCommunity).then((createdCommunity) {
-          if (createdCommunity != null) {
-            smallVibration();
-            showCustomSnackbar(
-              context,
-              'create_community_screen_community_success_snackbar_text'.tr(),
-              backgroundColor: colorSuccess,
-            );
-            Future.delayed(Duration(milliseconds: 500), () {
+        loadCommunity
+            .createCommunity(newCommunity)
+            .then((createdCommunity) {
+              // success path
+              smallVibration();
+              showCustomSnackbar(
+                context,
+                'create_community_screen_community_success_snackbar_text'.tr(),
+                backgroundColor: colorSuccess,
+              );
               context.pop();
+            })
+            .catchError((error) {
+              if (error is CommunityAlreadyExistsException) {
+                mediumVibration();
+                showCustomSnackbar(
+                  context,
+                  'community_already_exists_exception'.tr(
+                    args: [newCommunity.title],
+                  ),
+                  backgroundColor: colorWarning,
+                );
+              } else {
+                hardVibration();
+                showCustomSnackbar(
+                  context,
+                  'create_community_screen_community_error_snackbar_text'.tr(),
+                  backgroundColor: colorNotOkButton,
+                );
+              }
+            })
+            .whenComplete(() {
+              createCommunityFormNotifier.resetFormStatus();
             });
-          } else {
-            hardVibration();
-            showCustomSnackbar(
-              context,
-              'create_community_screen_community_error_snackbar_text'.tr(),
-              backgroundColor: colorNotOkButton,
-            );
-          }
-          createCommunityFormNotifier.resetFormStatus();
-        });
       },
     );
   }

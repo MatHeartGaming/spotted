@@ -3,11 +3,9 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:spotted/config/config.dart';
 
 void showCustomBottomSheet(BuildContext context, {required Widget child}) {
   if (!context.mounted) return;
-  logger.i('showCustomBottomSheet');
   if (Platform.isIOS) {
     showCupertinoSheet(
       context: context,
@@ -30,7 +28,6 @@ void showCustomBottomSheet(BuildContext context, {required Widget child}) {
 
 void showNavigatableSheet(BuildContext context, {required Widget child}) {
   if (Platform.isIOS) {
-    logger.i('showNavigatableSheet');
     showCupertinoSheet(
       context: context,
       useNestedNavigation: true,
@@ -61,7 +58,6 @@ void displayPickImageDialog(
   required Function onTakePicChosen,
 }) {
   if (!context.mounted) return;
-  logger.i('displayPickImageDialog');
   final size = MediaQuery.sizeOf(context);
   final textStyles = Theme.of(context).textTheme;
   final sheetChild = SizedBox(
@@ -94,15 +90,6 @@ void displayPickImageDialog(
       ],
     ),
   );
-  /*if (Platform.isIOS) {
-    showCupertinoSheet(
-      context: context,
-      pageBuilder: (context) {
-        return sheetChild;
-      },
-    );
-    return;
-  }*/
   showModalBottomSheet(
     context: context,
     builder: (context) {

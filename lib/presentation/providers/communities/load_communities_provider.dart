@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotted/domain/datasources/datasources.dart';
 
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/repositories/repositories.dart';
@@ -86,10 +87,15 @@ class LoadCommunitiesNotifier extends StateNotifier<LoadCommunitiesState> {
   }
 
   Future<Community?> createCommunity(Community community) async {
-    // (optional) avoid concurrent updates
     if (state.isLoadingUsersCommunities) return null;
 
     state = state.copyWith(isUpdatingUsersCommunities: true);
+
+    final communityTitleAlreadyExists = await _communityRepository
+        .getCommunityByTitle(community.title);
+    if (communityTitleAlreadyExists != null) {
+      throw CommunityAlreadyExistsException();
+    }
 
     final created = await _communityRepository.createCommunity(community);
 
