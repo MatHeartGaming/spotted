@@ -5,7 +5,6 @@ import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/preview_data/mock_data.dart';
 
 class PostsDatasourceMockImpl implements PostsDatasource {
-
   @override
   Future<Post?> createPost(Post post) async {
     var rng = Random();
@@ -155,12 +154,41 @@ class PostsDatasourceMockImpl implements PostsDatasource {
   }
 
   @override
-  Future<List<Post>> getPostById(String id) async {
+  Future<List<Post>> getPostsUsingUsersPostedIdList(List<String> refs) async {
+    List<Future<Post?>> futures = [];
+
+    for (String r in refs) {
+      Future<Post?> future = getPostById(r);
+      futures.add(future);
+    }
+    List<Post?> list = await Future.wait(futures);
+    List<Post> nonNullPosts = [];
+    for (Post? c in list) {
+      if (c != null) {
+        nonNullPosts.add(c);
+      }
+    }
+    return nonNullPosts;
+  }
+
+  @override
+  Future<List<Post>> getPostsById(String id) async {
     var rng = Random();
     int randomTime = rng.nextInt(300);
     return await Future.delayed(
       Duration(milliseconds: randomTime),
       () => mockPosts.where((p) => p.id == id).toList(),
     );
+  }
+
+  @override
+  Future<Post?> getPostById(String id) async {
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      final posts = mockPosts.where((p) => p.id == id).toList();
+      if (posts.isNotEmpty) return posts.first;
+      return null;
+    });
   }
 }

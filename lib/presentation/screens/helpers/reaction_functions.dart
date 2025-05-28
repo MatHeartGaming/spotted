@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 
-void updatePostActionWithReaction(Post post, String reaction, WidgetRef ref) async {
+Future<void> updatePostActionWithReaction(Post post, String reaction, WidgetRef ref) async {
     final notifier = ref.read(loadPostsProvider.notifier);
     final user = ref.read(signedInUserProvider);
     if (user == null) return;

@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/config/constants/app_constants.dart';
-import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/screens/screens.dart';
@@ -26,6 +25,7 @@ class HomeViewState extends ConsumerState<HomeView>
 
   void _loadFriendsPosts() {
     ref.read(loadPostsProvider.notifier).loadPostedByFriendsId();
+    ref.read(loadPostsProvider.notifier).loadPostedByMe();
   }
 
   @override

@@ -35,8 +35,8 @@ class PostsRepositoryImplementation implements PostsRepository {
   }
 
   @override
-  Future<List<Post>> getPostById(String id) {
-    return _db.getPostById(id);
+  Future<List<Post>> getPostsById(String id) {
+    return _db.getPostsById(id);
   }
 
   @override
@@ -67,5 +67,15 @@ class PostsRepositoryImplementation implements PostsRepository {
   @override
   Future<Post?> updatePost(Post post) {
     return _db.updatePost(post);
+  }
+
+  @override
+  Future<Post?> getPostById(String id) {
+    return _db.getPostById(id);
+  }
+
+  @override
+  Future<List<Post>> getPostsUsingUsersPostedIdList(List<String> refs) {
+    return _db.getPostsUsingUsersPostedIdList(refs);
   }
 }

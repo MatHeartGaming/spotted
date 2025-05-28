@@ -60,6 +60,8 @@ class User {
 
   bool get isEmpty => username.isEmpty || id.isEmpty || email.isEmpty;
 
+  String get atUsername => '@$username';
+
   @override
   bool operator ==(covariant User other) {
     if (identical(this, other)) return true;

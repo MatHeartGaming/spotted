@@ -33,7 +33,7 @@ class PostsDatasourceFirebaseImpl implements PostsDatasource {
   }
 
   @override
-  Future<List<Post>> getPostById(String id) {
+  Future<List<Post>> getPostsById(String id) {
     // TODO: implement getPostById
     throw UnimplementedError();
   }
@@ -71,6 +71,18 @@ class PostsDatasourceFirebaseImpl implements PostsDatasource {
   @override
   Future<Post?> updatePost(Post post) {
     // TODO: implement updatePost
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<Post?> getPostById(String id) {
+    // TODO: implement getPostById
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<List<Post>> getPostsUsingUsersPostedIdList(List<String> refs) {
+    // TODO: implement getPostsUsingUsersPostedIdList
     throw UnimplementedError();
   }
 
