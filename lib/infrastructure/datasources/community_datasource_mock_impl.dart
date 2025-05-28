@@ -77,6 +77,18 @@ class CommunityDatasourceMockImpl implements CommunityDatasource {
   }
 
   @override
+  Future<Community?> getCommunityByTitle(String title) async {
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      final comm = mockCommunities.where(
+        (c) => c.title.toLowerCase().trim() == title.toLowerCase().trim(),
+      );
+      return comm.isEmpty ? null : comm.first;
+    });
+  }
+
+  @override
   Future<List<Community>> getCommunitiesByCreatedBy(String createdById) async {
     var rng = Random();
     int randomTime = rng.nextInt(300);

@@ -52,4 +52,9 @@ class CommunityRepositoryImplementation implements CommunityRepository {
   ) {
     return _db.getCommunitiesUsingUsersCommunityIdList(refs);
   }
+
+  @override
+  Future<Community?> getCommunityByTitle(String title) {
+    return _db.getCommunityByTitle(title);
+  }
 }

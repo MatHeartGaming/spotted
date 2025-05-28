@@ -51,5 +51,11 @@ class CommunityDatasourceFirebaseImpl implements CommunityDatasource {
     throw UnimplementedError();
   }
   
+  @override
+  Future<Community?> getCommunityByTitle(String title) {
+    // TODO: implement getCommunityByTitle
+    throw UnimplementedError();
+  }
+  
 
 }

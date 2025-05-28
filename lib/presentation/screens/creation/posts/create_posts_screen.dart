@@ -143,8 +143,8 @@ class CreatePostsScreen extends ConsumerWidget {
         });
       },
       onTakePicChosen: () async {
-        await picker.takePhoto().then((files) {
-          onImagesChosen(files);
+        await picker.takePhoto().then((file) {
+          onImagesChosen([file]);
           //popContext(context);
         });
       },
