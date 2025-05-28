@@ -78,7 +78,7 @@ class DrawerContent extends ConsumerWidget {
             child: ListView(
               padding: EdgeInsets.zero,
               children:
-                  getDrawerItems()
+                  getDrawerItems(profileId: signedInUser?.id ?? '')
                       .map(
                         (item) => SlideInLeft(
                           child: ListTile(

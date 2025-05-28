@@ -25,7 +25,7 @@ class DrawerItem {
   int get hashCode => title.hashCode ^ icon.hashCode ^ path.hashCode;
 }
 
-List<DrawerItem> getDrawerItems() {
+List<DrawerItem> getDrawerItems({required String profileId}) {
   final menuMap = {
     'drawer_profile_item'.tr(): Icons.person,
     'drawer_home_item'.tr(): FontAwesomeIcons.house,
@@ -34,7 +34,7 @@ List<DrawerItem> getDrawerItems() {
   };
 
   final paths = {
-    'drawer_profile_item'.tr(): profilePath,
+    'drawer_profile_item'.tr(): '$profilePath/$profileId',
     'drawer_home_item'.tr(): '$homePath/0',
     'drawer_explore_item'.tr(): '$homePath/1',
     'drawer_settings_item'.tr(): settingsListPath,
