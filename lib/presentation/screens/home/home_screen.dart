@@ -39,6 +39,12 @@ class HomeScreenState extends ConsumerState<HomeScreen>
       initialIndex: widget.pageIndex,
     );
 
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        ref.read(tabBarVisibilityProvider.notifier).update((state) => true);
+      }
+    });
+
     Future.delayed(
       Duration.zero,
       () => ref
