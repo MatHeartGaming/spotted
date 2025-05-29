@@ -18,6 +18,8 @@ export 'package:spotted/presentation/screens/profile/profile_screen.dart';
 
 // Chats
 export 'package:spotted/presentation/screens/chats/chats_screen.dart';
+export 'package:spotted/presentation/screens/chats/chat_handler_screen.dart';
+export 'package:spotted/presentation/screens/chats/chat_screen.dart';
 
 // Settings
 export 'package:spotted/presentation/screens/settings/setttings_list_screen.dart';
