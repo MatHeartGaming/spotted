@@ -8,10 +8,16 @@ import 'package:spotted/presentation/providers/providers.dart';
 
 class CustomBottomNavigationBar extends ConsumerWidget {
   final int currentIndex;
+  final TabController tabController;
 
-  const CustomBottomNavigationBar({super.key, required this.currentIndex});
+  const CustomBottomNavigationBar({
+    super.key,
+    required this.currentIndex,
+    required this.tabController,
+  });
 
-  void _onItemTapped(BuildContext context, WidgetRef ref, int index) {
+  void _onItemTapped(WidgetRef ref, int index) {
+    final context = ref.context;
     switch (index) {
       case 0:
         _updateIndex(ref, 0);
@@ -33,20 +39,17 @@ class CustomBottomNavigationBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return BottomNavigationBar(
-      onTap: (index) => _onItemTapped(context, ref, index),
-      currentIndex: currentIndex,
-      items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          label: "nav_bar_home_item".tr(),
-          tooltip: "nav_bar_home_tooltip".tr(),
+    return TabBar(
+      isScrollable: false,
+      controller: tabController,
+      indicatorColor: Theme.of(context).colorScheme.primary,
+      onTap: (index) => _onItemTapped(ref, index),
+      tabs: [
+        Tab(
           icon: const Icon(FontAwesomeIcons.house),
+          text: 'nav_bar_home_item'.tr(),
         ),
-        BottomNavigationBarItem(
-          label: "nav_bar_explore_item".tr(),
-          tooltip: "nav_bar_explore_tooltip".tr(),
-          icon: const Icon(Icons.explore),
-        ),
+        Tab(icon: const Icon(Icons.explore), text: 'nav_bar_explore_item'.tr()),
       ],
     );
   }

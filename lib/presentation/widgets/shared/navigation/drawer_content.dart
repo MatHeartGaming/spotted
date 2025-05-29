@@ -90,7 +90,7 @@ class DrawerContent extends ConsumerWidget {
                                 fontSize: 18,
                               ),
                             ),
-                            onTap: () => _navigateToSelectedItem(context, item),
+                            onTap: () => _navigateToSelectedItem(ref, item),
                           ),
                         ),
                       )
@@ -123,11 +123,16 @@ class DrawerContent extends ConsumerWidget {
     );
   }
 
-  void _navigateToSelectedItem(BuildContext context, DrawerItem item) {
+  void _navigateToSelectedItem(WidgetRef ref, DrawerItem item) {
+    final context = ref.context;
     Navigator.of(context).pop(); // Closes the drawer first
 
     if (item.path.startsWith(homePath)) {
-      context.replace(item.path);
+      //context.replace(item.path);
+      final homeIndex = item.path.split('/');
+      final indexToUse = int.tryParse(homeIndex[2]) ?? 0;
+      ref.read(tabBarControllerProvider)?.animateTo(indexToUse);
+
       return;
     }
     context.push(item.path);

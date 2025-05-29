@@ -26,64 +26,65 @@ class HomeScreenState extends ConsumerState<HomeScreen>
     with SingleTickerProviderStateMixin {
   static const double _barHeight = 92.0;
 
-  late final AnimationController _controller;
-  late final Animation<double> _heightFactor;
+  late final TabController _tabController;
 
   @override
   void initState() {
     super.initState();
 
-    // 1) AnimationController for a 300 ms slide
-    _controller = AnimationController(
+    // TabController for two tabs
+    _tabController = TabController(
+      length: 2,
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      initialIndex: widget.pageIndex,
     );
 
-    // 2) A curved animation for smooth easeInOut
-    _heightFactor = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
+    Future.delayed(
+      Duration.zero,
+      () => ref
+          .read(tabBarControllerProvider.notifier)
+          .update((state) => _tabController),
     );
-
-    // 3) Initialize based on current provider state
-    final isVisible = ref.read(tabBarVisibilityProvider);
-    _controller.value = isVisible ? 1 : 0;
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // 4) Listen for visibility changes and forward/reverse
-    ref.listen<bool>(tabBarVisibilityProvider, (prev, next) {
-      if (next) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
-    });
     final signedInUser =
         ref.watch(signedInUserProvider) ??
         User.empty(dateCreated: DateTime.now());
-
     final viewRoutes = [widget.homeView, widget.exploreView];
+    final isVisible = ref.watch(tabBarVisibilityProvider);
+
+    ref.listen<int>(bottomNavigationIndexProvider, (_, idx) {
+      if (_tabController.index != idx) {
+        _tabController.animateTo(idx);
+      }
+    });
 
     return Scaffold(
       drawerEnableOpenDragGesture: true,
       drawer: DrawerContent(user: signedInUser),
-      body: IndexedStack(index: widget.pageIndex, children: viewRoutes),
 
-      // Animate height via SizeTransition—acts as a ClipRect so no overflow
-      bottomNavigationBar: SizeTransition(
-        sizeFactor: _heightFactor,
-        axisAlignment: 1.0, // anchor to bottom
+      // swipe‐able pages
+      body: TabBarView(controller: _tabController, children: viewRoutes),
+      bottomNavigationBar: AnimatedContainer(
+        height: isVisible ? _barHeight : 0,
+        duration: Duration(milliseconds: 300),
         child: SizedBox(
           height: _barHeight,
-          child: CustomBottomNavigationBar(currentIndex: widget.pageIndex),
+          child: Material(
+            elevation: 8,
+            child: CustomBottomNavigationBar(
+              tabController: _tabController,
+              currentIndex: widget.pageIndex,
+            ),
+          ),
         ),
       ),
     );
