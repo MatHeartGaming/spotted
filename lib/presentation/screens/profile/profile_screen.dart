@@ -3,7 +3,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotted/config/config.dart';
@@ -21,38 +20,14 @@ class ProfileScreen extends ConsumerStatefulWidget {
   ProfileScreenState createState() => ProfileScreenState();
 }
 
-class ProfileScreenState extends ConsumerState<ProfileScreen> {
+class ProfileScreenState extends ConsumerState<ProfileScreen>
+    with ScrollHideAppBarProfileCommunityScreenMixin<ProfileScreen> {
   bool _hasChanged = false;
-  final ScrollController _scrollController = ScrollController();
-  bool _isScrollingDown = false;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
     _initUserPosts();
-  }
-
-  void _onScroll() {
-    final direction = _scrollController.position.userScrollDirection;
-    logger.i('Scroll direction: ${_scrollController.position.pixels}');
-    if (direction == ScrollDirection.reverse) {
-      setState(() {
-        _isScrollingDown = true;
-      });
-    } else if (direction == ScrollDirection.forward) {
-      setState(() {
-        _isScrollingDown = false;
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _scrollController
-      ..removeListener(_onScroll)
-      ..dispose();
-    super.dispose();
   }
 
   Future<void> _initUserPosts() async {
@@ -85,7 +60,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
         body: Stack(
           children: [
             NestedScrollView(
-              controller: _scrollController,
+              controller: scrollController,
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
                   SliverList(
@@ -204,7 +179,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                 duration: const Duration(milliseconds: 300),
                 transform: Matrix4.translationValues(
                   0,
-                  _isScrollingDown ? -100 : 0,
+                  isScrollingDown ? -100 : 0,
                   0,
                 ),
                 child: ProfileAppBar(

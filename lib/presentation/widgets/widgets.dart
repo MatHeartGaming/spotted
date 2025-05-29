@@ -27,6 +27,7 @@ export 'package:spotted/presentation/widgets/shared/navigation/models/drawer_ite
 
 // Layouts
 export 'package:spotted/presentation/widgets/layouts/scroll_hide_tab_bar_base_screen.dart';
+export 'package:spotted/presentation/widgets/layouts/scroll_hide_app_bar_profile_community_screen_mixin.dart';
 
 // Functions
 export 'package:spotted/presentation/widgets/widget_functions/emoji_sorter.dart';
