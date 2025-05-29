@@ -6,6 +6,7 @@ export 'package:spotted/presentation/widgets/shared/buttons/add_fab.dart';
 export 'package:spotted/presentation/widgets/shared/animated_opacity_fab.dart';
 export 'package:spotted/presentation/widgets/shared/custom_bottom_sheets.dart';
 export 'package:spotted/presentation/widgets/shared/chips_grid_view.dart';
+export 'package:spotted/presentation/widgets/shared/navigation/profile_app_bar.dart';
 
 // Navigation
 export 'package:spotted/presentation/widgets/shared/navigation/drawer_content.dart';

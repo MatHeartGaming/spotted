@@ -3,7 +3,9 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/navigation/navigation.dart';
@@ -21,11 +23,36 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _hasChanged = false;
+  final ScrollController _scrollController = ScrollController();
+  bool _isScrollingDown = false;
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     _initUserPosts();
+  }
+
+  void _onScroll() {
+    final direction = _scrollController.position.userScrollDirection;
+    logger.i('Scroll direction: ${_scrollController.position.pixels}');
+    if (direction == ScrollDirection.reverse) {
+      setState(() {
+        _isScrollingDown = true;
+      });
+    } else if (direction == ScrollDirection.forward) {
+      setState(() {
+        _isScrollingDown = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
   }
 
   Future<void> _initUserPosts() async {
@@ -43,6 +70,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final topPadding = MediaQuery.paddingOf(context).top;
     final texts = TextTheme.of(context);
     final usersPost = ref.watch(currentProfilePostsProvider);
     final signedInUser = ref.watch(signedInUserProvider);
@@ -54,114 +82,138 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
         }
       },
       child: Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return [
-              SliverList(
-                delegate: SliverChildListDelegate([
-                  FadeInImage(
-                    fit: BoxFit.cover,
-                    height: 300,
-                    placeholder: MemoryImage(kTransparentImage),
-                    image: NetworkImage(widget.user.profileImageUrl),
-                  ),
-                  SizedBox(height: 20),
-                  FadeIn(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+        body: Stack(
+          children: [
+            NestedScrollView(
+              controller: _scrollController,
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return [
+                  SliverList(
+                    delegate: SliverChildListDelegate([
+                      FadeInImage(
+                        fit: BoxFit.cover,
+                        height: 300,
+                        placeholder: MemoryImage(kTransparentImage),
+                        image: NetworkImage(widget.user.profileImageUrl),
+                      ),
+                      SizedBox(height: 20),
+                      FadeIn(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                widget.user.completeName,
-                                style: texts.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.w600,
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.user.completeName,
+                                    style: texts.titleLarge?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    widget.user.atUsername,
+                                    style: texts.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              Visibility(
+                                visible: !isUserYou,
+                                child: FilledButton(
+                                  onPressed: () => _onFollowTapped(),
+                                  child:
+                                      Text(
+                                        (signedInUser ?? User.empty()).friends
+                                                .contains(widget.user.id)
+                                            ? 'profile_screen_stop_follow_btn_text'
+                                            : widget.user.friends.contains(
+                                              signedInUser?.id,
+                                            )
+                                            ? 'profile_screen_follow_you_too_btn_text'
+                                            : 'profile_screen_follow_btn_text',
+                                      ).tr(),
                                 ),
                               ),
-                              Text(
-                                widget.user.atUsername,
-                                style: texts.titleSmall?.copyWith(
-                                  fontWeight: FontWeight.w500,
+
+                              if (isUserYou)
+                                Visibility(
+                                  visible: isUserYou,
+                                  child: IconButton.filledTonal(
+                                    tooltip:
+                                        'profile_screen_edit_profile_btn_text'
+                                            .tr(),
+                                    onPressed: () {},
+                                    icon: Icon(Icons.edit),
+                                  ),
                                 ),
-                              ),
                             ],
                           ),
-
-                          Visibility(
-                            visible: !isUserYou,
-                            child: FilledButton(
-                              onPressed: () => _onFollowTapped(),
-                              child:
-                                  Text(
-                                    (signedInUser ?? User.empty()).friends
-                                            .contains(widget.user.id)
-                                        ? 'profile_screen_stop_follow_btn_text'
-                                        : widget.user.friends.contains(
-                                          signedInUser?.id,
-                                        )
-                                        ? 'profile_screen_follow_you_too_btn_text'
-                                        : 'profile_screen_follow_btn_text',
-                                  ).tr(),
-                            ),
-                          ),
-
-                          if (isUserYou)
-                            Visibility(
-                              visible: isUserYou,
-                              child: IconButton.filledTonal(
-                                tooltip:
-                                    'profile_screen_edit_profile_btn_text'.tr(),
-                                onPressed: () {},
-                                icon: Icon(Icons.edit),
-                              ),
-                            ),
-                        ],
+                        ),
                       ),
-                    ),
+                      SizedBox(height: 20),
+                      ChipsGridView(
+                        chips: widget.user.features,
+                        onTap: (label) {},
+                        showDeleteIcon: isUserYou,
+                        onDelete: () {},
+                      ),
+                    ]),
                   ),
-                  SizedBox(height: 20),
-                  ChipsGridView(
-                    chips: widget.user.features,
-                    onTap: (label) {},
-                    showDeleteIcon: isUserYou,
-                    onDelete: () {},
-                  ),
-                ]),
-              ),
-            ];
-          },
-          body: RefreshIndicator(
-            onRefresh: () => _initUserPosts(),
-            child: ListView.builder(
-              itemCount: usersPost.length,
-              itemBuilder: (context, index) {
-                final post = usersPost[index];
-                return ReactionablePostWidget(
-                  isLiked: false,
-                  author: widget.user,
-                  post: post,
-                  onCommunityTapped:
-                      () => _actionCommunityTap(ref, post.postedIn),
-                  onUserInfoTapped:
-                      () => pushToProfileScreen(context, user: widget.user),
-                  onReaction: (reaction) async {
-                    await updatePostActionWithReaction(
-                      post,
-                      reaction,
-                      ref,
-                    ).then((value) {
-                      _initUserPosts();
-                    });
-                  },
-                  onContextMenuTap: (menuItem) {},
-                );
+                ];
               },
+              body: RefreshIndicator(
+                onRefresh: () => _initUserPosts(),
+                child: ListView.builder(
+                  itemCount: usersPost.length,
+                  itemBuilder: (context, index) {
+                    final post = usersPost[index];
+                    return ReactionablePostWidget(
+                      isLiked: false,
+                      author: widget.user,
+                      post: post,
+                      onCommunityTapped:
+                          () => _actionCommunityTap(ref, post.postedIn),
+                      onUserInfoTapped:
+                          () => pushToProfileScreen(context, user: widget.user),
+                      onReaction: (reaction) async {
+                        await updatePostActionWithReaction(
+                          post,
+                          reaction,
+                          ref,
+                        ).then((value) {
+                          _initUserPosts();
+                        });
+                      },
+                      onContextMenuTap: (menuItem) {},
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
+
+            Positioned(
+              top: topPadding,
+              left: 16,
+              right: 16,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                transform: Matrix4.translationValues(
+                  0,
+                  _isScrollingDown ? -100 : 0,
+                  0,
+                ),
+                child: ProfileAppBar(
+                  onBackTapped: () => context.pop(),
+                  onMessageTapped: () => pushToChatsScreen(context),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
