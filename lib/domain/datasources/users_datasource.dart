@@ -3,6 +3,7 @@ import 'package:spotted/domain/models/models.dart';
 abstract class UsersDatasource {
   Future<List<User>> getAllUsers();
   Future<User?> getUserById(String id);
+  Future<List<User>?> getUsersById(List<String> listRef);
   Future<User?> getUserByUsername(String username);
   Future<List<User>?> getUsersByUsername(String username);
   Future<User?> getUserByEmail(String email);

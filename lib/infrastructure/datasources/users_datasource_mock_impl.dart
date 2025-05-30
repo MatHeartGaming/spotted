@@ -44,6 +44,24 @@ class UsersDatasourceMockImpl implements UsersDatasource {
   }
 
   @override
+  Future<List<User>?> getUsersById(List<String> listRef) async {
+    List<Future<User?>> futures = [];
+
+    for (String r in listRef) {
+      Future<User?> future = getUserById(r);
+      futures.add(future);
+    }
+    List<User?> list = await Future.wait(futures);
+    List<User> nonNullUsers = [];
+    for (User? c in list) {
+      if (c != null) {
+        nonNullUsers.add(c);
+      }
+    }
+    return nonNullUsers;
+  }
+
+  @override
   Future<User?> getUserById(String id) async {
     var rng = Random();
     int randomTime = rng.nextInt(300);

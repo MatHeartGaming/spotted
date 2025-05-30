@@ -103,10 +103,10 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                                   onPressed: () => _onFollowTapped(),
                                   child:
                                       Text(
-                                        (signedInUser ?? User.empty()).friends
+                                        (signedInUser ?? User.empty()).friendsRefs
                                                 .contains(widget.user.id)
                                             ? 'profile_screen_stop_follow_btn_text'
-                                            : widget.user.friends.contains(
+                                            : widget.user.friendsRefs.contains(
                                               signedInUser?.id,
                                             )
                                             ? 'profile_screen_follow_you_too_btn_text'

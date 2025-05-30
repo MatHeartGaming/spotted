@@ -7,6 +7,11 @@ final userFutureByIdProvider = FutureProvider.family<User?, String>((ref, id) as
   return await userRepo.getUserById(id);
 });
 
+final usersFutureByIdProvider = FutureProvider.family<List<User>?, List<String>>((ref, idList) async {
+  final userRepo = ref.watch(usersRepositoryProvider);
+  return await userRepo.getUsersById(idList);
+});
+
 final userFutureByUsernameProvider = FutureProvider.family<User?, String>((ref, username) async {
   final userRepo = ref.watch(usersRepositoryProvider);
   return await userRepo.getUserByUsername(username);

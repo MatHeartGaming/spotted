@@ -26,5 +26,21 @@ final Color colorSuccess = Colors.green[300]!;
 final Color colorNotOkButton = Colors.red[400]!;
 final Color colorWarning = Colors.yellow[800]!;
 
+// Contacts
+const String linkedinPageURL =
+    'https://www.linkedin.com/in/matteo-buompastore-3b78921a0/';
+const String githubPageURL = 'https://github.com/MatHeartGaming';
+const String stackOverflowPageURL =
+    'https://stackoverflow.com/users/12989363/matbuompy';
+const String privacyPolicyUrl =
+    "https://love-budget-deep-linking.up.railway.app/";
+
+// Deep Links
+const String defaulDeepLinkUrl =
+    'https://ginevra-distribuzioni.up.railway.app/';
+
+// Dev email
+const String devEmail = 'matteo.buompastore088@gmail.com';
+
 // Logger
 final logger = Logger();

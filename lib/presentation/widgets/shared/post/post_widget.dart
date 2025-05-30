@@ -56,42 +56,10 @@ class PostWidget extends StatelessWidget {
             ),
             SizedBox(height: 8),
             // Author row
-            GestureDetector(
-              behavior: HitTestBehavior.translucent,
+            UserInfoRow(
               onTap: onUserInfoTapped,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CirclePicture(
-                    minRadius: 20,
-                    maxRadius: 20,
-                    urlPicture: author.profileImageUrl,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          author.completeName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                        Text(
-                          '@${author.username}',
-                          style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    formattedDate,
-                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                  ),
-                ],
-              ),
+              user: author,
+              formattedDate: formattedDate,
             ),
 
             // Title

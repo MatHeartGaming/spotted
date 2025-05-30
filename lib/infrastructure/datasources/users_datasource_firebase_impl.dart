@@ -42,4 +42,10 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
     // TODO: implement updateUser
     throw UnimplementedError();
   }
+  
+  @override
+  Future<List<User>?> getUsersById(List<String> listRef) {
+    // TODO: implement getUsersById
+    throw UnimplementedError();
+  }
 }

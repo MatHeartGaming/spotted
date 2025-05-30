@@ -41,18 +41,22 @@ class LoadUserNotifier extends StateNotifier<LoadUserState> {
     return userById;
   }
 
-  Future<(User?, bool)> addOrRemoveFriend(String newFriend) async {
-    List<String> newFriendList = List.from(_signedInUser.friends);
-    final indexFriend = newFriendList.indexOf(newFriend);
+  Future<(User?, bool)> addOrRemoveFriend(String friendRef) async {
+    List<String> newFriendList = List.from(_signedInUser.friendsRefs);
+    final indexFriend = newFriendList.indexOf(friendRef);
     bool isAdd = true;
     if (indexFriend == -1) {
-      newFriendList.add(newFriend);
+      newFriendList.add(friendRef);
     } else {
       isAdd = false;
       newFriendList.removeAt(indexFriend);
     }
+    final friendsToUser = await _usersRepository.getUsersById(newFriendList);
     final updatedUser = await updateUser(
-      _signedInUser.copyWith(friends: newFriendList),
+      _signedInUser.copyWith(
+        friendsRefs: newFriendList,
+        friends: friendsToUser ?? _signedInUser.friends,
+      ),
     );
     logger.i('Signed In: $updatedUser');
     return (updatedUser, isAdd);
@@ -61,6 +65,11 @@ class LoadUserNotifier extends StateNotifier<LoadUserState> {
   Future<User?> updateUser(User user) async {
     final updatedUser = await _usersRepository.updateUser(user);
     return updatedUser;
+  }
+
+  Future<List<User>> getUsersById(List<String> userRefs) async {
+    final users = await _usersRepository.getUsersById(userRefs);
+    return users ?? [];
   }
 }
 

@@ -47,6 +47,9 @@
     "profile_screen_success_follow_btn_text": "Ora segui {}",
     "profile_screen_success_unfollow_btn_text": "Ora non segui più {}",
 
+    "friends_screen_confirm_delete_friend_dialog_title": "Attenzione",
+    "friends_screen_confirm_delete_friend_dialog_message": "Stai per smettere di seguire {}. Sei sicuro?",
+
     "drawer_following_count": "Mi seguono: {}",
     "drawer_profile_item": "Profilo",
     "drawer_home_item": "Inizio",
@@ -61,9 +64,29 @@
     "form_error_generic_text_field_must_have_lenght": "Il campo deve avere almeno {} caratteri",
     "form_error_email_not_valid": "Email non valida",
 
-    "error_screen_go_back_to_home_btn_text": "Torna alla Home",
-
     "community_already_exists_exception": "Comunità con nome {} già esistente. Scegliere un altro nome.",
-    
-    "close_text": "Chiudi"
+
+    "go_to_home_page_tooltip_text": "Vai alla Home",
+    "admin_text": "Admin: {}",
+    "menu_text": "Menu",
+    "edit_text": "Modifica",
+    "delete_text": "Elimina",
+    "search_bar_placeholder_text": "Cerca spese",
+    "changes_saved": "Modifiche salvate correttamente",
+    "enabled_text": "abilitata",
+    "disabled_text": "disabilitata",
+    "attention_text": "Attenzione!",
+    "authenticated_text": "Autenticato!",
+    "not_authenticated_text": "Non autenticato!",
+    "cancel_text": "Annulla",
+    "yes_text": "Sì",
+    "close_text": "Chiudi",
+    "no_text": "No",
+    "loading_text": "Caricando...",
+    "logout_text": "Logout",
+    "save_text": "Salva",
+    "reset_text": "Resetta",
+    "share_text": "Condividi",
+    "open_on_store_text": "Apri sullo Store"
+
 }

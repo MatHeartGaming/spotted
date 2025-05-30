@@ -18,14 +18,24 @@ class HomeViewState extends ConsumerState<HomeView>
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
+    Future(() {
       _loadFriendsPosts();
     });
   }
 
-  void _loadFriendsPosts() {
-    ref.read(loadPostsProvider.notifier).loadPostedByFriendsId();
-    ref.read(loadPostsProvider.notifier).loadPostedByMe();
+  Future<void> _loadFriendsPosts() async {
+    final signedInUser = ref.read(signedInUserProvider);
+    await ref
+        .read(loadUserProvider.notifier)
+        .getUsersById(signedInUser?.friendsRefs ?? [])
+        .then((friends) {
+          ref
+              .read(signedInUserProvider.notifier)
+              .update((state) => signedInUser?.copyWith(friends: friends));
+        });
+    final loadPostsNotifier = ref.read(loadPostsProvider.notifier);
+    loadPostsNotifier.loadPostedByMe();
+    loadPostsNotifier.loadPostedByFriendsId();
   }
 
   @override

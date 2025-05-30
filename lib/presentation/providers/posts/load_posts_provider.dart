@@ -2,7 +2,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/repositories/repositories.dart';
 import 'package:spotted/presentation/providers/providers.dart';
@@ -41,9 +40,8 @@ class LoadPostsNotifier extends StateNotifier<LoadPostsState> {
     if (state.isLoadingPostedByFriends) return state.postedByFriends;
     state = state.copyWith(isLoadingPostedByFriends: true);
     final postsByFriends = await _postsRepository.getPostsUsingUsersIdListRef(
-      _signedInUser.friends,
+      _signedInUser.friendsRefs,
     );
-    logger.i('Posted by friends: ${postsByFriends.first.createdById}');
     state = state.copyWith(
       postedByFriends: postsByFriends,
       isLoadingPostedByFriends: false,

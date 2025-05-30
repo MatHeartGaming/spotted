@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/providers/providers.dart';
+import 'package:spotted/presentation/screens/search/friends_list_screen.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 class DrawerContent extends ConsumerWidget {
@@ -66,9 +67,26 @@ class DrawerContent extends ConsumerWidget {
                         fontSize: 14,
                       ),
                     ),
-                    Text(
-                      'drawer_following_count',
-                    ).tr(args: ['${user.communitiesSubs.length}']),
+                    InkWell(
+                      onTap: () {
+                        showCustomBottomSheet(
+                          context,
+                          child: FriendsListScreen(
+                            users:
+                                user.friends
+                                    .where((f) => f != signedInUser)
+                                    .toList(),
+                            onUserDeleted:
+                                (userToDeleteRef) =>
+                                    _onUserDeletedAction(ref, userToDeleteRef),
+                          ),
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(10),
+                      child: Text(
+                        'drawer_following_count',
+                      ).tr(args: ['${user.communitiesSubs.length}']),
+                    ),
                   ],
                 ),
               ),
@@ -136,5 +154,18 @@ class DrawerContent extends ConsumerWidget {
       return;
     }
     context.push(item.path);
+  }
+
+  void _onUserDeletedAction(WidgetRef ref, String friendRef) {
+    final signedInUser = ref.read(signedInUserProvider);
+    if (signedInUser == null) return;
+    ref.read(loadUserProvider.notifier).addOrRemoveFriend(friendRef).then((
+      updatedUser,
+    ) {
+      ref.read(signedInUserProvider.notifier).update((state) => updatedUser.$1);
+      final loadPostsNotifier = ref.read(loadPostsProvider.notifier);
+      loadPostsNotifier.loadPostedByMe();
+      loadPostsNotifier.loadPostedByFriendsId();
+    });
   }
 }

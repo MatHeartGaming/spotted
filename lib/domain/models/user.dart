@@ -16,7 +16,8 @@ class User {
   final DateTime dateCreated;
   final List<String> features;
   final List<String> communitiesSubs;
-  final List<String> friends;
+  final List<String> friendsRefs;
+  final List<User> friends;
   final List<String> posted;
   final List<String> comments;
   final Map<String, String> reactions;
@@ -31,6 +32,7 @@ class User {
     this.profileImageUrl = '',
     this.features = const [],
     this.communitiesSubs = const [],
+    this.friendsRefs = const [],
     this.friends = const [],
     this.posted = const [],
     this.comments = const [],
@@ -48,6 +50,7 @@ class User {
     this.profileImageUrl = '',
     this.features = const [],
     this.communitiesSubs = const [],
+    this.friendsRefs = const [],
     this.friends = const [],
     this.posted = const [],
     this.comments = const [],
@@ -100,9 +103,9 @@ class User {
           map.containsKey('communities_subs')
               ? List<String>.from(map['communitiesSubs'] as List<String>)
               : [],
-      friends:
-          map.containsKey('friends')
-              ? List<String>.from(map['friends'] as List<String>)
+      friendsRefs:
+          map.containsKey('friends_ids')
+              ? List<String>.from(map['friends_ids'] as List<String>)
               : [],
       posted:
           map.containsKey('posted')
@@ -127,7 +130,7 @@ class User {
       'dateCreated': dateCreated,
       'features': features,
       'communitiesSubs': communitiesSubs,
-      'friends': friends,
+      'friends_ids': friendsRefs,
       'posted': posted,
       'reactions': reactions,
       'comments': comments,
@@ -151,9 +154,9 @@ class User {
           map.containsKey('communities_subs')
               ? List<String>.from(map['communitiesSubs'] as List<String>)
               : [],
-      friends:
-          map.containsKey('friends')
-              ? List<String>.from(map['friends'] as List<String>)
+      friendsRefs:
+          map.containsKey('friends_ids')
+              ? List<String>.from(map['friends_ids'] as List<String>)
               : [],
       posted:
           map.containsKey('posted')
@@ -187,7 +190,8 @@ class User {
     DateTime? dateCreated,
     List<String>? features,
     List<String>? communitiesSubs,
-    List<String>? friends,
+    List<String>? friendsRefs,
+    List<User>? friends,
     List<String>? posted,
     List<String>? comments,
     Map<String, String>? reactions,
@@ -202,15 +206,16 @@ class User {
       dateCreated: dateCreated ?? this.dateCreated,
       features: features ?? this.features,
       communitiesSubs: communitiesSubs ?? this.communitiesSubs,
-      friends: friends ?? this.friends,
+      friendsRefs: friendsRefs ?? this.friendsRefs,
       posted: posted ?? this.posted,
       comments: comments ?? this.comments,
       reactions: reactions ?? this.reactions,
+      friends: friends ?? this.friends,
     );
   }
 
   @override
   String toString() {
-    return 'User(id: $id, email: $email, name: $name, surname: $surname, username: $username, profileImageUrl: $profileImageUrl, dateCreated: $dateCreated, features: $features, communitiesSubs: $communitiesSubs, friends: $friends, posted: $posted, comments: $comments, reactions: $reactions)';
+    return 'User(id: $id, email: $email, name: $name, surname: $surname, username: $username, profileImageUrl: $profileImageUrl, dateCreated: $dateCreated, features: $features, communitiesSubs: $communitiesSubs, friends: $friendsRefs, posted: $posted, comments: $comments, reactions: $reactions)';
   }
 }

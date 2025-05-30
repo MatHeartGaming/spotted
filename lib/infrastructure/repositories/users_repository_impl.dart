@@ -38,4 +38,9 @@ class UsersRepositoryImplementation implements UsersRepository {
   Future<User?> updateUser(User user) {
     return _db.updateUser(user);
   }
+
+  @override
+  Future<List<User>?> getUsersById(List<String> listRef) {
+    return _db.getUsersById(listRef);
+  }
 }
