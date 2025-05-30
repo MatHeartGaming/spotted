@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:spotted/domain/models/post.dart';
 import 'package:uuid/uuid.dart';
 
 class Community {
@@ -11,7 +12,8 @@ class Community {
   final DateTime dateCreated;
   final String? pictureUrl;
   final List<String> admins;
-  final List<String> posts;
+  final List<String> postsRefs;
+  final List<Post> posts;
 
   Community({
     String? id,
@@ -22,6 +24,7 @@ class Community {
     DateTime? dateCreated,
     this.pictureUrl,
     this.admins = const [],
+    this.postsRefs = const [],
     this.posts = const [],
   }) : id = id ?? const Uuid().v6(),
        dateCreated = dateCreated ?? DateTime.now();
@@ -35,6 +38,7 @@ class Community {
     dateCreated,
     this.pictureUrl,
     this.admins = const [],
+    this.postsRefs = const [],
     this.posts = const [],
   }) : id = id ?? const Uuid().v6(),
        dateCreated = dateCreated ?? DateTime.now();
@@ -57,7 +61,7 @@ class Community {
           (map['date_created'] as Timestamp?)?.toDate() ?? DateTime.now(),
       pictureUrl: map['picture_url'] as String?,
       admins: List<String>.from(map['admins'] ?? const []),
-      posts: List<String>.from(map['posts'] ?? const []),
+      postsRefs: List<String>.from(map['posts'] ?? const []),
     );
   }
 
@@ -72,7 +76,7 @@ class Community {
       'date_created': dateCreated,
       'picture_url': pictureUrl,
       'admins': admins,
-      'posts': posts,
+      'posts': postsRefs,
     };
   }
 
@@ -85,7 +89,8 @@ class Community {
     DateTime? dateCreated,
     String? pictureUrl,
     List<String>? admins,
-    List<String>? posts,
+    List<String>? postsRefs,
+    List<Post>? posts,
   }) {
     return Community(
       id: id ?? this.id,
@@ -96,6 +101,7 @@ class Community {
       dateCreated: dateCreated ?? this.dateCreated,
       pictureUrl: pictureUrl ?? this.pictureUrl,
       admins: admins ?? this.admins,
+      postsRefs: postsRefs ?? this.postsRefs,
       posts: posts ?? this.posts,
     );
   }

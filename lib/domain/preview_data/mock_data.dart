@@ -202,7 +202,7 @@ final mockCommunities = [
     dateCreated: DateTime.now().subtract(const Duration(days: 790)),
     pictureUrl: 'https://example.com/community_picture.jpg',
     admins: ['user0'],
-    posts: ['edc77ef7-dd5b-4f69-93fe-a39152cc403f'],
+    postsRefs: ['edc77ef7-dd5b-4f69-93fe-a39152cc403f'],
   ),
   Community(
     id: '3e6e2e75-aa4f-4d6d-9520-0082016d72fd',
@@ -213,6 +213,6 @@ final mockCommunities = [
     dateCreated: DateTime.now().subtract(const Duration(days: 693)),
     pictureUrl: 'https://example.com/community_picture_2.jpg',
     admins: ['user1'],
-    posts: ['b61a85c3-ed49-4b78-ac94-3ea2efe06de4'],
+    postsRefs: ['b61a85c3-ed49-4b78-ac94-3ea2efe06de4'],
   ),
 ];

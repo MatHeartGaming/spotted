@@ -35,8 +35,8 @@
     "create_community_list_tile_title": "Crea Community",
 
     "community_screen_user_not_found_error": "Utente non trovato.",
-    
     "community_screen_community_not_found_error": "Community non trovata.",
+    "community_screen_subscribe_text": "Iscriviti.",
 
     "profile_screen_edit_profile_btn_text": "Modifica informazioni profilo",
     "profile_screen_follow_btn_text": "Segui",

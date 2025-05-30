@@ -74,7 +74,7 @@ class LoadPostsNotifier extends StateNotifier<LoadPostsState> {
     return postedByMe;
   }
 
-  Future<List<Post>> loadPostedByUserListRef(List<String> postRefs) async {
+  Future<List<Post>> loadPostsWithListRef(List<String> postRefs) async {
     final postedByMe = await _postsRepository.getPostsUsingUsersPostedIdList(
       postRefs,
     );

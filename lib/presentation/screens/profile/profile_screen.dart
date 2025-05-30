@@ -34,7 +34,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
     Future.delayed(Duration.zero, () {
       ref
           .read(loadPostsProvider.notifier)
-          .loadPostedByUserListRef(widget.user.posted)
+          .loadPostsWithListRef(widget.user.posted)
           .then((postList) {
             ref
                 .read(currentProfilePostsProvider.notifier)
