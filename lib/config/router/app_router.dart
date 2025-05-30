@@ -27,13 +27,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         name: CreatePostsScreen.name,
         path: createPostPath,
-        builder: (context, state) => const CreatePostsScreen(),
+        builder: (context, state) {
+          return const CreatePostsScreen();
+        },
       ),
 
       GoRoute(
         name: CreateCommunityScreen.name,
         path: createCommunityPath,
-        builder: (context, state) => const CreateCommunityScreen(),
+        builder: (context, state) {
+          Map<String, dynamic>? mapExtras =
+              state.extra as Map<String, dynamic>?;
+          Community? community = mapExtras?['community'];
+          return CreateCommunityScreen(community: community);
+        },
       ),
 
       GoRoute(
@@ -111,9 +118,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ? state.pathParameters[''].toString()
                   : 'no-id';
 
-          if (id == 'no-id') {
-            
-          }
+          if (id == 'no-id') {}
           return ChatHandlerScreen(
             user1Id: mapExtras?['user1Id'] ?? '',
             user2Id: mapExtras?['user2Id'] ?? '',

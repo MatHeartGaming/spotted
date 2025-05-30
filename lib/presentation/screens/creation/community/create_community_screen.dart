@@ -13,126 +13,162 @@ import 'package:spotted/presentation/providers/forms/states/form_status.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
-class CreateCommunityScreen extends ConsumerWidget {
+class CreateCommunityScreen extends ConsumerStatefulWidget {
   static const name = 'CreateCommunityScreen';
 
-  const CreateCommunityScreen({super.key});
+  final Community? community;
+
+  const CreateCommunityScreen({super.key, this.community});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  CreateCommunityScreenState createState() => CreateCommunityScreenState();
+}
+
+class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.community != null) {
+      Future(() {
+        ref
+            .read(createCommunityFormProvder.notifier)
+            .initForm(widget.community!);
+      });
+    }
+  }
+
+  void _refreshCommunityPage() {
+    if (widget.community == null) return;
+    ref
+        .read(loadCommunitiesProvider.notifier)
+        .loadUsersCommunityById(widget.community?.id ?? '')
+        .then((communityFound) {
+          if (communityFound == null) return;
+          ref
+              .read(communityScreenCurrentCommunityProvider.notifier)
+              .update((state) => communityFound);
+        });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final communityFormState = ref.watch(createCommunityFormProvder);
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
-        appBar: AppBar(
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton.filledTonal(
-                tooltip: 'close_text'.tr(),
-                onPressed: () => context.pop(),
-                icon: Icon(Icons.close),
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        _refreshCommunityPage();
+      },
+      child: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Scaffold(
+          appBar: AppBar(
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton.filledTonal(
+                  tooltip: 'close_text'.tr(),
+                  onPressed: () => context.pop(),
+                  icon: Icon(Icons.close),
+                ),
               ),
-            ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 12,
-              children: [
-                SizedBox(height: 8),
-                CustomTextFormField(
-                  label:
-                      'create_community_screen_title_textfield_placeholder'
-                          .tr(),
-                  controller: communityFormState.titleController,
-                  icon: Icons.title_outlined,
-                  errorMessage: communityFormState.title.errorMessage,
-                  onSubmitForm: () => _onSubmit(ref),
-                  onChanged: (newValue) {
-                    ref
-                        .read(createCommunityFormProvder.notifier)
-                        .onTitleChanged(newValue);
-                  },
-                ),
-                CustomTextFormField(
-                  label:
-                      'create_community_screen_content_textfield_placeholder'
-                          .tr(),
-                  controller: communityFormState.descriptionController,
-                  icon: Icons.title_outlined,
-                  errorMessage: communityFormState.description.errorMessage,
-                  onSubmitForm: () => _onSubmit(ref),
-                  onChanged: (newValue) {
-                    ref
-                        .read(createCommunityFormProvder.notifier)
-                        .onDescriptionChanged(newValue);
-                  },
-                ),
-                CustomTextFormField(
-                  label:
-                      'create_community_screen_admins_textfield_placeholder'
-                          .tr(),
-                  icon: Icons.title_outlined,
-                  errorMessage: null,
-                  onSubmitForm: () => _onSubmit(ref),
-                  onChanged: (newValue) {
-                    ref
-                        .read(createCommunityFormProvder.notifier)
-                        .onAddAdmin(newValue);
-                  },
-                ),
+            ],
+          ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 12,
+                children: [
+                  SizedBox(height: 8),
+                  CustomTextFormField(
+                    label:
+                        'create_community_screen_title_textfield_placeholder'
+                            .tr(),
+                    controller: communityFormState.titleController,
+                    icon: Icons.title_outlined,
+                    errorMessage: communityFormState.title.errorMessage,
+                    onSubmitForm: () => _onSubmit(),
+                    onChanged: (newValue) {
+                      ref
+                          .read(createCommunityFormProvder.notifier)
+                          .onTitleChanged(newValue);
+                    },
+                  ),
+                  CustomTextFormField(
+                    label:
+                        'create_community_screen_content_textfield_placeholder'
+                            .tr(),
+                    controller: communityFormState.descriptionController,
+                    icon: Icons.title_outlined,
+                    errorMessage: communityFormState.description.errorMessage,
+                    onSubmitForm: () => _onSubmit(),
+                    onChanged: (newValue) {
+                      ref
+                          .read(createCommunityFormProvder.notifier)
+                          .onDescriptionChanged(newValue);
+                    },
+                  ),
+                  CustomTextFormField(
+                    label:
+                        'create_community_screen_admins_textfield_placeholder'
+                            .tr(),
+                    icon: Icons.title_outlined,
+                    errorMessage: null,
+                    onSubmitForm: () => _onSubmit(),
+                    onChanged: (newValue) {
+                      ref
+                          .read(createCommunityFormProvder.notifier)
+                          .onAddAdmin(newValue);
+                    },
+                  ),
 
-                SizedBox(height: 30),
+                  SizedBox(height: 30),
 
-                GridImagesWidget(
-                  images: communityFormState.imagesBytes ?? [],
-                  onImageDelete: (deleteIndex) {
-                    ref
-                        .read(createCommunityFormProvder.notifier)
-                        .removeImageAt(deleteIndex);
-                  },
-                  onImageTap:
-                      (index) => showImagesGalleryBytes(
-                        context,
-                        communityFormState.imagesBytes ?? [],
-                      ),
-                ),
+                  GridImagesWidget(
+                    images: communityFormState.imagesBytes ?? [],
+                    onImageDelete: (deleteIndex) {
+                      ref
+                          .read(createCommunityFormProvder.notifier)
+                          .removeImageAt(deleteIndex);
+                    },
+                    onImageTap:
+                        (index) => showImagesGalleryBytes(
+                          context,
+                          communityFormState.imagesBytes ?? [],
+                        ),
+                  ),
 
-                Visibility(
-                  visible:
-                      ((communityFormState.imagesUrl?.length ?? 0) +
-                          (communityFormState.imagesBytes?.length ?? 0)) <
-                      1,
-                  child: FadeIn(
-                    duration: Duration(milliseconds: 300),
-                    child: IconButton.outlined(
-                      tooltip: 'create_post_screen_add_images_btn_tooltip'.tr(),
-                      onPressed: () {
-                        _displayPickImageDialog(ref, (pic) {
-                          _imagesChosenAction(ref, 0, pic);
-                        });
-                      },
-                      icon: SizedBox.square(
-                        dimension: 50,
-                        child: Icon(Icons.photo, size: 20),
+                  Visibility(
+                    visible:
+                        ((communityFormState.imagesUrl?.length ?? 0) +
+                            (communityFormState.imagesBytes?.length ?? 0)) <
+                        1,
+                    child: FadeIn(
+                      duration: Duration(milliseconds: 300),
+                      child: IconButton.outlined(
+                        tooltip:
+                            'create_post_screen_add_images_btn_tooltip'.tr(),
+                        onPressed: () {
+                          _displayPickImageDialog((pic) {
+                            _imagesChosenAction(0, pic);
+                          });
+                        },
+                        icon: SizedBox.square(
+                          dimension: 50,
+                          child: Icon(Icons.photo, size: 20),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed:
-                      communityFormState.isPosting
-                          ? null
-                          : () => _onSubmit(ref),
-                  child: Text('create_post_screen_publish_btn_text').tr(),
-                ),
-                SizedBox(height: 50),
-              ],
+                  ElevatedButton(
+                    onPressed:
+                        communityFormState.isPosting ? null : () => _onSubmit(),
+                    child: Text('create_post_screen_publish_btn_text').tr(),
+                  ),
+                  SizedBox(height: 50),
+                ],
+              ),
             ),
           ),
         ),
@@ -140,11 +176,7 @@ class CreateCommunityScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _imagesChosenAction(
-    WidgetRef ref,
-    int index,
-    XFile? imageFile,
-  ) async {
+  Future<void> _imagesChosenAction(int index, XFile? imageFile) async {
     if (imageFile == null) return;
     final createCommunityNotifier = ref.read(
       createCommunityFormProvder.notifier,
@@ -155,7 +187,7 @@ class CreateCommunityScreen extends ConsumerWidget {
     createCommunityNotifier.imagesBytesChanged(imageBytes);
   }
 
-  void _displayPickImageDialog(WidgetRef ref, Function(XFile?) onImagesChosen) {
+  void _displayPickImageDialog(Function(XFile?) onImagesChosen) {
     final context = ref.context;
     final picker = ref.read(imagePickerProvider);
 
@@ -177,8 +209,63 @@ class CreateCommunityScreen extends ConsumerWidget {
     );
   }
 
-  void _onSubmit(WidgetRef ref) {
-    final context = ref.context;
+  void _updateCommunity() {
+    if (widget.community == null) return;
+    final createCommunityFormNotifier = ref.read(
+      createCommunityFormProvder.notifier,
+    );
+    final formState = ref.read(createCommunityFormProvder);
+
+    createCommunityFormNotifier.validateFields(status: FormStatus.posting);
+
+    if (!formState.isValid) {
+      mediumVibration();
+      showCustomSnackbar(
+        context,
+        'create_post_screen_check_fields_snackbar_text'.tr(),
+        backgroundColor: colorWarning,
+      );
+      createCommunityFormNotifier.resetFormStatus();
+      return;
+    }
+
+    createCommunityFormNotifier.onSumbit(
+      onSubmit: () {
+        final communityToUpdate = widget.community?.copyWith(
+          title: formState.title.value,
+          description: formState.description.value,
+          admins: formState.adminsRefs,
+          // TODO: Add urls images
+        );
+        if (communityToUpdate == null) return;
+        final loadCommunity = ref.read(loadCommunitiesProvider.notifier);
+        loadCommunity
+            .updateCommunity(communityToUpdate)
+            .then((updatedComm) {
+              smallVibration();
+              showCustomSnackbar(
+                context,
+                'create_community_screen_update_community_success_snackbar_text'
+                    .tr(),
+                backgroundColor: colorSuccess,
+              );
+              context.pop();
+            })
+            .catchError((error) {
+              _handleCommunityErrors(error, communityToUpdate);
+            })
+            .whenComplete(() {
+              createCommunityFormNotifier.resetFormStatus();
+            });
+      },
+    );
+  }
+
+  void _onSubmit() {
+    if (widget.community != null) {
+      _updateCommunity();
+      return;
+    }
     final createCommunityFormNotifier = ref.read(
       createCommunityFormProvder.notifier,
     );
@@ -206,6 +293,7 @@ class CreateCommunityScreen extends ConsumerWidget {
           title: formState.title.value,
           description: formState.description.value,
           admins: formState.adminsRefs ?? [],
+          // TODO: Add urls images
         );
         final loadCommunity = ref.read(loadCommunitiesProvider.notifier);
         loadCommunity
@@ -221,29 +309,31 @@ class CreateCommunityScreen extends ConsumerWidget {
               context.pop();
             })
             .catchError((error) {
-              logger.e(error);
-              if (error is CommunityAlreadyExistsException) {
-                mediumVibration();
-                showCustomSnackbar(
-                  context,
-                  'community_already_exists_exception'.tr(
-                    args: [newCommunity.title],
-                  ),
-                  backgroundColor: colorWarning,
-                );
-              } else {
-                hardVibration();
-                showCustomSnackbar(
-                  context,
-                  'create_community_screen_community_error_snackbar_text'.tr(),
-                  backgroundColor: colorNotOkButton,
-                );
-              }
+              _handleCommunityErrors(error, newCommunity);
             })
             .whenComplete(() {
               createCommunityFormNotifier.resetFormStatus();
             });
       },
     );
+  }
+
+  void _handleCommunityErrors(error, Community newCommunity) {
+    logger.e(error);
+    if (error is CommunityAlreadyExistsException) {
+      mediumVibration();
+      showCustomSnackbar(
+        context,
+        'community_already_exists_exception'.tr(args: [newCommunity.title]),
+        backgroundColor: colorWarning,
+      );
+    } else {
+      hardVibration();
+      showCustomSnackbar(
+        context,
+        'create_community_screen_community_error_snackbar_text'.tr(),
+        backgroundColor: colorNotOkButton,
+      );
+    }
   }
 }

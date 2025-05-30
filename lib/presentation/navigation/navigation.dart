@@ -24,9 +24,14 @@ void popContext(BuildContext context) {
   context.pop();
 }
 
-void pushToCreateCommunityScreen(BuildContext context) {
+void pushToCreateCommunityScreen(BuildContext context, {Community? community}) {
   if (!context.mounted) return;
-  context.push(createCommunityPath);
+  if (community == null) {
+    context.push(createCommunityPath);
+    return;
+  }
+  Map<String, Community> extras = {'community': community};
+  context.push(createCommunityPath, extra: extras);
 }
 
 void pushToProfileScreen(

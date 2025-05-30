@@ -30,7 +30,7 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
   }
 
   Future<void> _initCommunityPosts() async {
-    Future.delayed(Duration.zero, () {
+    Future(() {
       ref
           .read(loadPostsProvider.notifier)
           .loadPostsWithListRef(widget.community.postsRefs)
@@ -46,7 +46,6 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.paddingOf(context).top;
     final texts = TextTheme.of(context);
-    final usersPost = ref.watch(currentProfilePostsProvider);
     final signedInUser = ref.watch(signedInUserProvider);
     final community = ref.watch(communityScreenCurrentCommunityProvider);
     final isUserAdmin = community.admins.contains(signedInUser?.username);
@@ -115,7 +114,11 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
                                   tooltip:
                                       'profile_screen_edit_profile_btn_text'
                                           .tr(),
-                                  onPressed: () {},
+                                  onPressed:
+                                      () => pushToCreateCommunityScreen(
+                                        context,
+                                        community: community,
+                                      ),
                                   icon: Icon(Icons.edit),
                                 ),
                               ),

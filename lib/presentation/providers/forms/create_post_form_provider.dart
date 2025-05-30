@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/infrastructure/input_validations/inputs.dart';
 import 'package:spotted/presentation/providers/forms/states/create_post_form_state.dart';
 import 'package:spotted/presentation/providers/forms/states/form_status.dart';
@@ -31,10 +32,25 @@ class CreatePostNotifier extends StateNotifier<CreatePostFormState> {
     super.dispose();
   }
 
+  void initPostForm(Post post) {
+    state.titleController?.text = post.title;
+    state.contentController?.text = post.content;
+    state = state.copyWith(
+      title: GenericText.dirty(post.title),
+      content: GenericText.dirty(post.content),
+      titleController: state.titleController,
+      contentController: state.contentController,
+      postedIn: GenericText.dirty(post.postedIn ?? ''),
+      imagesUrl: post.pictureUrls,
+      imagesBytes: [],
+      imagesFile: [],
+    );
+  }
+
   void onSumbit({required VoidCallback onSubmit}) {
     validateFields(status: FormStatus.posting);
     if (!state.isValid) {
-        resetFormStatus();
+      resetFormStatus();
     }
 
     onSubmit();
@@ -47,10 +63,8 @@ class CreatePostNotifier extends StateNotifier<CreatePostFormState> {
     );
   }
 
-   void resetFormStatus({FormStatus status = FormStatus.invalid}) {
-    state = state.copyWith(
-      status: status,
-    );
+  void resetFormStatus({FormStatus status = FormStatus.invalid}) {
+    state = state.copyWith(status: status);
   }
 
   void onTitleChanged(String value) {

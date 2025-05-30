@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/infrastructure/input_validations/inputs.dart';
 import 'package:spotted/presentation/providers/forms/states/create_community_form_state.dart';
 import 'package:spotted/presentation/providers/forms/states/form_status.dart';
@@ -29,6 +30,24 @@ class CreateCommunityNotifier extends StateNotifier<CreateCommunityFormState> {
     clearFormState();
     _disposeControllers();
     super.dispose();
+  }
+
+  void initForm(Community community) {
+    state.titleController?.text = community.title;
+    state.descriptionController?.text = community.description;
+    final title = GenericText.dirty(community.title);
+    final descr = GenericText.dirty(community.description);
+    state = state.copyWith(
+      titleController: state.titleController,
+      descriptionController: state.descriptionController,
+      title: title,
+      description: descr,
+      imagesUrl: community.pictureUrl != null ? [community.pictureUrl!] : [],
+      imagesBytes: [],
+      imagesFile: [],
+      adminsRefs: community.admins,
+      isValid: Formz.validate([title, descr]),
+    );
   }
 
   void onSumbit({required VoidCallback onSubmit}) {

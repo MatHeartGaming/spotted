@@ -15,13 +15,27 @@ import 'package:spotted/presentation/providers/forms/states/form_status.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
-class CreatePostsScreen extends ConsumerWidget {
+class CreatePostsScreen extends ConsumerStatefulWidget {
+  final Post? post;
   static const name = 'CreatePostsScreen';
 
-  const CreatePostsScreen({super.key});
+  const CreatePostsScreen({super.key, this.post});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  CreatePostsScreenState createState() => CreatePostsScreenState();
+}
+
+class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.post != null) {
+      ref.read(createPostFormProvider.notifier).initPostForm(widget.post!);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final formState = ref.watch(createPostFormProvider);
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -75,6 +89,7 @@ class CreatePostsScreen extends ConsumerWidget {
                 SizedBox(height: 20),
                 GridImagesWidget(
                   images: formState.imagesBytes ?? [],
+                  imagesUrl: formState.imagesUrl,
                   onImageDelete: (deleteIndex) {
                     ref
                         .read(createPostFormProvider.notifier)
@@ -96,8 +111,8 @@ class CreatePostsScreen extends ConsumerWidget {
                     child: IconButton.outlined(
                       tooltip: 'create_post_screen_add_images_btn_tooltip'.tr(),
                       onPressed: () {
-                        _displayPickImageDialog(ref, (picList) {
-                          _imagesChosenAction(ref, 0, picList);
+                        _displayPickImageDialog((picList) {
+                          _imagesChosenAction(0, picList);
                         });
                       },
                       icon: SizedBox.square(
@@ -120,10 +135,7 @@ class CreatePostsScreen extends ConsumerWidget {
     );
   }
 
-  void _displayPickImageDialog(
-    WidgetRef ref,
-    Function(List<XFile>?) onImagesChosen,
-  ) {
+  void _displayPickImageDialog(Function(List<XFile>?) onImagesChosen) {
     final context = ref.context;
     final picker = ref.read(imagePickerProvider);
     final formState = ref.read(createPostFormProvider);
@@ -151,11 +163,7 @@ class CreatePostsScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _imagesChosenAction(
-    WidgetRef ref,
-    int index,
-    List<XFile>? imagesFiles,
-  ) async {
+  Future<void> _imagesChosenAction(int index, List<XFile>? imagesFiles) async {
     if (imagesFiles == null) return;
     final createPostNotifier = ref.read(createPostFormProvider.notifier);
 
