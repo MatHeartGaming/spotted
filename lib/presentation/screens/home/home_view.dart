@@ -6,7 +6,6 @@ import 'package:flutter_chat_reactions/model/menu_item.dart';
 import 'package:flutter_chat_reactions/utilities/default_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/config/config.dart';
-import 'package:spotted/config/constants/app_constants.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
@@ -81,6 +80,12 @@ class HomeViewState extends ConsumerState<HomeView>
             itemCount: postsProvider.postedByFriends.length,
             itemBuilder: (_, i) {
               final post = postsProvider.postedByFriends[i];
+              final currentUserId = signedInUser?.id;
+              final currentUserReaction =
+                  (currentUserId != null)
+                      ? post.reactions[currentUserId]
+                      : null;
+
               return ref
                   .watch(userFutureByIdProvider(post.createdById))
                   .when(
@@ -91,6 +96,7 @@ class HomeViewState extends ConsumerState<HomeView>
                                   isLiked: false,
                                   post: post,
                                   author: user,
+                                  reaction: currentUserReaction,
                                   onCommunityTapped:
                                       () => _actionCommunityTap(post.postedIn),
                                   onUserInfoTapped:

@@ -13,6 +13,7 @@ class ReactionablePostWidget extends ConsumerWidget {
   final bool isLiked;
   final Post post;
   final User author;
+  final String? reaction;
   final VoidCallback onUserInfoTapped;
   final VoidCallback? onCommunityTapped;
   final Function(String) onReaction;
@@ -23,6 +24,7 @@ class ReactionablePostWidget extends ConsumerWidget {
     this.isLiked = false,
     required this.post,
     required this.author,
+    this.reaction,
     required this.onReaction,
     required this.onContextMenuTap,
     required this.onUserInfoTapped,
@@ -43,9 +45,14 @@ class ReactionablePostWidget extends ConsumerWidget {
               builder: (context) {
                 return ReactionsDialogWidget(
                   id: post.id, // unique id for message
-                  messageWidget: PostWidget(post: post, author: author, onUserInfoTapped: onUserInfoTapped,),
+                  messageWidget: PostWidget(
+                    post: post,
+                    author: author,
+                    reaction: reaction,
+                    onUserInfoTapped: onUserInfoTapped,
+                  ),
                   menuItems: _getPossiblePostActions(ref),
-                  reactions: ['👍', '❤️', '🚀', '😂', '😭', '😡', '🤯'],
+                  reactions: ['👎', '❤️', '🚀', '😂', '😭', '😡', '🤯'],
                   onReactionTap: (reaction) {
                     logger.i('reaction: $reaction');
 
@@ -67,18 +74,14 @@ class ReactionablePostWidget extends ConsumerWidget {
         child: Stack(
           children: [
             PostWidget(
-              isLiked: isLiked,
               onCommunityTapped: onCommunityTapped,
               onUserInfoTapped: onUserInfoTapped,
+              reaction: reaction,
               post: post,
               author: author,
               onLike: () => onReaction('👍'),
-              onComment: () {
-                
-              },
-              onShare: () {
-                
-              },
+              onComment: () {},
+              onShare: () {},
             ),
             // reactions
             Positioned(

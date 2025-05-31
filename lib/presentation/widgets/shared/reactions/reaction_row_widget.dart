@@ -1,15 +1,16 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ReactionRowWidget extends StatelessWidget {
-  final bool isLiked;
+  final String? reaction;
   final VoidCallback onLike;
   final VoidCallback onComment;
   final VoidCallback onShare;
 
   const ReactionRowWidget({
     super.key,
-    this.isLiked = false,
+    this.reaction,
     required this.onLike,
     required this.onComment,
     required this.onShare,
@@ -23,12 +24,13 @@ class ReactionRowWidget extends StatelessWidget {
       children: [
         IconButton(
           onPressed: onLike,
-          icon: Icon(
-            isLiked
-                ? FontAwesomeIcons.solidThumbsUp
-                : FontAwesomeIcons.thumbsUp,
-            size: 20,
-          ),
+          icon:
+              reaction != null && (reaction?.isNotEmpty ?? false)
+                  ? SlideInDown(
+                    from: 20,
+                    child: Text(reaction ?? '', style: TextStyle(fontSize: 25),)
+                    )
+                  : Icon(FontAwesomeIcons.thumbsUp, size: 20),
         ),
         IconButton(
           onPressed: onComment,

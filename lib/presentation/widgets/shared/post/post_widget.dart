@@ -7,23 +7,23 @@ import 'package:spotted/presentation/widgets/widgets.dart';
 class PostWidget extends StatelessWidget {
   final Post post;
   final User author;
+  final String? reaction;
   final VoidCallback? onCommunityTapped;
   final VoidCallback onUserInfoTapped;
   final VoidCallback? onLike;
   final VoidCallback? onComment;
   final VoidCallback? onShare;
-  final bool isLiked;
 
   const PostWidget({
     super.key,
     required this.post,
     required this.author,
     required this.onUserInfoTapped,
+    this.reaction,
     this.onCommunityTapped,
     this.onLike,
     this.onComment,
     this.onShare,
-    this.isLiked = false,
   });
 
   @override
@@ -78,7 +78,7 @@ class PostWidget extends StatelessWidget {
             Visibility(
               visible: onLike != null && onComment != null && onShare != null,
               child: ReactionRowWidget(
-                isLiked: isLiked,
+                reaction: reaction,
                 onLike: () {
                   if (onLike != null) {
                     onLike!();

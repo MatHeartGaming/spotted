@@ -23,18 +23,24 @@ final loadPostFutureProvider = FutureProvider.family<Post?, String>((
 
 final loadPostsProvider =
     StateNotifierProvider<LoadPostsNotifier, LoadPostsState>((ref) {
-      final postsRepo = ref.watch(postsRepositoryProvider);
-      final signedInUser = ref.watch(signedInUserProvider) ?? User.empty();
-      final postsNotifier = LoadPostsNotifier(postsRepo, signedInUser);
-      return postsNotifier;
-    });
+  final postsRepo = ref.watch(postsRepositoryProvider);
+  // We do NOT call `ref.watch(signedInUserProvider)` here.
+  // Instead, pass `ref` into the notifier so it can read the user on demand.
+  return LoadPostsNotifier(ref, postsRepo);
+});
+
 
 class LoadPostsNotifier extends StateNotifier<LoadPostsState> {
+  final Ref _ref; //! <–– In order to not trigger rebuilds of this Notifier and loose posts!!!
   final PostsRepository _postsRepository;
-  final User _signedInUser;
 
-  LoadPostsNotifier(this._postsRepository, this._signedInUser)
-    : super(LoadPostsState());
+  LoadPostsNotifier(this._ref, this._postsRepository) : super(LoadPostsState());
+
+  /// Helper: get the current signed-in user whenever we need it.
+  User get _signedInUser {
+    // We use `read` instead of `watch` to avoid rebuilding the notifier itself.
+    return _ref.read(signedInUserProvider) ?? User.empty();
+  }
 
   Future<List<Post>> loadPostedByFriendsId() async {
     if (state.isLoadingPostedByFriends) return state.postedByFriends;
