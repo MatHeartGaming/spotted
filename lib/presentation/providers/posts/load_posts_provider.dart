@@ -114,6 +114,22 @@ class LoadPostsNotifier extends StateNotifier<LoadPostsState> {
     );
     return newPost;
   }
+
+  Future<List<Post>?> deletePostById(String id) async {
+    if (state.isLoadingPostedByMe) return state.postedByMe;
+    state = state.copyWith(isLoadingPostedByMe: true);
+    final List<Post> newPosts = await _postsRepository.deletePostById(id);
+
+    final postedByFriends = state.postedByFriends;
+    postedByFriends.removeWhere((p) => p.id == id);
+
+    state = state.copyWith(
+      isLoadingPostedByMe: false,
+      postedByMe: newPosts,
+      postedByFriends: postedByFriends,
+    );
+    return newPosts;
+  }
 }
 
 class LoadPostsState {

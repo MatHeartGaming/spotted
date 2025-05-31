@@ -57,5 +57,11 @@ class CommunityDatasourceFirebaseImpl implements CommunityDatasource {
     throw UnimplementedError();
   }
   
+  @override
+  Future<List<Community>?> deleteCommunityById(String id) {
+    // TODO: implement deleteCommunityById
+    throw UnimplementedError();
+  }
+  
 
 }

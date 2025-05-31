@@ -48,4 +48,10 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
     // TODO: implement getUsersById
     throw UnimplementedError();
   }
+  
+  @override
+  Future<List<User>?> deleteUserById(String id) {
+    // TODO: implement deleteUserById
+    throw UnimplementedError();
+  }
 }

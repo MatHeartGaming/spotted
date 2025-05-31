@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
@@ -34,11 +33,6 @@ class HomeAppBar extends ConsumerWidget {
               tooltip: 'app_bar_search_btn_tooltip'.tr(),
               onPressed: () => {},
               icon: Icon(FontAwesomeIcons.magnifyingGlass),
-            ),
-            IconButton(
-              tooltip: 'app_bar_chats_btn_tooltip'.tr(),
-              onPressed: () => pushToChatsScreen(context),
-              icon: Icon(FontAwesomeIcons.solidMessage),
             ),
           ],
         ),

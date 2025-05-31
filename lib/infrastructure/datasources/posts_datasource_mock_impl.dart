@@ -191,4 +191,14 @@ class PostsDatasourceMockImpl implements PostsDatasource {
       return null;
     });
   }
+
+  @override
+  Future<List<Post>> deletePostById(String id) async {
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      mockPosts.removeWhere((p) => p.id == id);
+      return mockPosts;
+    });
+  }
 }

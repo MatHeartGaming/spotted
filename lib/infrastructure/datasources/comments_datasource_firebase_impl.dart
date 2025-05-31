@@ -43,5 +43,11 @@ class CommentsDatasourceFirebaseImpl implements CommentsDatasource {
     // TODO: implement updateComment
     throw UnimplementedError();
   }
+  
+  @override
+  Future<List<Comment>> deleteCommentById(String id) {
+    // TODO: implement deleteCommentById
+    throw UnimplementedError();
+  }
 
 }

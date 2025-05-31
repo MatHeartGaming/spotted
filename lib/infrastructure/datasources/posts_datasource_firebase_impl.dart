@@ -85,5 +85,11 @@ class PostsDatasourceFirebaseImpl implements PostsDatasource {
     // TODO: implement getPostsUsingUsersPostedIdList
     throw UnimplementedError();
   }
+  
+  @override
+  Future<List<Post>> deletePostById(String postedIn) {
+    // TODO: implement deletePostById
+    throw UnimplementedError();
+  }
 
 }

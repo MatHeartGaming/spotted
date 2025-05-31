@@ -78,4 +78,9 @@ class PostsRepositoryImplementation implements PostsRepository {
   Future<List<Post>> getPostsUsingUsersPostedIdList(List<String> refs) {
     return _db.getPostsUsingUsersPostedIdList(refs);
   }
+
+  @override
+  Future<List<Post>> deletePostById(String postedIn) {
+    return _db.deletePostById(postedIn);
+  }
 }

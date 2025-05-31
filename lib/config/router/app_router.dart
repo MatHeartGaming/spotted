@@ -141,6 +141,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             pageIndex: int.parse(pageIndex),
             homeView: HomeView(),
             exploreView: ExploreScreen(),
+            messagesView: ChatsScreen(),
           );
         },
       ),

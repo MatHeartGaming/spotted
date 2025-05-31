@@ -10,4 +10,5 @@ abstract class CommentsRepository {
   );
   Future<Comment?> createComment(Comment comment);
   Future<Comment?> updateComment(Comment comment);
+  Future<List<Comment>> deleteCommentById(String id);
 }

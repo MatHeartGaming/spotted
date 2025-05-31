@@ -5,7 +5,6 @@ import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/preview_data/mock_data.dart';
 
 class CommentsDatasourceMockImpl implements CommentsDatasource {
-
   @override
   Future<Comment?> createComment(Comment comment) async {
     var rng = Random();
@@ -105,5 +104,15 @@ class CommentsDatasourceMockImpl implements CommentsDatasource {
               )
               .toList(),
     );
+  }
+
+  @override
+  Future<List<Comment>> deleteCommentById(String id) async {
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      mockComments.removeWhere((c) => c.id == id);
+      return mockComments;
+    });
   }
 }

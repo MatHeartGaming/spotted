@@ -8,6 +8,7 @@ class HomeScreen extends ConsumerStatefulWidget {
   final int pageIndex;
   final Widget homeView;
   final Widget exploreView;
+  final Widget messagesView;
 
   static const name = 'HomeScreen';
 
@@ -16,6 +17,7 @@ class HomeScreen extends ConsumerStatefulWidget {
     required this.pageIndex,
     required this.homeView,
     required this.exploreView,
+    required this.messagesView,
   });
 
   @override
@@ -34,7 +36,7 @@ class HomeScreenState extends ConsumerState<HomeScreen>
 
     // TabController for two tabs
     _tabController = TabController(
-      length: 2,
+      length: 3,
       vsync: this,
       initialIndex: widget.pageIndex,
     );
@@ -64,7 +66,11 @@ class HomeScreenState extends ConsumerState<HomeScreen>
     final signedInUser =
         ref.watch(signedInUserProvider) ??
         User.empty(dateCreated: DateTime.now());
-    final viewRoutes = [widget.homeView, widget.exploreView];
+    final viewRoutes = [
+      widget.homeView,
+      widget.exploreView,
+      widget.messagesView,
+    ];
     final isVisible = ref.watch(tabBarVisibilityProvider);
 
     ref.listen<int>(bottomNavigationIndexProvider, (_, idx) {

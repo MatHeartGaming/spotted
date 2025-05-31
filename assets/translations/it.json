@@ -8,7 +8,7 @@
 
     "add_fab_home_tooltip_text": "Crea Post o una Community",
 
-    "app_bar_search_btn_tooltip": "Cerca Utenti, Post, Communità",
+    "app_bar_search_btn_tooltip": "Cerca Utenti, Post, Comunità",
     "app_bar_chats_btn_tooltip": "Messaggi",
 
     "nav_bar_home_item": "Inizio",
@@ -24,6 +24,10 @@
     "create_post_screen_check_fields_snackbar_text": "Controllare la validità dei campi",
     "create_post_screen_post_success_snackbar_text": "Post creato con successo!",
     "create_post_screen_post_error_snackbar_text": "Errore durante la creazione del post",
+
+    "post_text_copied_success_snackbar_text": "Testo del post copiato!",
+    "post_delete_success_snackbar_text": "Post {} eliminato con successo!",
+    "post_delete_error_snackbar_text": "Errore durante l'elminazione del post. Riprovare.",
 
     "create_community_screen_title_textfield_placeholder": "Titolo Community",
     "create_community_screen_content_textfield_placeholder": "Di cosa tratta?",

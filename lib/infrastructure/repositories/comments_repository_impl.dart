@@ -45,4 +45,9 @@ class CommentsRepositoryImplementation implements CommentsRepository {
   Future<Comment?> updateComment(Comment comment) {
     return _db.updateComment(comment);
   }
+
+  @override
+  Future<List<Comment>> deleteCommentById(String id) {
+    return _db.deleteCommentById(id);
+  }
 }

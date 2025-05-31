@@ -134,4 +134,14 @@ class CommunityDatasourceMockImpl implements CommunityDatasource {
       () => mockCommunities.where((c) => c.id == id).toList().firstOrNull,
     );
   }
+
+  @override
+  Future<List<Community>?> deleteCommunityById(String id) async {
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      mockCommunities.removeWhere((c) => c.id == id);
+      return mockCommunities;
+    });
+  }
 }

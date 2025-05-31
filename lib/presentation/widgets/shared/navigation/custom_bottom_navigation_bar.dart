@@ -50,6 +50,10 @@ class CustomBottomNavigationBar extends ConsumerWidget {
           text: 'nav_bar_home_item'.tr(),
         ),
         Tab(icon: const Icon(Icons.explore), text: 'nav_bar_explore_item'.tr()),
+        Tab(
+          icon: const Icon(FontAwesomeIcons.solidMessage),
+          text: 'app_bar_chats_btn_tooltip'.tr(),
+        ),
       ],
     );
   }

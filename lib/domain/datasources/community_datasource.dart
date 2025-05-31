@@ -14,4 +14,5 @@ abstract class CommunityDatasource {
   );
   Future<Community?> createCommunity(Community community);
   Future<Community?> updateCommunity(Community community);
+  Future<List<Community>?> deleteCommunityById(String id);
 }

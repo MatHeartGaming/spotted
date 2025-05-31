@@ -8,4 +8,5 @@ abstract class UsersRepository {
   Future<User?> getUserByEmail(String email);
   Future<User?> createUser(User user);
   Future<User?> updateUser(User user);
+  Future<List<User>?> deleteUserById(String id);
 }

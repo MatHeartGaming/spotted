@@ -109,4 +109,14 @@ class UsersDatasourceMockImpl implements UsersDatasource {
       () => mockUsers.where((u) => u.email == email).toList().firstOrNull,
     );
   }
+
+  @override
+  Future<List<User>?> deleteUserById(String id) async {
+    var rng = Random();
+    int randomTime = rng.nextInt(300);
+    return await Future.delayed(Duration(milliseconds: randomTime), () {
+      mockUsers.removeWhere((u) => u.id == id);
+      return mockUsers;
+    });
+  }
 }

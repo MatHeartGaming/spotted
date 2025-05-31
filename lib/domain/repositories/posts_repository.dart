@@ -15,4 +15,5 @@ abstract class PostsRepository {
   Future<Post?> createPost(Post post);
   Future<Post?> updatePost(Post post);
   Future<List<Post>> getPostsUsingUsersPostedIdList(List<String> refs);
+  Future<List<Post>> deletePostById(String postedIn);
 }

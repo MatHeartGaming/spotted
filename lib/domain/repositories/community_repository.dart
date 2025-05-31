@@ -14,4 +14,5 @@ abstract class CommunityRepository {
   Future<Community?> getCommunityById(String id);
   Future<Community?> createCommunity(Community community);
   Future<Community?> updateCommunity(Community community);
+  Future<List<Community>?> deleteCommunityById(String id);
 }
