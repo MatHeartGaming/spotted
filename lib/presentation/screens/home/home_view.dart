@@ -25,14 +25,16 @@ class HomeViewState extends ConsumerState<HomeView>
 
   Future<void> _loadFriendsPosts() async {
     final signedInUser = ref.read(signedInUserProvider);
-    await ref
-        .read(loadUserProvider.notifier)
-        .getUsersById(signedInUser?.friendsRefs ?? [])
-        .then((friends) {
-          ref
-              .read(signedInUserProvider.notifier)
-              .update((state) => signedInUser?.copyWith(friends: friends));
-        });
+    final loadUsersNotifier = ref.read(loadSignedInFriendsProvider.notifier);
+    if (signedInUser != null &&
+        (signedInUser.isEmpty || signedInUser.friends.isEmpty)) {
+      logger.d('Reloading Home Posts...');
+      await loadUsersNotifier.loadUserSignedInUserFriends().then((friends) {
+        ref
+            .read(signedInUserProvider.notifier)
+            .update((state) => signedInUser.copyWith(friends: friends));
+      });
+    }
     final loadPostsNotifier = ref.read(loadPostsProvider.notifier);
     loadPostsNotifier.loadPostedByMe();
     loadPostsNotifier.loadPostedByFriendsId();

@@ -47,6 +47,7 @@
     "profile_screen_success_follow_btn_text": "Ora segui {}",
     "profile_screen_success_unfollow_btn_text": "Ora non segui più {}",
 
+    "friends_screen_title": "Persone che segui",
     "friends_screen_confirm_delete_friend_dialog_title": "Attenzione",
     "friends_screen_confirm_delete_friend_dialog_message": "Stai per smettere di seguire {}. Sei sicuro?",
 

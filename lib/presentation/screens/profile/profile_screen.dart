@@ -103,7 +103,8 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                                   onPressed: () => _onFollowTapped(),
                                   child:
                                       Text(
-                                        (signedInUser ?? User.empty()).friendsRefs
+                                        (signedInUser ?? User.empty())
+                                                .friendsRefs
                                                 .contains(widget.user.id)
                                             ? 'profile_screen_stop_follow_btn_text'
                                             : widget.user.friendsRefs.contains(
@@ -209,38 +210,44 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
     final signedInUser = ref.read(signedInUserProvider);
     final isUserYou = signedInUser == widget.user;
     if (isUserYou) return;
-    final usersNotifier = ref.read(loadUserProvider.notifier);
-    usersNotifier.addOrRemoveFriend(widget.user.id).then((updatedFriendsInfos) {
-      final updatedUser = updatedFriendsInfos.$1;
-      final isAdd = updatedFriendsInfos.$2;
-      if (updatedUser == null) {
-        hardVibration();
-        showCustomSnackbar(
-          context,
-          'profile_screen_error_follow_btn_text'.tr(),
-          backgroundColor: colorNotOkButton,
-        );
-        return;
-      }
-      if (isAdd) {
-        showCustomSnackbar(
-          context,
-          'profile_screen_success_follow_btn_text'.tr(
-            args: [widget.user.username],
-          ),
-          backgroundColor: colorSuccess,
-        );
-      } else {
-        showCustomSnackbar(
-          context,
-          'profile_screen_success_unfollow_btn_text'.tr(
-            args: [widget.user.username],
-          ),
-          backgroundColor: colorSuccess,
-        );
-      }
-      ref.read(signedInUserProvider.notifier).update((state) => updatedUser);
-      _hasChanged = true;
-    });
+    final signedInuserFriendsNotifier = ref.read(
+      loadSignedInFriendsProvider.notifier,
+    );
+    signedInuserFriendsNotifier
+        .addOrRemoveSignedInUserFriend(widget.user.id)
+        .then((updatedFriendsInfos) {
+          final updatedUser = updatedFriendsInfos.$1;
+          final isAdd = updatedFriendsInfos.$2;
+          if (updatedUser == null) {
+            hardVibration();
+            showCustomSnackbar(
+              context,
+              'profile_screen_error_follow_btn_text'.tr(),
+              backgroundColor: colorNotOkButton,
+            );
+            return;
+          }
+          if (isAdd) {
+            showCustomSnackbar(
+              context,
+              'profile_screen_success_follow_btn_text'.tr(
+                args: [widget.user.username],
+              ),
+              backgroundColor: colorSuccess,
+            );
+          } else {
+            showCustomSnackbar(
+              context,
+              'profile_screen_success_unfollow_btn_text'.tr(
+                args: [widget.user.username],
+              ),
+              backgroundColor: colorSuccess,
+            );
+          }
+          ref
+              .read(signedInUserProvider.notifier)
+              .update((state) => updatedUser);
+          _hasChanged = true;
+        });
   }
 }

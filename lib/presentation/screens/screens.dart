@@ -36,4 +36,5 @@ export 'package:spotted/presentation/screens/creation/community/create_community
 export 'package:spotted/presentation/screens/creation/posts/create_posts_screen.dart';
 
 // Search
+export 'package:spotted/presentation/screens/search/users_list_screen.dart';
 export 'package:spotted/presentation/screens/search/friends_list_screen.dart';

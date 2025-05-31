@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/providers/providers.dart';
-import 'package:spotted/presentation/screens/search/friends_list_screen.dart';
+import 'package:spotted/presentation/screens/screens.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 class DrawerContent extends ConsumerWidget {
@@ -72,10 +72,6 @@ class DrawerContent extends ConsumerWidget {
                         showCustomBottomSheet(
                           context,
                           child: FriendsListScreen(
-                            users:
-                                user.friends
-                                    .where((f) => f != signedInUser)
-                                    .toList(),
                             onUserDeleted:
                                 (userToDeleteRef) =>
                                     _onUserDeletedAction(ref, userToDeleteRef),
@@ -85,7 +81,7 @@ class DrawerContent extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(10),
                       child: Text(
                         'drawer_following_count',
-                      ).tr(args: ['${user.communitiesSubs.length}']),
+                      ).tr(args: ['${user.friends.length - 1}']),
                     ),
                   ],
                 ),
@@ -159,13 +155,20 @@ class DrawerContent extends ConsumerWidget {
   void _onUserDeletedAction(WidgetRef ref, String friendRef) {
     final signedInUser = ref.read(signedInUserProvider);
     if (signedInUser == null) return;
-    ref.read(loadUserProvider.notifier).addOrRemoveFriend(friendRef).then((
-      updatedUser,
-    ) {
-      ref.read(signedInUserProvider.notifier).update((state) => updatedUser.$1);
-      final loadPostsNotifier = ref.read(loadPostsProvider.notifier);
-      loadPostsNotifier.loadPostedByMe();
-      loadPostsNotifier.loadPostedByFriendsId();
-    });
+
+    ref
+        .read(loadSignedInFriendsProvider.notifier)
+        .addOrRemoveSignedInUserFriend(friendRef)
+        .then((tuple) {
+          // tuple.$1 is the updated User returned from your repository,
+          // tuple.$2 is the bool “isAdd”/“isRemoved” flag you returned.
+          final updatedUser = tuple.$1;
+          ref.read(signedInUserProvider.notifier).update((_) => updatedUser!);
+
+          // Optionally reload posts (if you want).
+          final loadPostsNotifier = ref.read(loadPostsProvider.notifier);
+          loadPostsNotifier.loadPostedByMe();
+          loadPostsNotifier.loadPostedByFriendsId();
+        });
   }
 }
