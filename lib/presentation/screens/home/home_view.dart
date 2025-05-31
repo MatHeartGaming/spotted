@@ -1,7 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_reactions/model/menu_item.dart';
+import 'package:flutter_chat_reactions/utilities/default_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/config/constants/app_constants.dart';
+import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/screens/screens.dart';
@@ -99,7 +102,12 @@ class HomeViewState extends ConsumerState<HomeView>
                                             reaction,
                                             ref,
                                           ),
-                                  onContextMenuTap: (menuItem) {},
+                                  onContextMenuTap:
+                                      (menuItem) =>
+                                          _handleContextMenuPostItemAction(
+                                            menuItem,
+                                            post,
+                                          ),
                                 )
                                 : Text('User not found'),
                     error:
@@ -128,5 +136,13 @@ class HomeViewState extends ConsumerState<HomeView>
       // ignore: use_build_context_synchronously
       pushToCommunityScreen(context, community: communities.first);
     });
+  }
+
+  void _handleContextMenuPostItemAction(MenuItem item, Post post) {
+    final clipboard = ref.read(clipboardProvider);
+    switch (item) {
+      case DefaultData.copy:
+        clipboard.copy(post.title + post.content);
+    }
   }
 }
