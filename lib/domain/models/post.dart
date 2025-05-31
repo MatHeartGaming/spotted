@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:spotted/domain/models/models.dart';
 import 'package:uuid/uuid.dart';
 
 class Post {
@@ -10,7 +11,8 @@ class Post {
   final String createdByUsername;
   final String? postedIn;
   final DateTime dateCreated;
-  final List<String> comments;
+  final List<String> commentRefs;
+  final List<Comment> comments;
   final List<String> pictureUrls;
   final Map<String, String> reactions;
 
@@ -22,8 +24,9 @@ class Post {
     required this.content,
     DateTime? dateCreated,
     this.postedIn,
-    this.comments = const [],
+    this.commentRefs = const [],
     this.pictureUrls = const [],
+    this.comments = const [],
     this.reactions = const {},
   }) : id = id ?? const Uuid().v6(),
        dateCreated = dateCreated ?? DateTime.now();
@@ -36,8 +39,9 @@ class Post {
     this.content = '',
     DateTime? dateCreated,
     this.postedIn,
-    this.comments = const [],
+    this.commentRefs = const [],
     this.pictureUrls = const [],
+    this.comments = const [],
     this.reactions = const {},
   }) : id = id ?? const Uuid().v6(),
        dateCreated = dateCreated ?? DateTime.now();
@@ -62,7 +66,7 @@ class Post {
       postedIn: map['posted_in'] as String?,
       dateCreated:
           (map['date_created'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      comments: List<String>.from(map['comments'] ?? const []),
+      commentRefs: List<String>.from(map['comment_ids'] ?? const []),
       pictureUrls: List<String>.from(map['picture_urls'] ?? const []),
       reactions: reactionsMap,
     );
@@ -77,7 +81,7 @@ class Post {
       'content': content,
       'posted_in': postedIn,
       'date_created': dateCreated,
-      'comments': comments,
+      'comment_ids': commentRefs,
       'picture_urls': pictureUrls,
       'reactions': reactions,
     };
@@ -91,7 +95,8 @@ class Post {
     String? createdByUsername,
     String? postedIn,
     DateTime? dateCreated,
-    List<String>? comments,
+    List<String>? commentRefs,
+    List<Comment>? comments,
     List<String>? pictureUrls,
     Map<String, String>? reactions,
   }) {
@@ -103,9 +108,10 @@ class Post {
       createdByUsername: createdByUsername ?? this.createdByUsername,
       postedIn: postedIn ?? this.postedIn,
       dateCreated: dateCreated ?? this.dateCreated,
-      comments: comments ?? this.comments,
+      commentRefs: commentRefs ?? this.commentRefs,
       pictureUrls: pictureUrls ?? this.pictureUrls,
       reactions: reactions ?? this.reactions,
+      comments: comments ?? this.comments,
     );
   }
 

@@ -37,3 +37,4 @@ export 'package:spotted/presentation/widgets/widget_functions/emoji_sorter.dart'
 export 'package:spotted/presentation/widgets/inputs/currency_input_formatter.dart';
 export 'package:spotted/presentation/widgets/inputs/custom_input_form_field.dart';
 export 'package:spotted/presentation/widgets/inputs/phone_number_input_formatter.dart';
+export 'package:spotted/presentation/widgets/inputs/comment_text_field.dart';

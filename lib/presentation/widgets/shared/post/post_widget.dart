@@ -11,7 +11,7 @@ class PostWidget extends StatelessWidget {
   final VoidCallback? onCommunityTapped;
   final VoidCallback onUserInfoTapped;
   final VoidCallback? onLike;
-  final VoidCallback? onComment;
+  final VoidCallback? onCommentTapped;
   final VoidCallback? onShare;
 
   const PostWidget({
@@ -22,7 +22,7 @@ class PostWidget extends StatelessWidget {
     this.reaction,
     this.onCommunityTapped,
     this.onLike,
-    this.onComment,
+    this.onCommentTapped,
     this.onShare,
   });
 
@@ -76,7 +76,7 @@ class PostWidget extends StatelessWidget {
             Text(post.content, style: texts.bodySmall),
 
             Visibility(
-              visible: onLike != null && onComment != null && onShare != null,
+              visible: onLike != null && onCommentTapped != null && onShare != null,
               child: ReactionRowWidget(
                 reaction: reaction,
                 onLike: () {
@@ -85,8 +85,8 @@ class PostWidget extends StatelessWidget {
                   }
                 },
                 onComment: () {
-                  if (onComment != null) {
-                    onComment!();
+                  if (onCommentTapped != null) {
+                    onCommentTapped!();
                   }
                 },
                 onShare: () {

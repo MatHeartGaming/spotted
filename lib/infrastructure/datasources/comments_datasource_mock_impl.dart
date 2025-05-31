@@ -39,7 +39,7 @@ class CommentsDatasourceMockImpl implements CommentsDatasource {
     int randomTime = rng.nextInt(300);
     return await Future.delayed(
       Duration(milliseconds: randomTime),
-      () => mockComments.where((c) => c.id == postId).toList(),
+      () => mockComments.where((c) => c.postId == postId).toList(),
     );
   }
 

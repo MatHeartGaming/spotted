@@ -15,6 +15,7 @@ class ReactionablePostWidget extends ConsumerWidget {
   final User author;
   final String? reaction;
   final VoidCallback onUserInfoTapped;
+  final VoidCallback onCommentTapped;
   final VoidCallback? onCommunityTapped;
   final Function(String) onReaction;
   final Function(MenuItem) onContextMenuTap;
@@ -28,6 +29,7 @@ class ReactionablePostWidget extends ConsumerWidget {
     required this.onReaction,
     required this.onContextMenuTap,
     required this.onUserInfoTapped,
+    required this.onCommentTapped,
     this.onCommunityTapped,
   });
 
@@ -80,7 +82,7 @@ class ReactionablePostWidget extends ConsumerWidget {
               post: post,
               author: author,
               onLike: () => onReaction('👍'),
-              onComment: () {},
+              onCommentTapped: onCommentTapped,
               onShare: () {},
             ),
             // reactions

@@ -166,7 +166,30 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
                                             _initCommunityPosts();
                                           });
                                         },
-                                        onContextMenuTap: (menuItem) {},
+                                        onCommentTapped: () {
+                                          showCustomBottomSheet(
+                                            context,
+                                            child: CommentsScreen(
+                                              post: post,
+                                              comments: post.comments,
+                                              onPostComment: (
+                                                postId,
+                                                commentText,
+                                              ) async {
+                                                logger.i(
+                                                  'Comment on: $postId - $commentText',
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                        onContextMenuTap:
+                                            (menuItem) =>
+                                                handleContextMenuPostItemAction(
+                                                  ref,
+                                                  menuItem,
+                                                  post,
+                                                ),
                                       )
                                       : Text('User not found'),
 

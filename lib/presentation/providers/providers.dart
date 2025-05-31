@@ -35,3 +35,7 @@ export 'package:spotted/presentation/providers/forms/create_community_form_provi
 
 // Clipboard
 export 'package:spotted/presentation/providers/clipboard/clipboard_provider.dart';
+
+// Comments
+export 'package:spotted/presentation/providers/comments/comments_repository_provider.dart';
+export 'package:spotted/presentation/providers/comments/load_comments_provider.dart';

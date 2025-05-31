@@ -26,6 +26,7 @@ export 'package:spotted/presentation/screens/settings/setttings_list_screen.dart
 
 // Helpers
 export 'package:spotted/presentation/screens/helpers/reaction_functions.dart';
+export 'package:spotted/presentation/screens/helpers/post_context_menu_functions.dart';
 
 // Error
 export 'package:spotted/presentation/screens/error/error_screen.dart';
@@ -38,3 +39,6 @@ export 'package:spotted/presentation/screens/creation/posts/create_posts_screen.
 // Search
 export 'package:spotted/presentation/screens/search/users_list_screen.dart';
 export 'package:spotted/presentation/screens/search/friends_list_screen.dart';
+
+// Comments
+export 'package:spotted/presentation/screens/comments/comments_screen.dart';

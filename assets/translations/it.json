@@ -55,6 +55,11 @@
     "friends_screen_confirm_delete_friend_dialog_title": "Attenzione",
     "friends_screen_confirm_delete_friend_dialog_message": "Stai per smettere di seguire {}. Sei sicuro?",
 
+    "comments_screen_app_bar_title": "Commenti su {}",
+    "comments_screen_write_comment_placeholder_text": "Scrivi un commento...",
+    "comments_screen_no_comments_yet_text": "Non ci sono ancora commenti.\nSii il primo a commentare!",
+    "comments_screen_error_posting_text": "Errore durante il caricamento del commento... Riprova",
+
     "drawer_following_count": "Mi seguono: {}",
     "drawer_profile_item": "Profilo",
     "drawer_home_item": "Inizio",

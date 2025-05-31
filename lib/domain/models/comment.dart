@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 
 class Comment {
   final String id;
+  final String text;
   final String postId;
   final String createdById;
   final String createdByUsername;
@@ -15,6 +16,7 @@ class Comment {
   Comment({
     String? id,
     String? postId,
+    required this.text,
     required this.createdById,
     required this.createdByUsername,
     DateTime? dateCreated,
@@ -28,6 +30,7 @@ class Comment {
   Comment.empty()
     : id = const Uuid().v6(),
       postId = const Uuid().v6(),
+      text = '',
       createdById = '',
       createdByUsername = '',
       postedIn = null,
@@ -48,6 +51,7 @@ class Comment {
 
     return Comment(
       id: map['id'] as String,
+      text: map['text'] as String,
       postId: map['post_id'] as String,
       createdById: map['created_by_id'] as String,
       createdByUsername: map['created_by_username'] as String,
@@ -62,6 +66,7 @@ class Comment {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'text': text,
       'post_id': postId,
       'created_by_id': createdById,
       'created_by_username': createdByUsername,
@@ -74,6 +79,7 @@ class Comment {
 
   Comment copyWith({
     String? id,
+    String? text,
     String? postId,
     String? createdById,
     String? createdByUsername,
@@ -84,6 +90,7 @@ class Comment {
   }) {
     return Comment(
       id: id ?? this.id,
+      text: text ?? this.id,
       postId: postId ?? this.postId,
       createdById: createdById ?? this.createdById,
       createdByUsername: createdByUsername ?? this.createdByUsername,
