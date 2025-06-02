@@ -12,6 +12,7 @@ class Post {
   final String createdByUsername;
   final String? postedIn;
   final DateTime dateCreated;
+  final bool isAnonymous;
   final List<String> commentRefs;
   final List<Comment> comments;
   final List<String> pictureUrls;
@@ -25,6 +26,7 @@ class Post {
     required this.content,
     DateTime? dateCreated,
     this.postedIn,
+    this.isAnonymous = false,
     this.commentRefs = const [],
     this.pictureUrls = const [],
     this.comments = const [],
@@ -40,6 +42,7 @@ class Post {
     this.content = '',
     DateTime? dateCreated,
     this.postedIn,
+    this.isAnonymous = false,
     this.commentRefs = const [],
     this.pictureUrls = const [],
     this.comments = const [],
@@ -70,6 +73,7 @@ class Post {
       commentRefs: List<String>.from(map['comment_ids'] ?? const []),
       pictureUrls: List<String>.from(map['picture_urls'] ?? const []),
       reactions: reactionsMap,
+      isAnonymous: map['is_anonymous'] as bool? ?? false,
     );
   }
 
@@ -85,6 +89,7 @@ class Post {
       'comment_ids': commentRefs,
       'picture_urls': pictureUrls,
       'reactions': reactions,
+      'is_anonymous': isAnonymous,
     };
   }
 
@@ -95,6 +100,7 @@ class Post {
     String? createdById,
     String? createdByUsername,
     String? postedIn,
+    bool? isAnonymous,
     DateTime? dateCreated,
     List<String>? commentRefs,
     List<Comment>? comments,
@@ -113,6 +119,7 @@ class Post {
       pictureUrls: pictureUrls ?? this.pictureUrls,
       reactions: reactions ?? this.reactions,
       comments: comments ?? this.comments,
+      isAnonymous: isAnonymous ?? this.isAnonymous,
     );
   }
 

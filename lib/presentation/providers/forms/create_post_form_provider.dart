@@ -83,6 +83,10 @@ class CreatePostNotifier extends StateNotifier<CreatePostFormState> {
     );
   }
 
+  void onAnonymousChange(bool newValue) {
+    state = state.copyWith(isAnonymous: newValue);
+  }
+
   void imagesFilesChanged(XFile value) {
     state = state.copyWith(imagesFile: [...?state.imagesFile, value]);
   }

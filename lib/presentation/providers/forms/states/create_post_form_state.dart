@@ -12,6 +12,7 @@ class CreatePostFormState {
   final GenericText title;
   final GenericText? postedIn;
   final GenericText content;
+  final bool isAnonymous;
   final List<Uint8List>? imagesBytes;
   final List<XFile>? imagesFile;
   final List<String>? imagesUrl;
@@ -26,6 +27,7 @@ class CreatePostFormState {
     this.title = const GenericText.pure(),
     this.content = const GenericText.pure(),
     this.postedIn,
+    this.isAnonymous = false,
     this.imagesBytes = const [],
     this.imagesFile = const [],
     this.imagesUrl = const [],
@@ -45,6 +47,7 @@ class CreatePostFormState {
       other.title == title &&
       other.postedIn == postedIn &&
       other.content == content &&
+      other.isAnonymous == isAnonymous &&
       listEquals(other.imagesBytes, imagesBytes) &&
       listEquals(other.imagesFile, imagesFile) &&
       listEquals(other.imagesUrl, imagesUrl) &&
@@ -59,6 +62,7 @@ class CreatePostFormState {
       title.hashCode ^
       postedIn.hashCode ^
       content.hashCode ^
+      isAnonymous.hashCode ^
       imagesBytes.hashCode ^
       imagesFile.hashCode ^
       imagesUrl.hashCode ^
@@ -72,6 +76,7 @@ class CreatePostFormState {
     GenericText? title,
     GenericText? postedIn,
     GenericText? content,
+    bool? isAnonymous,
     List<Uint8List>? imagesBytes,
     List<XFile>? imagesFile,
     List<String>? imagesUrl,
@@ -84,6 +89,7 @@ class CreatePostFormState {
       title: title ?? this.title,
       postedIn: postedIn ?? this.postedIn,
       content: content ?? this.content,
+      isAnonymous: isAnonymous ?? this.isAnonymous,
       imagesBytes: imagesBytes ?? this.imagesBytes,
       imagesFile: imagesFile ?? this.imagesFile,
       imagesUrl: imagesUrl ?? this.imagesUrl,

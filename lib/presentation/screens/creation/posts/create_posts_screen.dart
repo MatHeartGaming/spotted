@@ -13,6 +13,7 @@ import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/providers/forms/states/form_status.dart';
 import 'package:spotted/presentation/providers/providers.dart';
+import 'package:spotted/presentation/widgets/shared/custom_dialogs.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 class CreatePostsScreen extends ConsumerStatefulWidget {
@@ -61,45 +62,52 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
               spacing: 12,
               children: [
                 SizedBox(height: 8),
-                CustomTextFormField(
-                  label: 'create_post_screen_title_textfield_placeholder'.tr(),
-                  controller: formState.titleController,
-                  icon: Icons.title_outlined,
-                  errorMessage: formState.title.errorMessage,
-                  onSubmitForm: () => _onSumbit(ref),
-                  onChanged: (newValue) {
-                    ref
-                        .read(createPostFormProvider.notifier)
-                        .onTitleChanged(newValue);
-                  },
+                SlideInDown(
+                  child: CustomTextFormField(
+                    label:
+                        'create_post_screen_title_textfield_placeholder'.tr(),
+                    controller: formState.titleController,
+                    icon: Icons.title_outlined,
+                    errorMessage: formState.title.errorMessage,
+                    onSubmitForm: () => _onSumbit(ref),
+                    onChanged: (newValue) {
+                      ref
+                          .read(createPostFormProvider.notifier)
+                          .onTitleChanged(newValue);
+                    },
+                  ),
                 ),
-                CustomTextFormField(
-                  label:
-                      'create_post_screen_content_textfield_placeholder'.tr(),
-                  controller: formState.contentController,
-                  icon: Icons.title_outlined,
-                  errorMessage: formState.content.errorMessage,
-                  onSubmitForm: () => _onSumbit(ref),
-                  onChanged: (newValue) {
-                    ref
-                        .read(createPostFormProvider.notifier)
-                        .onContentChanged(newValue);
-                  },
+                SlideInDown(
+                  child: CustomTextFormField(
+                    label:
+                        'create_post_screen_content_textfield_placeholder'.tr(),
+                    controller: formState.contentController,
+                    icon: Icons.title_outlined,
+                    errorMessage: formState.content.errorMessage,
+                    onSubmitForm: () => _onSumbit(ref),
+                    onChanged: (newValue) {
+                      ref
+                          .read(createPostFormProvider.notifier)
+                          .onContentChanged(newValue);
+                    },
+                  ),
                 ),
                 SizedBox(height: 20),
-                GridImagesWidget(
-                  images: formState.imagesBytes ?? [],
-                  imagesUrl: formState.imagesUrl,
-                  onImageDelete: (deleteIndex) {
-                    ref
-                        .read(createPostFormProvider.notifier)
-                        .removeImageAt(deleteIndex);
-                  },
-                  onImageTap:
-                      (index) => showImagesGalleryBytes(
-                        context,
-                        formState.imagesBytes ?? [],
-                      ),
+                FadeIn(
+                  child: GridImagesWidget(
+                    images: formState.imagesBytes ?? [],
+                    imagesUrl: formState.imagesUrl,
+                    onImageDelete: (deleteIndex) {
+                      ref
+                          .read(createPostFormProvider.notifier)
+                          .removeImageAt(deleteIndex);
+                    },
+                    onImageTap:
+                        (index) => showImagesGalleryBytes(
+                          context,
+                          formState.imagesBytes ?? [],
+                        ),
+                  ),
                 ),
                 Visibility(
                   visible:
@@ -122,9 +130,51 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
                     ),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: formState.isPosting ? null : () => _onSumbit(ref),
-                  child: Text('create_post_screen_publish_btn_text').tr(),
+
+                FadeIn(
+                  duration: Duration(milliseconds: 800),
+                  child: Row(
+                    spacing: 6,
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap:
+                            () =>
+                                _anonymousToggleAction(!formState.isAnonymous),
+                        child: Icon(
+                          formState.isAnonymous
+                              ? anonymousIcon
+                              : nonAnonymousIcon,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap:
+                            () =>
+                                _anonymousToggleAction(!formState.isAnonymous),
+                        child:
+                            Text(
+                              'create_post_screen_post_anonymous_switch_text',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ).tr(),
+                      ),
+                      Switch.adaptive(
+                        value: formState.isAnonymous,
+                        applyCupertinoTheme: true,
+                        onChanged: (newValue) {
+                          _anonymousToggleAction(newValue);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
+                FadeInUp(
+                  child: ElevatedButton(
+                    onPressed:
+                        formState.isPosting ? null : () => _onSumbit(ref),
+                    child: Text('create_post_screen_publish_btn_text').tr(),
+                  ),
                 ),
                 SizedBox(height: 50),
               ],
@@ -133,6 +183,19 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
         ),
       ),
     );
+  }
+
+  void _anonymousToggleAction(bool newValue) {
+    ref.read(createPostFormProvider.notifier).onAnonymousChange(newValue);
+    if (newValue) {
+      mediumVibration();
+      showOkOnlyDialog(
+        context,
+        title: 'attention_text'.tr(),
+        message: 'create_post_screen_post_anonymous_dialog_text'.tr(),
+        onOkPressed: () {},
+      );
+    }
   }
 
   void _displayPickImageDialog(Function(List<XFile>?) onImagesChosen) {
@@ -201,6 +264,7 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
           title: formState.title.value,
           content: formState.content.value,
           postedIn: formState.postedIn?.value,
+          isAnonymous: formState.isAnonymous,
         );
         final loadPost = ref.read(loadPostsProvider.notifier);
         loadPost.createPost(newPost).then((createdPost) {

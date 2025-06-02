@@ -8,6 +8,7 @@ import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
+import 'package:spotted/presentation/widgets/shared/custom_dialogs.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 class CommentsScreen extends ConsumerStatefulWidget {
@@ -215,7 +216,8 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                                       ? Colors.blue
                                       : Colors.grey,
                             ),
-                            onPressed: commentsFormState.isValid ? _handleSend : null,
+                            onPressed:
+                                commentsFormState.isValid ? _handleSend : null,
                           ),
                     ],
                   ),
@@ -312,40 +314,20 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
   }
 
   void _showEditDialog(Comment comment) {
-    final controller = TextEditingController(text: comment.text);
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: const Text('comments_screen_edit_comment_alert_title').tr(),
-          content: TextField(
-            controller: controller,
-            maxLines: null,
-            decoration: InputDecoration(
-              hintText: 'comments_screen_write_new_comment_hint_text'.tr(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('cancel_text').tr(),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final newText = controller.text.trim();
-                if (newText.isNotEmpty && newText != comment.text) {
-                  // Create a copy of the Comment with updated text:
-                  final updated = comment.copyWith(text: newText);
-                  await ref
-                      .read(loadCommentsProvider.notifier)
-                      .updateComment(updated);
-                }
-                Navigator.of(ctx).pop();
-              },
-              child: const Text('save_text').tr(),
-            ),
-          ],
-        );
+    showAdaptiveTextInputDialog(
+      context,
+      titleKey: 'comments_screen_edit_comment_alert_title',
+      initialText: comment.text,
+      hintTextKey: 'comments_screen_write_new_comment_hint_text',
+      okTextKey: 'save_text', // "Save" button
+      cancelTextKey: 'cancel_text', // "Cancel" button
+      isDestructive: false,
+      onConfirm: (newText) async {
+        // Only call update if text actually changed and is non-empty:
+        if (newText.isNotEmpty && newText != comment.text) {
+          final updated = comment.copyWith(text: newText);
+          await ref.read(loadCommentsProvider.notifier).updateComment(updated);
+        }
       },
     );
   }

@@ -24,6 +24,8 @@
     "create_post_screen_check_fields_snackbar_text": "Controllare la validità dei campi",
     "create_post_screen_post_success_snackbar_text": "Post creato con successo!",
     "create_post_screen_post_error_snackbar_text": "Errore durante la creazione del post",
+    "create_post_screen_post_anonymous_switch_text": "Pubblica anonimamente",
+    "create_post_screen_post_anonymous_dialog_text": "Ricorda che i post anonimi non possono essere eliminati.\nInoltre, ricorda che se che li vede segue pochi utenti, potrebbe essere facile risalire a chi abbia fatto la pubblicazione.",
 
     "post_text_copied_success_snackbar_text": "Testo del post copiato!",
     "post_delete_success_snackbar_text": "Post {} eliminato con successo!",
@@ -61,7 +63,7 @@
     "comments_screen_error_posting_text": "Errore durante il caricamento del commento... Riprova",
     "comments_screen_anonymous_posting_tooltip": "Commento anonimo",
     "comments_screen_not_anonymous_posting_tooltip": "Commento NON anonimo",
-    "comments_screen_anonymous_posting_snackbar": "Stai commentando in maniera anonima",
+    "comments_screen_anonymous_posting_snackbar": "Stai commentando in maniera anonima. Una volta pubblicato, il commento non potrà essere elimnato.",
     "comments_screen_not_anonymous_posting_snackbar": "Stai commentando come {}",
     "comments_screen_write_new_comment_hint_text": "Scrivi nuovo commento",
     "comments_screen_edit_comment_alert_title": "Modifica commento",
@@ -83,6 +85,7 @@
 
     "community_already_exists_exception": "Comunità con nome {} già esistente. Scegliere un altro nome.",
 
+    "ok_text": "OK",
     "go_to_home_page_tooltip_text": "Vai alla Home",
     "admin_text": "Admin: {}",
     "menu_text": "Menu",
