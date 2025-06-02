@@ -48,4 +48,9 @@ class UsersRepositoryImplementation implements UsersRepository {
   Future<List<User>?> deleteUserById(String id) {
     return _db.deleteUserById(id);
   }
+
+  @override
+  Future<List<User>?> getUsersByUsername(String username) {
+    return _db.getUsersByUsername(username);
+  }
 }

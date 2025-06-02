@@ -12,6 +12,7 @@ const String profilePath = '/profile_screen';
 const String communityPath = '/community_screen';
 const String chatPath = '/chat_screen';
 const String chatsPath = '/chats_screen';
+const String homeSearchPath = '/home_search_screen';
 const String createPostPath = '/create_post_screen';
 const String createCommunityPath = '/create_community_screen';
 

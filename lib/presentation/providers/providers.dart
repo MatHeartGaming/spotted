@@ -40,3 +40,6 @@ export 'package:spotted/presentation/providers/clipboard/clipboard_provider.dart
 // Comments
 export 'package:spotted/presentation/providers/comments/comments_repository_provider.dart';
 export 'package:spotted/presentation/providers/comments/load_comments_provider.dart';
+
+// Home Search
+export 'package:spotted/presentation/providers/home_search/home_search_provider.dart';

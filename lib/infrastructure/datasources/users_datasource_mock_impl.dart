@@ -95,7 +95,11 @@ class UsersDatasourceMockImpl implements UsersDatasource {
       Duration(milliseconds: randomTime),
       () =>
           mockUsers
-              .where((u) => u.username.toLowerCase().trim().contains(username))
+              .where(
+                (u) => u.username.toLowerCase().trim().contains(
+                  username.trim().toLowerCase(),
+                ),
+              )
               .toList(),
     );
   }

@@ -62,6 +62,7 @@ class HomeViewState extends ConsumerState<HomeView>
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: HomeAppBar(
+              onSearchPressed: () => pushToHomeSearchScreem(context),
               onProfileIconPressed: () {
                 Scaffold.of(context).openDrawer();
               },

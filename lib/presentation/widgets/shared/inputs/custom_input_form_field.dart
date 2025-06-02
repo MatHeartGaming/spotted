@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:spotted/presentation/widgets/inputs/currency_input_formatter.dart';
-import 'package:spotted/presentation/widgets/inputs/phone_number_input_formatter.dart';
+import 'package:spotted/presentation/widgets/shared/inputs/currency_input_formatter.dart';
+import 'package:spotted/presentation/widgets/shared/inputs/phone_number_input_formatter.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final TextEditingController? controller;

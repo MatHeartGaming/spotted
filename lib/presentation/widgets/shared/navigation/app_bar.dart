@@ -7,8 +7,9 @@ import 'package:spotted/presentation/widgets/widgets.dart';
 
 class HomeAppBar extends ConsumerWidget {
   final VoidCallback? onProfileIconPressed;
+  final VoidCallback? onSearchPressed;
 
-  const HomeAppBar({super.key, this.onProfileIconPressed});
+  const HomeAppBar({super.key, this.onProfileIconPressed, this.onSearchPressed});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,7 +32,7 @@ class HomeAppBar extends ConsumerWidget {
           children: [
             IconButton(
               tooltip: 'app_bar_search_btn_tooltip'.tr(),
-              onPressed: () => {},
+              onPressed: onSearchPressed,
               icon: Icon(FontAwesomeIcons.magnifyingGlass),
             ),
           ],

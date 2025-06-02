@@ -24,6 +24,11 @@ void popContext(BuildContext context) {
   context.pop();
 }
 
+void pushToHomeSearchScreem(BuildContext context) {
+  if (!context.mounted) return;
+  context.push(homeSearchPath);
+}
+
 void pushToCreateCommunityScreen(BuildContext context, {Community? community}) {
   if (!context.mounted) return;
   if (community == null) {

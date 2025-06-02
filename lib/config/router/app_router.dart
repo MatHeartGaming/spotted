@@ -133,6 +133,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
+        name: HomeSearchScreen.name,
+        path: homeSearchPath,
+        builder: (context, state) => const HomeSearchScreen(),
+      ),
+
+      GoRoute(
         name: HomeScreen.name,
         path: '$homePath/:page',
         builder: (context, state) {

@@ -19,6 +19,13 @@ export 'package:spotted/presentation/widgets/shared/navigation/app_bar.dart';
 export 'package:spotted/presentation/widgets/shared/post/post_widget.dart';
 export 'package:spotted/presentation/widgets/shared/reactions/reactionable_post_widget.dart';
 export 'package:spotted/presentation/widgets/shared/reactions/reaction_row_widget.dart';
+export 'package:spotted/presentation/widgets/shared/post/post_list_tile.dart';
+
+// Shared - User
+export 'package:spotted/presentation/widgets/shared/user/user_list_tile.dart';
+
+// Shared - Community
+export 'package:spotted/presentation/widgets/shared/community/community_list_tile.dart';
 
 // Shared - Images
 export 'package:spotted/presentation/widgets/shared/images/images_viewer.dart';
@@ -35,7 +42,7 @@ export 'package:spotted/presentation/widgets/layouts/scroll_hide_app_bar_profile
 export 'package:spotted/presentation/widgets/widget_functions/emoji_sorter.dart';
 
 // Inputs
-export 'package:spotted/presentation/widgets/inputs/currency_input_formatter.dart';
-export 'package:spotted/presentation/widgets/inputs/custom_input_form_field.dart';
-export 'package:spotted/presentation/widgets/inputs/phone_number_input_formatter.dart';
-export 'package:spotted/presentation/widgets/inputs/comment_text_field.dart';
+export 'package:spotted/presentation/widgets/shared/inputs/currency_input_formatter.dart';
+export 'package:spotted/presentation/widgets/shared/inputs/custom_input_form_field.dart';
+export 'package:spotted/presentation/widgets/shared/inputs/phone_number_input_formatter.dart';
+export 'package:spotted/presentation/widgets/shared/inputs/comment_text_field.dart';
