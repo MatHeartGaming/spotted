@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
@@ -21,11 +22,13 @@ class CommentTile extends StatelessWidget {
         children: [
           // 1) (Optional) You might put a user avatar or placeholder circle here.
           //const CircleAvatar(radius: 16, child: Icon(Icons.person, size: 16)),
-          CirclePicture(
-            minRadius: 18,
-            maxRadius: 18,
-            urlPicture: userProfilePicUrl ?? '',
-          ),
+          comment.createdById == anonymousText
+              ? Icon(anonymousIcon)
+              : CirclePicture(
+                minRadius: 18,
+                maxRadius: 18,
+                urlPicture: userProfilePicUrl ?? '',
+              ),
           const SizedBox(width: 8),
 
           // 2) Author name + timestamp + comment body

@@ -52,6 +52,13 @@ class CommenentsFormNotifier extends StateNotifier<CommentsFormState> {
     );
   }
 
+  void onAnonymousChange(bool newValue) {
+    state = state.copyWith(
+      isAnonymous: newValue,
+      isValid: Formz.validate([state.comment]),
+    );
+  }
+
   void clearComment() {
     state.commentController?.clear();
     state = state.copyWith(
@@ -76,6 +83,7 @@ class CommenentsFormNotifier extends StateNotifier<CommentsFormState> {
     state = state.copyWith(
       comment: GenericText.pure(),
       commentController: state.commentController,
+      isAnonymous: false,
       isValid: false,
       status: FormStatus.invalid,
     );

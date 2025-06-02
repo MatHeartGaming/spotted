@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logger/logger.dart';
 
 // Paths
@@ -41,6 +42,11 @@ const String defaulDeepLinkUrl =
 
 // Dev email
 const String devEmail = 'matteo.buompastore088@gmail.com';
+
+// Anonumous Stuff
+const String anonymousText = "Anonymous";
+const IconData anonymousIcon = FontAwesomeIcons.mask;
+const IconData nonAnonymousIcon = FontAwesomeIcons.person;
 
 // Logger
 final logger = Logger();

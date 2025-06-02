@@ -52,12 +52,17 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
     final commentsFormState = ref.read(commentsFormProvider);
     final signedInUser = ref.read(signedInUserProvider);
     final loadComments = ref.read(loadCommentsProvider.notifier);
+    if (signedInUser == null || signedInUser.isEmpty) return;
     commentsFormNotifier.onSumbit(
       onSubmit: () {
         final newComment = Comment(
           text: commentsFormState.comment.value,
-          createdById: signedInUser?.id ?? '',
-          createdByUsername: signedInUser?.username ?? '',
+          createdById:
+              commentsFormState.isAnonymous ? anonymousText : signedInUser.id,
+          createdByUsername:
+              commentsFormState.isAnonymous
+                  ? anonymousText
+                  : signedInUser.username,
           postId: widget.post.id,
         );
 
@@ -66,19 +71,23 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
             .then((updatedComments) {
               final loadPostsNotifier = ref.read(loadPostsProvider.notifier);
               final loadUsersNotifier = ref.read(loadUserProvider.notifier);
-              final updatedUser = signedInUser?.copyWith(
+              final updatedUser = signedInUser.copyWith(
                 comments: [...signedInUser.comments, newComment.id],
               );
               final updatedPost = widget.post.copyWith(
                 commentRefs: [...widget.post.commentRefs, newComment.id],
               );
               loadPostsNotifier.updatePost(updatedPost);
-              if (updatedUser != null && !updatedUser.isEmpty) {
+
+              // Only update user with new comment if it is not an anonymous Comment
+              if (!commentsFormState.isAnonymous) {
                 loadUsersNotifier.updateUser(updatedUser);
               }
               commentsFormNotifier.clearComment();
+              smallVibration();
             })
             .catchError((error) {
+              hardVibration();
               showCustomSnackbar(
                 context,
                 'comments_screen_error_posting_text'.tr(),
@@ -134,10 +143,34 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                           itemCount: sortedComments.length,
                           itemBuilder: (context, index) {
                             final comment = sortedComments[index];
-                            return FadeIn(
-                              duration: Duration(milliseconds: 300),
-                              child: CommentTile(comment: comment),
-                            );
+
+                            // Function to render Comment Row
+                            fadeInComment(Comment comm, {String? profileUrl}) =>
+                                FadeIn(
+                                  duration: Duration(milliseconds: 300),
+                                  child: CommentTile(
+                                    comment: comm,
+                                    userProfilePicUrl: profileUrl,
+                                  ),
+                                );
+                            if (comment.createdById == anonymousText) {
+                              return fadeInComment(comment);
+                            }
+                            return ref
+                                .watch(
+                                  userFutureByIdProvider(comment.createdById),
+                                )
+                                .when(
+                                  data:
+                                      (user) => fadeInComment(
+                                        comment,
+                                        profileUrl: user?.profileImageUrl,
+                                      ),
+                                  error:
+                                      (error, stackTrace) =>
+                                          Text('Error loading comment...'),
+                                  loading: () => LoadingDefaultWidget(),
+                                );
                           },
                         ),
               ),
@@ -145,44 +178,59 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
               const Divider(height: 1),
 
               // ──────── New Comment Input ───────────────────────────────
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: 4,
-                ),
-                child: Row(
-                  children: [
-                    // 1) Text field
-                    Expanded(
-                      child: CommentTextField(
-                        textController: commentsFormState.commentController,
-                        textInputAction: TextInputAction.send,
-                        placeholderText:
-                            'comments_screen_write_comment_placeholder_text'
+              SlideInUp(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8.0,
+                    vertical: 4,
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        tooltip:
+                            (commentsFormState.isAnonymous
+                                    ? 'comments_screen_anonymous_posting_tooltip'
+                                    : 'comments_screen_not_anonymous_posting_tooltip')
                                 .tr(),
-                        onSubmit: (value) => _handleSend(),
-                        onChannge: (newValue) {
-                          ref
-                              .read(commentsFormProvider.notifier)
-                              .onCommentChange(newValue);
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 8),
-
-                    // 2) Send button
-                    commentsFormState.isPosting
-                        ? const SizedBox(
-                          width: 32,
-                          height: 32,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                        : IconButton(
-                          icon: const Icon(Icons.send, color: Colors.blue),
-                          onPressed: _handleSend,
+                        onPressed: () => _anonymousToggleAction(),
+                        icon: Icon(
+                          commentsFormState.isAnonymous
+                              ? anonymousIcon
+                              : nonAnonymousIcon,
                         ),
-                  ],
+                      ),
+
+                      Expanded(
+                        child: CommentTextField(
+                          textController: commentsFormState.commentController,
+                          textInputAction: TextInputAction.send,
+                          placeholderText:
+                              'comments_screen_write_comment_placeholder_text'
+                                  .tr(),
+                          onSubmit: (value) => _handleSend(),
+                          onChannge: (newValue) {
+                            ref
+                                .read(commentsFormProvider.notifier)
+                                .onCommentChange(newValue);
+                          },
+                        ),
+                      ),
+
+                      const SizedBox(width: 8),
+
+                      // 2) Send button
+                      commentsFormState.isPosting
+                          ? const SizedBox(
+                            width: 32,
+                            height: 32,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : IconButton(
+                            icon: const Icon(Icons.send, color: Colors.blue),
+                            onPressed: _handleSend,
+                          ),
+                    ],
+                  ),
                 ),
               ),
 
@@ -193,5 +241,28 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
         ),
       ),
     );
+  }
+
+  void _anonymousToggleAction() {
+    final commentsFormState = ref.read(commentsFormProvider);
+    final signedInUser = ref.read(signedInUserProvider);
+    if (signedInUser == null || signedInUser.isEmpty) return;
+    mediumVibration();
+    ref
+        .read(commentsFormProvider.notifier)
+        .onAnonymousChange(!commentsFormState.isAnonymous);
+    if (!commentsFormState.isAnonymous) {
+      showCustomSnackbar(
+        context,
+        'comments_screen_anonymous_posting_snackbar'.tr(),
+      );
+    } else {
+      showCustomSnackbar(
+        context,
+        'comments_screen_not_anonymous_posting_snackbar'.tr(
+          args: [signedInUser.username],
+        ),
+      );
+    }
   }
 }

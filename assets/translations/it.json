@@ -59,6 +59,10 @@
     "comments_screen_write_comment_placeholder_text": "Scrivi un commento...",
     "comments_screen_no_comments_yet_text": "Non ci sono ancora commenti.\nSii il primo a commentare!",
     "comments_screen_error_posting_text": "Errore durante il caricamento del commento... Riprova",
+    "comments_screen_anonymous_posting_tooltip": "Commento anonimo",
+    "comments_screen_not_anonymous_posting_tooltip": "Commento NON anonimo",
+    "comments_screen_anonymous_posting_snackbar": "Stai commentando in maniera anonima",
+    "comments_screen_not_anonymous_posting_snackbar": "Stai commentando come {}",
 
     "drawer_following_count": "Mi seguono: {}",
     "drawer_profile_item": "Profilo",

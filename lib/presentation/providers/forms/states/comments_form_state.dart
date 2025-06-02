@@ -8,12 +8,14 @@ class CommentsFormState {
   final bool isValid;
   final FormStatus status;
   final GenericText comment;
+  final bool isAnonymous;
 
   // Controllers
   final TextEditingController? commentController;
 
   CommentsFormState({
     this.comment = const GenericText.pure(),
+    this.isAnonymous = false,
     this.commentController,
     this.isValid = false,
     this.status = FormStatus.invalid,
@@ -24,31 +26,36 @@ class CommentsFormState {
   @override
   bool operator ==(covariant CommentsFormState other) {
     if (identical(this, other)) return true;
-
-    return other.isValid == isValid &&
-        other.status == status &&
-        other.comment == comment &&
-        other.commentController == commentController;
+  
+    return 
+      other.isValid == isValid &&
+      other.status == status &&
+      other.comment == comment &&
+      other.isAnonymous == isAnonymous &&
+      other.commentController == commentController;
   }
 
   @override
   int get hashCode {
     return isValid.hashCode ^
-        status.hashCode ^
-        comment.hashCode ^
-        commentController.hashCode;
+      status.hashCode ^
+      comment.hashCode ^
+      isAnonymous.hashCode ^
+      commentController.hashCode;
   }
 
   CommentsFormState copyWith({
     bool? isValid,
     FormStatus? status,
     GenericText? comment,
+    bool? isAnonymous,
     TextEditingController? commentController,
   }) {
     return CommentsFormState(
       isValid: isValid ?? this.isValid,
       status: status ?? this.status,
       comment: comment ?? this.comment,
+      isAnonymous: isAnonymous ?? this.isAnonymous,
       commentController: commentController ?? this.commentController,
     );
   }
