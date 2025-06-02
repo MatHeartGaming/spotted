@@ -53,6 +53,51 @@ class LoadCommentsNotifier extends StateNotifier<LoadCommentsState> {
 
     return state.comments;
   }
+
+  Future<void> updateComment(Comment updatedComment) async {
+    if (state.isLoadingComments) return;
+    state = state.copyWith(isLoadingComments: true);
+
+    final result = await _commentsRepository.updateComment(updatedComment);
+    if (result != null) {
+      // We assume `updateComment` sends back the single updated Comment—or maybe null?
+      // If your repo just returns the updated Comment, manually replace it in state.comments:
+      final idx = state.comments.indexWhere((c) => c.id == updatedComment.id);
+      if (idx != -1) {
+        final newList = List<Comment>.from(state.comments);
+        newList[idx] = updatedComment;
+        state = state.copyWith(isLoadingComments: false, comments: newList);
+      } else {
+        // Fallback: reload all
+        final fresh = await _commentsRepository.getCommentsByPostId(
+          state.comments.first.postId,
+        );
+        state = state.copyWith(isLoadingComments: false, comments: fresh);
+      }
+    } else {
+      // Handle “null” or error…
+      state = state.copyWith(isLoadingComments: false);
+      // Optionally show a SnackBar or throw.
+    }
+  }
+
+  Future<void> deleteComment(String commentId) async {
+    // Set some loading flag if you want; here we’ll just block multiple deletes at once:
+    if (state.isLoadingComments) return;
+
+    state = state.copyWith(isLoadingComments: true);
+
+    // Call the repository
+    await _commentsRepository.deleteCommentById(commentId);
+
+    // If your repository returns null on error, you could guard here.
+    // But since your signature is Future<List<Comment>>, we assume it returns the new list.
+    state = state.copyWith(
+      isLoadingComments: false,
+      comments: state.comments.where((c) => c.id != commentId).toList(),
+    );
+    logger.i('Comments after deletion: ${state.comments}');
+  }
 }
 
 class LoadCommentsState {

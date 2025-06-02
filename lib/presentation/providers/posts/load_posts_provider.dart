@@ -21,17 +21,19 @@ final loadPostFutureProvider = FutureProvider.family<Post?, String>((
   return post;
 });
 
-final loadPostsProvider =
-    StateNotifierProvider<LoadPostsNotifier, LoadPostsState>((ref) {
+final loadPostsProvider = StateNotifierProvider<
+  LoadPostsNotifier,
+  LoadPostsState
+>((ref) {
   final postsRepo = ref.watch(postsRepositoryProvider);
   // We do NOT call `ref.watch(signedInUserProvider)` here.
   // Instead, pass `ref` into the notifier so it can read the user on demand.
   return LoadPostsNotifier(ref, postsRepo);
 });
 
-
 class LoadPostsNotifier extends StateNotifier<LoadPostsState> {
-  final Ref _ref; //! <–– In order to not trigger rebuilds of this Notifier and loose posts!!!
+  final Ref
+  _ref; //! <–– In order to not trigger rebuilds of this Notifier and loose posts!!!
   final PostsRepository _postsRepository;
 
   LoadPostsNotifier(this._ref, this._postsRepository) : super(LoadPostsState());

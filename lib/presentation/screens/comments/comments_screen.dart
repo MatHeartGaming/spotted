@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
+import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
@@ -82,6 +83,9 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
               // Only update user with new comment if it is not an anonymous Comment
               if (!commentsFormState.isAnonymous) {
                 loadUsersNotifier.updateUser(updatedUser);
+                ref
+                    .read(signedInUserProvider.notifier)
+                    .update((state) => updatedUser);
               }
               commentsFormNotifier.clearComment();
               smallVibration();
@@ -143,34 +147,12 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                           itemCount: sortedComments.length,
                           itemBuilder: (context, index) {
                             final comment = sortedComments[index];
-
-                            // Function to render Comment Row
-                            fadeInComment(Comment comm, {String? profileUrl}) =>
-                                FadeIn(
-                                  duration: Duration(milliseconds: 300),
-                                  child: CommentTile(
-                                    comment: comm,
-                                    userProfilePicUrl: profileUrl,
-                                  ),
-                                );
-                            if (comment.createdById == anonymousText) {
-                              return fadeInComment(comment);
-                            }
-                            return ref
-                                .watch(
-                                  userFutureByIdProvider(comment.createdById),
-                                )
-                                .when(
-                                  data:
-                                      (user) => fadeInComment(
-                                        comment,
-                                        profileUrl: user?.profileImageUrl,
-                                      ),
-                                  error:
-                                      (error, stackTrace) =>
-                                          Text('Error loading comment...'),
-                                  loading: () => LoadingDefaultWidget(),
-                                );
+                            return _CommentItem(
+                              comment: comment,
+                              onEditPressed: () => _showEditDialog(comment),
+                              onDeletePressed:
+                                  () => _deleteCommentAction(comment),
+                            );
                           },
                         ),
               ),
@@ -264,5 +246,183 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
         ),
       );
     }
+  }
+
+  Future<void> _deleteCommentAction(Comment comment) async {
+    final commentsFormNotifier = ref.read(commentsFormProvider.notifier);
+    final signedInUser = ref.read(signedInUserProvider);
+    if (signedInUser == null || signedInUser.isEmpty) return;
+
+    await ref
+        .read(loadCommentsProvider.notifier)
+        .deleteComment(comment.id)
+        .then((value) {
+          final loadPostsNotifier = ref.read(loadPostsProvider.notifier);
+          final loadUsersNotifier = ref.read(loadUserProvider.notifier);
+
+          // 2) Remove the comment ID from the post’s commentRefs list:
+          final updatedPost = widget.post.copyWith(
+            commentRefs:
+                widget.post.commentRefs
+                    .where((cId) => cId != comment.id)
+                    .toList(),
+          );
+
+          // 3) Push the updated post into your posts‐notifier:
+          loadPostsNotifier.updatePost(updatedPost);
+
+          // 4) Only update the user if this wasn’t an anonymous comment:
+          if (comment.createdById != anonymousText) {
+            final updatedUser = signedInUser.copyWith(
+              comments:
+                  signedInUser.comments
+                      .where((cId) => cId != comment.id)
+                      .toList(),
+            );
+            loadUsersNotifier.updateUser(updatedUser);
+            ref
+                .read(signedInUserProvider.notifier)
+                .update((state) => updatedUser);
+          }
+          mediumVibration();
+          showCustomSnackbar(
+            context,
+            'comments_screen_delete_comment_success_snackbar'.tr(),
+            backgroundColor: colorSuccess,
+          );
+        })
+        .catchError((error) {
+          hardVibration();
+          showCustomSnackbar(
+            context,
+            'comments_screen_error_deleting_text'.tr(),
+            backgroundColor: colorNotOkButton,
+          );
+        })
+        .whenComplete(() {
+          commentsFormNotifier.resetFormStatus();
+          FocusScope.of(context).unfocus();
+        });
+  }
+
+  void _showEditDialog(Comment comment) {
+    final controller = TextEditingController(text: comment.text);
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('comments_screen_edit_comment_alert_title').tr(),
+          content: TextField(
+            controller: controller,
+            maxLines: null,
+            decoration: InputDecoration(
+              hintText: 'comments_screen_write_new_comment_hint_text'.tr(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('cancel_text').tr(),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final newText = controller.text.trim();
+                if (newText.isNotEmpty && newText != comment.text) {
+                  // Create a copy of the Comment with updated text:
+                  final updated = comment.copyWith(text: newText);
+                  await ref
+                      .read(loadCommentsProvider.notifier)
+                      .updateComment(updated);
+                }
+                Navigator.of(ctx).pop();
+              },
+              child: const Text('save_text').tr(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _CommentItem extends ConsumerWidget {
+  final Comment comment;
+  final VoidCallback? onEditPressed;
+  final VoidCallback? onDeletePressed;
+  const _CommentItem({
+    required this.comment,
+    required this.onEditPressed,
+    required this.onDeletePressed,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 1) Access the signed‐in user
+    final signedIn = ref.watch(signedInUserProvider);
+    final isOwnComment = signedIn?.id == comment.createdById;
+
+    // 2) Anonymous‐vs‐“load user profile” logic (unchanged):
+    if (comment.createdById == anonymousText) {
+      return _fadeInComment(
+        context: context,
+        comment: comment,
+        isOwnComment: false, // you can’t edit an anonymous comment
+      );
+    }
+
+    final userAsync = ref.watch(userFutureByIdProvider(comment.createdById));
+    return userAsync.when(
+      data: (user) {
+        // 3) Build the FadeIn with correct flags & callbacks:
+        return _fadeInComment(
+          context: context,
+          comment: comment,
+          profileUrl: user?.profileImageUrl,
+          isOwnComment: isOwnComment,
+          onUserInfoTapped: () {
+            pushToProfileScreen(context, user: user!);
+          },
+          onEditPressed:
+              isOwnComment
+                  ? () {
+                    if (onEditPressed == null) return;
+                    onEditPressed!();
+                  }
+                  : null,
+          onDeletePressed:
+              isOwnComment
+                  ? () async {
+                    if (onDeletePressed == null) return;
+                    onDeletePressed!();
+                  }
+                  : null,
+        );
+      },
+      loading: () => const LoadingDefaultWidget(),
+      error: (err, stack) => const Text('Error loading comment…'),
+    );
+  }
+
+  // Helper to wrap CommentTile in FadeIn (same as before), but now with new params:
+  Widget _fadeInComment({
+    required BuildContext context,
+    required Comment comment,
+    String? profileUrl,
+    VoidCallback? onUserInfoTapped,
+    bool isOwnComment = false,
+    VoidCallback? onEditPressed,
+    VoidCallback? onDeletePressed,
+  }) {
+    return FadeIn(
+      duration: const Duration(milliseconds: 300),
+      child: CommentTile(
+        comment: comment,
+        userProfilePicUrl: profileUrl,
+        onUserInfoTapped: onUserInfoTapped,
+        isOwnComment: isOwnComment,
+        onEditPressed: onEditPressed,
+        onDeletePressed: onDeletePressed,
+      ),
+    );
   }
 }

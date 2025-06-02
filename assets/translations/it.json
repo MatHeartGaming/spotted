@@ -63,6 +63,9 @@
     "comments_screen_not_anonymous_posting_tooltip": "Commento NON anonimo",
     "comments_screen_anonymous_posting_snackbar": "Stai commentando in maniera anonima",
     "comments_screen_not_anonymous_posting_snackbar": "Stai commentando come {}",
+    "comments_screen_write_new_comment_hint_text": "Scrivi nuovo commento",
+    "comments_screen_edit_comment_alert_title": "Modifica commento",
+    "comments_screen_delete_comment_success_snackbar": "Commento eliminato con successo",
 
     "drawer_following_count": "Mi seguono: {}",
     "drawer_profile_item": "Profilo",

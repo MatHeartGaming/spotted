@@ -1,12 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_chat_reactions/model/menu_item.dart';
 import 'package:flutter_chat_reactions/utilities/default_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/providers/providers.dart';
+import 'package:spotted/presentation/screens/screens.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 void handleContextMenuPostItemAction(WidgetRef ref, MenuItem item, Post post) {
@@ -15,6 +17,8 @@ void handleContextMenuPostItemAction(WidgetRef ref, MenuItem item, Post post) {
       _copyPostAction(ref, post);
     case DefaultData.delete:
       _deletePostAction(ref, post);
+    case DefaultData.reply:
+      _openCommentsScreen(ref.context, post);
   }
 }
 
@@ -27,6 +31,19 @@ void _copyPostAction(WidgetRef ref, Post post) {
     context,
     'post_text_copied_success_snackbar_text'.tr(),
     backgroundColor: colorSuccess,
+  );
+}
+
+void _openCommentsScreen(BuildContext context, Post post) {
+  showCustomBottomSheet(
+    context,
+    child: CommentsScreen(
+      post: post,
+      comments: post.comments,
+      onPostComment: (postId, commentText) async {
+        logger.i('Comment on: $postId - $commentText');
+      },
+    ),
   );
 }
 
