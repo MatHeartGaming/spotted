@@ -208,8 +208,14 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                           : IconButton(
-                            icon: const Icon(Icons.send, color: Colors.blue),
-                            onPressed: _handleSend,
+                            icon: Icon(
+                              Icons.send,
+                              color:
+                                  commentsFormState.comment.isValid
+                                      ? Colors.blue
+                                      : Colors.grey,
+                            ),
+                            onPressed: commentsFormState.isValid ? _handleSend : null,
                           ),
                     ],
                   ),
