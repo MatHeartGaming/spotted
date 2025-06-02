@@ -109,4 +109,9 @@ class Comment {
 
   @override
   int get hashCode => id.hashCode;
+
+  @override
+  String toString() {
+    return 'Comment(id: $id, text: $text, postId: $postId, createdById: $createdById, createdByUsername: $createdByUsername, postedIn: $postedIn, dateCreated: $dateCreated, replies: $replies, reactions: $reactions)';
+  }
 }

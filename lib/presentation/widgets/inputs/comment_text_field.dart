@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CommentTextField extends StatelessWidget {
-  final TextEditingController textController;
+  final TextEditingController? textController;
   final TextInputAction textInputAction;
   final String placeholderText;
   final Function(String) onSubmit;

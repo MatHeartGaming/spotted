@@ -33,6 +33,26 @@ class LoadCommentsNotifier extends StateNotifier<LoadCommentsState> {
 
     return comments;
   }
+
+  Future<List<Comment>> createComment(Comment comment) async {
+    if (state.isLoadingComments) return state.comments;
+    state = state.copyWith(isLoadingComments: true);
+
+    final newComment = await _commentsRepository.createComment(comment);
+
+    if (newComment == null) {
+      throw Exception('An error occurred while creating the comment $comment');
+    }
+
+    state = state.copyWith(
+      isLoadingComments: false,
+      comments: [...state.comments, comment],
+    );
+
+    logger.d('Commenti: $comment');
+
+    return state.comments;
+  }
 }
 
 class LoadCommentsState {

@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:animate_do/animate_do.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,9 +30,6 @@ class CommentsScreen extends ConsumerStatefulWidget {
 }
 
 class _CommentsScreenState extends ConsumerState<CommentsScreen> {
-  final TextEditingController _textController = TextEditingController();
-  bool _isPosting = false;
-
   @override
   void initState() {
     super.initState();
@@ -40,7 +38,6 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
 
   @override
   void dispose() {
-    _textController.dispose();
     super.dispose();
   }
 
@@ -51,30 +48,49 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
   }
 
   Future<void> _handleSend() async {
-    final text = _textController.text.trim();
-    if (text.isEmpty) return;
+    final commentsFormNotifier = ref.read(commentsFormProvider.notifier);
+    final commentsFormState = ref.read(commentsFormProvider);
+    final signedInUser = ref.read(signedInUserProvider);
+    final loadComments = ref.read(loadCommentsProvider.notifier);
+    commentsFormNotifier.onSumbit(
+      onSubmit: () {
+        final newComment = Comment(
+          text: commentsFormState.comment.value,
+          createdById: signedInUser?.id ?? '',
+          createdByUsername: signedInUser?.username ?? '',
+          postId: widget.post.id,
+        );
 
-    // Prevent double-tap:
-    setState(() {
-      _isPosting = true;
-    });
-
-    try {
-      await widget.onPostComment(widget.post.id, text);
-      _textController.clear();
-      // Optionally: close the keyboard
-      FocusScope.of(context).unfocus();
-    } catch (e) {
-      // Handle error (show a SnackBar, etc.)
-      showCustomSnackbar(context, 'comments_screen_error_posting_text'.tr());
-      logger.e('Error posting comment: $e');
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isPosting = false;
-        });
-      }
-    }
+        loadComments
+            .createComment(newComment)
+            .then((updatedComments) {
+              final loadPostsNotifier = ref.read(loadPostsProvider.notifier);
+              final loadUsersNotifier = ref.read(loadUserProvider.notifier);
+              final updatedUser = signedInUser?.copyWith(
+                comments: [...signedInUser.comments, newComment.id],
+              );
+              final updatedPost = widget.post.copyWith(
+                commentRefs: [...widget.post.commentRefs, newComment.id],
+              );
+              loadPostsNotifier.updatePost(updatedPost);
+              if (updatedUser != null && !updatedUser.isEmpty) {
+                loadUsersNotifier.updateUser(updatedUser);
+              }
+              commentsFormNotifier.clearComment();
+            })
+            .catchError((error) {
+              showCustomSnackbar(
+                context,
+                'comments_screen_error_posting_text'.tr(),
+                backgroundColor: colorNotOkButton,
+              );
+            })
+            .whenComplete(() {
+              commentsFormNotifier.resetFormStatus();
+              FocusScope.of(context).unfocus();
+            });
+      },
+    );
   }
 
   @override
@@ -82,10 +98,9 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
     final bottomPadding = MediaQuery.paddingOf(context).bottom;
 
     final commentsState = ref.watch(loadCommentsProvider);
+    final commentsFormState = ref.watch(commentsFormProvider);
 
-    // Sort comments by dateCreated ascending (oldest first) so newer ones appear at bottom:
-    final sortedComments = List<Comment>.from(commentsState.comments)
-      ..sort((a, b) => a.dateCreated.compareTo(b.dateCreated));
+    final sortedComments = List<Comment>.from(commentsState.comments);
 
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -119,7 +134,10 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                           itemCount: sortedComments.length,
                           itemBuilder: (context, index) {
                             final comment = sortedComments[index];
-                            return _CommentTile(comment: comment);
+                            return FadeIn(
+                              duration: Duration(milliseconds: 300),
+                              child: CommentTile(comment: comment),
+                            );
                           },
                         ),
               ),
@@ -137,20 +155,24 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                     // 1) Text field
                     Expanded(
                       child: CommentTextField(
-                        textController: _textController,
+                        textController: commentsFormState.commentController,
                         textInputAction: TextInputAction.send,
                         placeholderText:
                             'comments_screen_write_comment_placeholder_text'
                                 .tr(),
-                        onSubmit: (value) {},
-                        onChannge: (newValue) {},
+                        onSubmit: (value) => _handleSend(),
+                        onChannge: (newValue) {
+                          ref
+                              .read(commentsFormProvider.notifier)
+                              .onCommentChange(newValue);
+                        },
                       ),
                     ),
 
                     const SizedBox(width: 8),
 
                     // 2) Send button
-                    _isPosting
+                    commentsFormState.isPosting
                         ? const SizedBox(
                           width: 32,
                           height: 32,
@@ -169,72 +191,6 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// --------------------------------------------------------------------------------
-/// A single tile showing one comment.
-/// Displays author name, date, and comment body.
-///
-/// If you want to show reactions or “reply” buttons, you can expand this widget.
-class _CommentTile extends StatelessWidget {
-  final Comment comment;
-  final String? userProfilePicUrl;
-  const _CommentTile({required this.comment, this.userProfilePicUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    final formattedDate = DateFormat.yMMMd().add_jm().format(
-      comment.dateCreated,
-    );
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 1) (Optional) You might put a user avatar or placeholder circle here.
-          //const CircleAvatar(radius: 16, child: Icon(Icons.person, size: 16)),
-          CirclePicture(
-            minRadius: 18,
-            maxRadius: 18,
-            urlPicture: userProfilePicUrl?? ''
-          ),
-          const SizedBox(width: 8),
-
-          // 2) Author name + timestamp + comment body
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Author + date
-                Row(
-                  children: [
-                    Text(
-                      comment.createdByUsername,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      formattedDate,
-                      style: const TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 4),
-
-                // Comment body (text)
-                Text(comment.text, style: const TextStyle(fontSize: 14)),
-
-                // ─ You could add “Reply” or reaction icons here if desired ─
-                // For now, we leave it simple.
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

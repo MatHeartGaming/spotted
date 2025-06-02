@@ -39,7 +39,9 @@ class CommentsDatasourceMockImpl implements CommentsDatasource {
     int randomTime = rng.nextInt(300);
     return await Future.delayed(
       Duration(milliseconds: randomTime),
-      () => mockComments.where((c) => c.postId == postId).toList(),
+      () =>
+          mockComments.where((c) => c.postId == postId).toList()
+            ..sort((a, b) => a.dateCreated.compareTo(b.dateCreated)),
     );
   }
 
@@ -55,7 +57,8 @@ class CommentsDatasourceMockImpl implements CommentsDatasource {
                 (c) =>
                     (c.postedIn ?? '').toLowerCase().trim().contains(postedIn),
               )
-              .toList(),
+              .toList()
+            ..sort((a, b) => a.dateCreated.compareTo(b.dateCreated)),
     );
   }
 
@@ -83,7 +86,8 @@ class CommentsDatasourceMockImpl implements CommentsDatasource {
               .where(
                 (c) => c.createdById.toLowerCase().trim().contains(createdById),
               )
-              .toList(),
+              .toList()
+            ..sort((a, b) => a.dateCreated.compareTo(b.dateCreated)),
     );
   }
 
@@ -102,7 +106,8 @@ class CommentsDatasourceMockImpl implements CommentsDatasource {
                   createdByUsername,
                 ),
               )
-              .toList(),
+              .toList()
+            ..sort((a, b) => a.dateCreated.compareTo(b.dateCreated)),
     );
   }
 
@@ -112,7 +117,8 @@ class CommentsDatasourceMockImpl implements CommentsDatasource {
     int randomTime = rng.nextInt(300);
     return await Future.delayed(Duration(milliseconds: randomTime), () {
       mockComments.removeWhere((c) => c.id == id);
-      return mockComments;
+      return mockComments
+        ..sort((a, b) => a.dateCreated.compareTo(b.dateCreated));
     });
   }
 }

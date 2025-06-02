@@ -8,6 +8,7 @@ export 'package:spotted/presentation/widgets/shared/custom_bottom_sheets.dart';
 export 'package:spotted/presentation/widgets/shared/chips_grid_view.dart';
 export 'package:spotted/presentation/widgets/shared/navigation/profile_app_bar.dart';
 export 'package:spotted/presentation/widgets/shared/user/user_info_row.dart';
+export 'package:spotted/presentation/widgets/shared/comments/comment_widget.dart';
 
 // Navigation
 export 'package:spotted/presentation/widgets/shared/navigation/drawer_content.dart';
