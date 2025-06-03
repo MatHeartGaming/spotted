@@ -7,8 +7,10 @@ class FirebaseAuthDatasourceImpl implements AuthDatasource {
   final _auth = FirebaseAuth.instance;
 
   @override
-  Future<(LoginSignupMessages?, UserCredential?)> createAccount(
-      {required String email, required String password}) async {
+  Future<(LoginSignupMessages?, UserCredential?)> createAccount({
+    required String email,
+    required String password,
+  }) async {
     try {
       final credential = await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -32,8 +34,10 @@ class FirebaseAuthDatasourceImpl implements AuthDatasource {
   }
 
   @override
-  Future<(LoginSignupMessages?, UserCredential?)> loginIntoAccount(
-      {required String email, required String password}) async {
+  Future<(LoginSignupMessages?, UserCredential?)> loginIntoAccount({
+    required String email,
+    required String password,
+  }) async {
     try {
       final credential = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -101,10 +105,8 @@ class FirebaseAuthDatasourceImpl implements AuthDatasource {
 
   @override
   Future<void> deleteUser() async {
-    _auth.currentUser?.delete().onError(
-      (error, stackTrace) {
-        logger.e(error.toString());
-      },
-    );
+    _auth.currentUser?.delete().onError((error, stackTrace) {
+      logger.e(error.toString());
+    });
   }
 }

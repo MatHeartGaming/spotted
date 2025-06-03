@@ -7,3 +7,4 @@ export 'package:spotted/infrastructure/datasources/comments_datasource_mock_impl
 export 'package:spotted/infrastructure/datasources/community_datasource_firebase_impl.dart';
 export 'package:spotted/infrastructure/datasources/community_datasource_mock_impl.dart';
 export 'package:spotted/infrastructure/datasources/auth/firebase_auth_password_datasource_impl.dart';
+export 'package:spotted/infrastructure/datasources/app_configs_datasource_impl.dart';
