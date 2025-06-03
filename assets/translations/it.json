@@ -128,6 +128,14 @@
 
     "community_already_exists_exception": "Comunità con nome {} già esistente. Scegliere un altro nome.",
 
+    "maintenance_screen_go_to_store_btn_txt": "Vai allo Store",
+    "maintenance_screen_no_connection_text": "Nessuna connessione Internet o VPN attiva",
+    "maintenance_screen_no_connection_subtitle": "Prova a connetterti a una rete wifi o ad attivare i dati. Se utilizzi una VPN, per favore, disattivala.",
+    "maintenance_screen_update_available_text": "È disponibile un aggiornamento",
+    "maintenance_screen_update_available_subtitle": "Per favore, aggiorna l'app all'ultima versione per poter continuare a usarla in tutta comodità.",
+    "maintenance_screen_app_under_maintenance_text": "L'app è in manutenzione",
+    "maintenance_screen_app_under_maintenance_subtitle": "Per favore, torna più tardi..",
+
     "ok_text": "OK",
     "go_to_home_page_tooltip_text": "Vai alla Home",
     "admin_text": "Admin: {}",

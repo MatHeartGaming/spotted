@@ -116,7 +116,9 @@ class LoginScreen extends ConsumerWidget {
                         ),
                         TextButton(
                             onPressed: () {
-                              
+                              ref.read(showLoginSignupProvider.notifier).update(
+                                    (state) => !state,
+                                  );
                             },
                             child: const Text(
                                     "login_screen_signup_title_with_args")

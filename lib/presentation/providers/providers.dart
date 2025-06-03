@@ -51,3 +51,6 @@ export 'package:spotted/presentation/providers/home_search/home_search_provider.
 // Auth
 export 'package:spotted/presentation/providers/auth/auth_repository_provider.dart';
 export 'package:spotted/presentation/providers/auth/auth_status_provider.dart';
+
+// Connectivity
+export 'package:spotted/presentation/providers/connectivity/connectivity_provider.dart';

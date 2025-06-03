@@ -49,3 +49,6 @@ export 'package:spotted/presentation/screens/login/login_screen.dart';
 export 'package:spotted/presentation/screens/login/login_signup_view.dart';
 export 'package:spotted/presentation/screens/login/signup_screen.dart';
 export 'package:spotted/presentation/screens/login/verify_email_screen.dart';
+
+// Maintenance
+export 'package:spotted/presentation/screens/maintenance_or_no_connection/maintenance_no_connection_screen.dart';

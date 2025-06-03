@@ -9,7 +9,7 @@ class AppConfigsRepositoryImpl implements AppconfigsRepository {
   final AppconfigsDatasource _db;
 
   AppConfigsRepositoryImpl([AppconfigsDatasource? db])
-      : _db = db ?? AppConfigsDatasourceImpl();
+      : _db = db ?? AppConfigsMockDatasourceImpl();
 
   @override
   Future<AppConfigs> getAppConfigs() async {

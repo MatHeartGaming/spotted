@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spotted/config/constants/app_constants.dart';
+import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
+import 'package:spotted/presentation/providers/app_configs/app_configs_provider.dart';
+import 'package:spotted/presentation/providers/providers.dart';
+import 'package:spotted/presentation/screens/error/maintenance_errors.dart';
 
 import '../../presentation/screens/screens.dart';
 
@@ -127,6 +132,42 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
+        name: MaintenanceNoConnectionScreen.name,
+        path: '/maintenance/:issue',
+        builder: (context, state) {
+          String issue =
+              state.pathParameters['issue'] ??
+              MaintenanceErrors.maintenance.name;
+          switch (issue) {
+            case 'noConnection':
+              return MaintenanceNoConnectionScreen(
+                firstText: 'maintenance_screen_no_connection_text'.tr(),
+                secondText: 'maintenance_screen_no_connection_subtitle'.tr(),
+                imageAsset: 'no_wifi.jpg',
+                issue: MaintenanceErrors.noConnection,
+              );
+            case 'iOSBuildNumberIsHigher' || 'androidBuildNumberIsHigher':
+              return MaintenanceNoConnectionScreen(
+                firstText: 'maintenance_screen_update_available_text'.tr(),
+                secondText: 'maintenance_screen_update_available_subtitle'.tr(),
+                imageAsset: Environment.updateAppImage,
+                issue:
+                    Platform.isAndroid
+                        ? MaintenanceErrors.androidBuildNumberIsHigher
+                        : MaintenanceErrors.iOSBuildNumberIsHigher,
+              );
+            default:
+              return MaintenanceNoConnectionScreen(
+                firstText: 'maintenance_screen_app_under_maintenance_text'.tr(),
+                secondText:
+                    'maintenance_screen_app_under_maintenance_subtitle'.tr(),
+                imageAsset: Environment.maintenanceImage,
+              );
+          }
+        },
+      ),
+
+      GoRoute(
         name: ChatsScreen.name,
         path: chatsPath,
         builder: (context, state) => const ChatsScreen(),
@@ -139,12 +180,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
-          name: LoginSignupView.name,
-          path: loginPath,
-          builder: (context, state) {
-            return const LoginSignupView();
-          },
-        ),
+        name: LoginSignupView.name,
+        path: loginPath,
+        builder: (context, state) {
+          return const LoginSignupView();
+        },
+      ),
 
       GoRoute(
         name: HomeScreen.name,
@@ -163,10 +204,47 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     ],
     redirect: (context, state) {
       final isGoingTo = state.matchedLocation;
-      if (isGoingTo == basePath) {
-        return '$homePath/0';
-      }
 
+      final isConnected = ref.watch(connectivityProvider);
+      //final platformInfos = ref.watch(platformInfoProvider);
+      final signedInUser = ref.watch(signedInUserProvider);
+      final authStatus = ref.watch(authStatusProvider).authStatus;
+      //final authRepo = ref.watch(authPasswordRepositoryProvider);
+      //final appConfigsStateAsync = ref.watch(appConfigsFutureProvider);
+      if (isConnected) {
+        if (signedInUser == null || authStatus == AuthStatus.notAuthenticated) {
+          return loginPath;
+        }
+        if (isGoingTo == basePath) {
+          return '$homePath/0';
+        }
+        /*return appConfigsStateAsync.when(
+            data: (configs) async {
+              
+              
+
+              final localBuildNumber = await platformInfos.getBuildNumber();
+              if (Platform.isIOS) {
+                if (configs.buildNumberIos > localBuildNumber) {
+                  return '/maintenance/${MaintenanceErrors.iOSBuildNumberIsHigher.name}';
+                }
+              } else {
+                if (configs.buildNumberAndroid > localBuildNumber) {
+                  return '/maintenance/${MaintenanceErrors.androidBuildNumberIsHigher.name}';
+                }
+              }
+              return isGoingTo;
+            },
+            loading: () => loadingPath,
+            error: (Object error, StackTrace stackTrace) {
+              logger.e('Error while routing: $error');
+              logger.e('StackTrace while routing: $stackTrace');
+              return null;
+            },
+          );*/
+      } else {
+        return '/maintenance/${MaintenanceErrors.noConnection.name}';
+      }
       return isGoingTo;
     },
   );

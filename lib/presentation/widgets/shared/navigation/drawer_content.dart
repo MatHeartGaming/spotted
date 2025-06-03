@@ -54,6 +54,17 @@ class DrawerContent extends ConsumerWidget {
                           minRadius: 20,
                           maxRadius: 20,
                         ),
+
+                        TextButton.icon(
+                          onPressed: () => _logout(ref),
+                          label: Row(
+                            spacing: 5,
+                            children: [
+                              Text("logout_text", style: TextStyle(color: colorNotOkButton),).tr(),
+                              Icon(Icons.logout_outlined, color: colorNotOkButton),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                     Text(
@@ -170,5 +181,11 @@ class DrawerContent extends ConsumerWidget {
           loadPostsNotifier.loadPostedByMe();
           loadPostsNotifier.loadPostedByFriendsId();
         });
+  }
+
+  void _logout(WidgetRef ref) {
+    ref.read(authStatusProvider.notifier).logout().then((value) {
+      ref.read(signedInUserProvider.notifier).update((state) => null);
+    });
   }
 }

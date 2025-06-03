@@ -1,5 +1,7 @@
 import 'package:spotted/domain/models/models.dart';
 
+AppConfigs mockAppConfig = AppConfigs.empty();
+
 final mockUsers = [
   User(
     id: '1',
@@ -10,9 +12,15 @@ final mockUsers = [
     profileImageUrl: 'https://i.pravatar.cc/150?img=1',
     dateCreated: DateTime.now().subtract(const Duration(days: 790)),
     features: ['feature3'],
-    communitiesSubs: ['35321234-e3d1-47f5-a46d-86fd88890e79', '3e6e2e75-aa4f-4d6d-9520-0082016d72fd'],
+    communitiesSubs: [
+      '35321234-e3d1-47f5-a46d-86fd88890e79',
+      '3e6e2e75-aa4f-4d6d-9520-0082016d72fd',
+    ],
     friendsRefs: ['1', '2', '3', 'user_001'],
-    posted: ['edc77ef7-dd5b-4f69-93fe-a39152cc403f', 'b61a85c3-ed49-4b78-ac94-3ea2efe06de4'],
+    posted: [
+      'edc77ef7-dd5b-4f69-93fe-a39152cc403f',
+      'b61a85c3-ed49-4b78-ac94-3ea2efe06de4',
+    ],
     comments: ['6274f327-2dd2-4960-bb4d-894aadbc13e3'],
     reactions: {},
   ),
@@ -27,7 +35,10 @@ final mockUsers = [
     features: ['feature4', 'feature3'],
     communitiesSubs: [],
     friendsRefs: [],
-    posted: ['2e2ecc76-e787-43e2-8aa0-660a0477d900', 'a9f360e2-fa0a-4f70-b542-22fe16e6811e'],
+    posted: [
+      '2e2ecc76-e787-43e2-8aa0-660a0477d900',
+      'a9f360e2-fa0a-4f70-b542-22fe16e6811e',
+    ],
     comments: ['de48f182-a226-4ccd-bbec-c0e5ec0d96cf'],
     reactions: {},
   ),
@@ -40,7 +51,10 @@ final mockUsers = [
     profileImageUrl: 'https://i.pravatar.cc/150?img=9',
     dateCreated: DateTime.now().subtract(const Duration(days: 615)),
     features: ['feature4', 'feature4', 'feature4'],
-    communitiesSubs: ['35321234-e3d1-47f5-a46d-86fd88890e79', '3e6e2e75-aa4f-4d6d-9520-0082016d72fd'],
+    communitiesSubs: [
+      '35321234-e3d1-47f5-a46d-86fd88890e79',
+      '3e6e2e75-aa4f-4d6d-9520-0082016d72fd',
+    ],
     friendsRefs: [],
     posted: [''],
     comments: ['e3ad6295-2936-4610-a1e0-ce285363edf7'],
@@ -139,7 +153,9 @@ final mockPosts = [
     postedIn: null,
     dateCreated: DateTime.now().subtract(const Duration(days: 779)),
     commentRefs: ['6274f327-2dd2-4960-bb4d-894aadbc13e3'],
-    pictureUrls: ['https://example.com/post_edc77ef7-dd5b-4f69-93fe-a39152cc403f.jpg'],
+    pictureUrls: [
+      'https://example.com/post_edc77ef7-dd5b-4f69-93fe-a39152cc403f.jpg',
+    ],
     reactions: {'5283fcfc-4c5c-485d-80b3-2c4e7905fb3f': '❤️'},
   ),
   Post(
@@ -151,7 +167,9 @@ final mockPosts = [
     postedIn: null,
     dateCreated: DateTime.now().subtract(const Duration(days: 500)),
     commentRefs: [],
-    pictureUrls: ['https://example.com/post_b61a85c3-ed49-4b78-ac94-3ea2efe06de4.jpg'],
+    pictureUrls: [
+      'https://example.com/post_b61a85c3-ed49-4b78-ac94-3ea2efe06de4.jpg',
+    ],
     reactions: {},
   ),
   Post(
@@ -163,11 +181,12 @@ final mockPosts = [
     postedIn: 'community_123',
     dateCreated: DateTime.now().subtract(const Duration(days: 400)),
     commentRefs: ['6274f327-2dd2-4960-bb4d-894aadbc13e3'],
-    pictureUrls: ['https://example.com/post_a9f360e2-fa0a-4f70-b542-22fe16e6811e.jpg'],
+    pictureUrls: [
+      'https://example.com/post_a9f360e2-fa0a-4f70-b542-22fe16e6811e.jpg',
+    ],
     reactions: {'5283fcfc-4c5c-485d-80b3-2c4e7905fb3f': '❤️'},
   ),
 ];
-
 
 final mockComments = [
   Comment(
