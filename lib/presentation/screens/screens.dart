@@ -43,3 +43,9 @@ export 'package:spotted/presentation/screens/search/home_search_screen.dart';
 
 // Comments
 export 'package:spotted/presentation/screens/comments/comments_screen.dart';
+
+// Login
+export 'package:spotted/presentation/screens/login/login_screen.dart';
+export 'package:spotted/presentation/screens/login/login_signup_view.dart';
+export 'package:spotted/presentation/screens/login/signup_screen.dart';
+export 'package:spotted/presentation/screens/login/verify_email_screen.dart';

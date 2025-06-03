@@ -139,6 +139,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
+          name: LoginSignupView.name,
+          path: loginPath,
+          builder: (context, state) {
+            return const LoginSignupView();
+          },
+        ),
+
+      GoRoute(
         name: HomeScreen.name,
         path: '$homePath/:page',
         builder: (context, state) {

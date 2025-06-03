@@ -33,6 +33,10 @@ export 'package:spotted/presentation/providers/utility/image_picker_provider.dar
 export 'package:spotted/presentation/providers/forms/create_post_form_provider.dart';
 export 'package:spotted/presentation/providers/forms/create_community_form_provider.dart';
 export 'package:spotted/presentation/providers/forms/comments_form_provider.dart';
+export 'package:spotted/presentation/providers/forms/login/login_form_provider.dart';
+export 'package:spotted/presentation/providers/forms/login_show_passwords_providers.dart';
+export 'package:spotted/presentation/providers/forms/show_login_signup_provider.dart';
+export 'package:spotted/presentation/providers/forms/signup_form_provider.dart';
 
 // Clipboard
 export 'package:spotted/presentation/providers/clipboard/clipboard_provider.dart';
@@ -43,3 +47,7 @@ export 'package:spotted/presentation/providers/comments/load_comments_provider.d
 
 // Home Search
 export 'package:spotted/presentation/providers/home_search/home_search_provider.dart';
+
+// Auth
+export 'package:spotted/presentation/providers/auth/auth_repository_provider.dart';
+export 'package:spotted/presentation/providers/auth/auth_status_provider.dart';
