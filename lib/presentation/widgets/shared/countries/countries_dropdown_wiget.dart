@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:spotted/config/config.dart';
 
@@ -33,7 +34,7 @@ class CountrySelector extends StatelessWidget {
       fieldDecoration: FieldDecoration(
         hintText: 'login_screen_countries_hint_text'.tr(),
         hintStyle: TextStyle(color: colors.primary),
-        prefixIcon: const Icon(CupertinoIcons.flag),
+        prefixIcon: const Icon(FontAwesomeIcons.flag),
         showClearIcon: false,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

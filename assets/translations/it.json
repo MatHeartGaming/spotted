@@ -47,6 +47,15 @@
     "login_screen_select_your_country_text": "Seleziona il tuo paese",
     "login_screen_validation_country_text": "Per favore, seleziona il tuo paese",
 
+    "login_signupe_success": "L'operazione è stata completata con successo.",
+    "login_signupe_weak_password_error": "La password è troppo debole. Riprova con una più complessa.",
+    "login_signupe_email_already_exists_error": "L'indirizzo email inserito è già registrato. Esegui il login invece.",
+    "login_signupe_unknown_error_error": "Si è verificato un errore sconosciuto.",
+    "login_signupe_user_not_found_error": "Non è stato trovato un utente con l'indirizzo email inserito.",
+    "login_signupe_wrong_password_error": "Password errata per l'indirizzo email inserito.",
+    "login_signupe_invalid_credentials_error": "Credenziali non valide.",
+    "login_signupe_too_many_attempts_error": "Troppi tentativi. Attendi qualche minuto prima di riprovare.",
+
     "verify_email_screen_app_bar_title": "Verifica Indirizzo Email",
     "verify_email_screen_verification_email_sent_text": "Abbiamo inviato una email all'indirizzo: ",
     "verify_email_screen_with_verification_link_text": "con un link di verifica.",

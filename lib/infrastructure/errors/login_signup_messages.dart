@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+
 enum LoginSignupMessages {
   success,
   weakPassword,
@@ -12,24 +14,24 @@ enum LoginSignupMessages {
 String getLoginSignupMessage(LoginSignupMessages mex) {
   switch (mex) {
     case LoginSignupMessages.success:
-      return "L'operazione è stata completata con successo.";
+      return "login_signupe_success".tr();
     case LoginSignupMessages.weakPassword:
-      return "La password è troppo debole. Riprova con una più complessa.";
+      return "Llogin_signupe_weak_password_error".tr();
 
     case LoginSignupMessages.emailAlreadyExists:
-      return "L'indirizzo mail inserto è già esistente. Esegui il login invece.";
+      return "login_signupe_email_already_exists_error".tr();
 
     case LoginSignupMessages.unkownError:
-      return "Si è verificato un errore sconosciuto";
+      return "login_signupe_unknown_error_error".tr();
 
     case LoginSignupMessages.userNotFound:
-      return "Non è stato trovato un utente con l'indirizzo email inserito.";
+      return "login_signupe_user_not_found_error".tr();
 
     case LoginSignupMessages.wrongPassword:
-      return "Password errata per l'indirizzo email inserito.";
+      return "login_signupe_wrong_password_error".tr();
     case LoginSignupMessages.invalidCredentials:
-      return "Credenziali invalide";
+      return "login_signupe_invalid_credentials_error".tr();
     case LoginSignupMessages.tooManyAttempts:
-      return "Too many attempts. Wait a few minutes before retrying.";
+      return "login_signupe_too_many_attempts_error".tr();
   }
 }
