@@ -54,3 +54,9 @@ export 'package:spotted/presentation/providers/auth/auth_status_provider.dart';
 
 // Connectivity
 export 'package:spotted/presentation/providers/connectivity/connectivity_provider.dart';
+
+// Features
+export 'package:spotted/presentation/providers/features/feature_repository_provider.dart';
+
+// Interests
+export 'package:spotted/presentation/providers/interests/interests_repository_provider.dart';

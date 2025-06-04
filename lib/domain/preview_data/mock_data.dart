@@ -2,6 +2,26 @@ import 'package:spotted/domain/models/models.dart';
 
 AppConfigs mockAppConfig = AppConfigs.empty();
 
+final List<Feature> mockFeatures = [
+  Feature(id: '1', name: 'Red Head'),
+  Feature(id: '2', name: 'Green Eyes'),
+  Feature(id: '3', name: 'Pale'),
+  Feature(id: '4', name: 'Tall'),
+  Feature(id: '5', name: 'Small'),
+  Feature(id: '6', name: 'Happy'),
+  Feature(id: '7', name: 'Goth'),
+];
+
+final List<Interest> mockInterests = [
+  Interest(id: '1', name: 'Tech'),
+  Interest(id: '2', name: 'PC gaming'),
+  Interest(id: '3', name: 'Science'),
+  Interest(id: '4', name: 'Movies and Series'),
+  Interest(id: '5', name: 'Hiking'),
+  Interest(id: '6', name: 'Swimming'),
+  Interest(id: '7', name: 'Drinking'),
+];
+
 final mockUsers = [
   User(
     id: '1',
