@@ -212,9 +212,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       //final authRepo = ref.watch(authPasswordRepositoryProvider);
       //final appConfigsStateAsync = ref.watch(appConfigsFutureProvider);
       if (isConnected) {
-        if (signedInUser == null || authStatus == AuthStatus.notAuthenticated) {
+        /*if (signedInUser == null || authStatus == AuthStatus.notAuthenticated) {
           return loginPath;
-        }
+        }*/
         if (isGoingTo == basePath) {
           return '$homePath/0';
         }

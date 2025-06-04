@@ -24,7 +24,7 @@ export 'package:spotted/presentation/providers/themes/theme_provider.dart';
 export 'package:spotted/presentation/providers/themes/is_dark_mode_provider.dart';
 
 // Bottom Tab Bar
-export 'package:spotted/presentation/providers/bottom_navigation_bar_index_provider/bottom_navbar_index_provider.dart';
+export 'package:spotted/presentation/providers/bottom_bar_app_bar_providers/bottom_navbar_index_provider.dart';
 
 // Utility
 export 'package:spotted/presentation/providers/utility/image_picker_provider.dart';

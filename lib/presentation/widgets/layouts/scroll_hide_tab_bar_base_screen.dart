@@ -34,10 +34,12 @@ mixin ScrollHideTabBarBaseScreen<T extends ConsumerStatefulWidget>
       _isScrollingDown = true;
       if (animateFabsOut) _hideFab(hide: false);
       ref.read(tabBarVisibilityProvider.notifier).state = false;
+      ref.read(appBarVisibilityProvider.notifier).state = true;
     } else if (direction == ScrollDirection.forward && _isScrollingDown) {
       _isScrollingDown = false;
       if (!animateFabsOut) _hideFab(hide: true);
       ref.read(tabBarVisibilityProvider.notifier).state = true;
+      ref.read(appBarVisibilityProvider.notifier).state = false;
     }
   }
 

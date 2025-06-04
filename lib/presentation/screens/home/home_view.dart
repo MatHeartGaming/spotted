@@ -30,7 +30,7 @@ class HomeViewState extends ConsumerState<HomeView>
     final loadUsersNotifier = ref.read(loadSignedInFriendsProvider.notifier);
     final authStatus = ref.read(authStatusProvider).authStatus;
     // TODO: Edit this line later on...
-    if (authStatus != AuthStatus.authenticated) return;
+    //if (authStatus != AuthStatus.authenticated) return;
     if (signedInUser != null &&
         (signedInUser.isEmpty || signedInUser.friends.isEmpty)) {
       logger.d('Reloading Home Posts...');
@@ -49,7 +49,8 @@ class HomeViewState extends ConsumerState<HomeView>
   Widget build(BuildContext context) {
     final signedInUser = ref.watch(signedInUserProvider);
     final postsProvider = ref.watch(loadPostsProvider);
-    final size = MediaQuery.sizeOf(context);
+    final hideAppbar = ref.watch(appBarVisibilityProvider);
+
     return SafeArea(
       child: Scaffold(
         floatingActionButton: AnimatedOpacityFab(
@@ -60,91 +61,116 @@ class HomeViewState extends ConsumerState<HomeView>
             tooltip: 'add_fab_home_tooltip_text'.tr(),
           ),
         ),
-        appBar: PreferredSize(
-          preferredSize: Size(size.width, 50),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: HomeAppBar(
-              onSearchPressed: () => pushToHomeSearchScreem(context),
-              onProfileIconPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            ),
-          ),
-        ),
-        body: RefreshIndicator(
-          onRefresh: () async {
-            _loadFriendsPosts();
-          },
-          child: ListView.builder(
-            controller: scrollController, // ← from the mixin
-            itemCount: postsProvider.postedByFriends.length,
-            itemBuilder: (_, i) {
-              final post = postsProvider.postedByFriends[i];
-              final currentUserId = signedInUser?.id;
-              final currentUserReaction =
-                  (currentUserId != null)
-                      ? post.reactions[currentUserId]
-                      : null;
 
-              return ref
-                  .watch(userFutureByIdProvider(post.createdById))
-                  .when(
-                    data:
-                        (user) =>
-                            user != null
-                                ? ReactionablePostWidget(
-                                  isLiked: false,
-                                  post: post,
-                                  author: user,
-                                  reaction: currentUserReaction,
-                                  onCommunityTapped:
-                                      () => _actionCommunityTap(post.postedIn),
-                                  onUserInfoTapped:
-                                      () => pushToProfileScreen(
-                                        context,
-                                        user: user,
-                                      ),
-                                  onReaction:
-                                      (reaction) =>
-                                          updatePostActionWithReaction(
-                                            post,
-                                            reaction,
-                                            ref,
-                                          ),
-                                  onContextMenuTap:
-                                      (menuItem) =>
-                                          handleContextMenuPostItemAction(
-                                            ref,
-                                            menuItem,
-                                            post,
-                                          ),
-                                  onCommentTapped: () {
-                                    showCustomBottomSheet(
-                                      context,
-                                      child: CommentsScreen(
+        // We remove `appBar:` here and build our own “collapsible” bar inside the body.
+        body: Column(
+          children: [
+            // 1. AnimatedContainer that shrinks height to 0 when `hideAppbar == true`.
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              // When hideAppbar is true, height=0. Otherwise 50 + top padding.
+              height: hideAppbar ? 0 : 50,
+              // Clip it so the HomeAppBar doesn’t overflow while collapsing.
+              child: ClipRect(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  heightFactor: hideAppbar ? 0 : 1,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SizedBox(
+                      height: 50,
+                      child: HomeAppBar(
+                        onSearchPressed: () => pushToHomeSearchScreem(context),
+                        onProfileIconPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            // 2. Expanded ListView: when AnimatedContainer height goes to 0, this expands upward.
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await _loadFriendsPosts();
+                },
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemCount: postsProvider.postedByFriends.length,
+                  itemBuilder: (_, i) {
+                    final post = postsProvider.postedByFriends[i];
+                    final currentUserId = signedInUser?.id;
+                    final currentUserReaction =
+                        (currentUserId != null)
+                            ? post.reactions[currentUserId]
+                            : null;
+
+                    return ref
+                        .watch(userFutureByIdProvider(post.createdById))
+                        .when(
+                          data:
+                              (user) =>
+                                  user != null
+                                      ? ReactionablePostWidget(
+                                        isLiked: false,
                                         post: post,
-                                        comments: post.comments,
-                                        onPostComment: (
-                                          postId,
-                                          commentText,
-                                        ) async {
-                                          logger.i(
-                                            'Comment on: $postId - $commentText',
+                                        author: user,
+                                        reaction: currentUserReaction,
+                                        onCommunityTapped:
+                                            () => _actionCommunityTap(
+                                              post.postedIn,
+                                            ),
+                                        onUserInfoTapped:
+                                            () => pushToProfileScreen(
+                                              context,
+                                              user: user,
+                                            ),
+                                        onReaction:
+                                            (reaction) =>
+                                                updatePostActionWithReaction(
+                                                  post,
+                                                  reaction,
+                                                  ref,
+                                                ),
+                                        onContextMenuTap:
+                                            (menuItem) =>
+                                                handleContextMenuPostItemAction(
+                                                  ref,
+                                                  menuItem,
+                                                  post,
+                                                ),
+                                        onCommentTapped: () {
+                                          showCustomBottomSheet(
+                                            context,
+                                            child: CommentsScreen(
+                                              post: post,
+                                              comments: post.comments,
+                                              onPostComment: (
+                                                postId,
+                                                commentText,
+                                              ) async {
+                                                logger.i(
+                                                  'Comment on: $postId - $commentText',
+                                                );
+                                              },
+                                            ),
                                           );
                                         },
-                                      ),
-                                    );
-                                  },
-                                )
-                                : Text('User not found'),
-                    error:
-                        (error, stackTrace) =>
-                            Text('Error while loading user: $error'),
-                    loading: () => LoadingDefaultWidget(),
-                  );
-            },
-          ),
+                                      )
+                                      : const Text('User not found'),
+                          error:
+                              (error, stackTrace) =>
+                                  Text('Error while loading user: $error'),
+                          loading: () => const LoadingDefaultWidget(),
+                        );
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

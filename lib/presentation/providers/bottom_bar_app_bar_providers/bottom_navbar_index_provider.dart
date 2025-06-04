@@ -8,3 +8,7 @@ final bottomNavigationIndexProvider = StateProvider<int>((ref) {
 final tabBarVisibilityProvider = StateProvider<bool>((ref) => true);
 
 final tabBarControllerProvider = StateProvider<TabController?>((ref) => null);
+
+
+// App bar
+final appBarVisibilityProvider = StateProvider<bool>((ref) => false);
