@@ -16,6 +16,9 @@
     "nav_bar_home_tooltip": "Contenuti da bacheche seguite",
     "nav_bar_explore_tooltip": "Contenuti da tutta la community",
 
+    "home_screen_logout_success_snackbar": "Logout effettuato con successo!",
+    "home_screen_logout_alert_msg": "Vuoi davvero effettuare il logout?",
+
     "login_screen_login_title": "Accedi",
     "login_screen_login_title_with_args": "Accedi{}",
     "login_screen_signup_title": "Crea Account",

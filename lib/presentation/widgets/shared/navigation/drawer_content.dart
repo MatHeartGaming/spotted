@@ -60,8 +60,14 @@ class DrawerContent extends ConsumerWidget {
                           label: Row(
                             spacing: 5,
                             children: [
-                              Text("logout_text", style: TextStyle(color: colorNotOkButton),).tr(),
-                              Icon(Icons.logout_outlined, color: colorNotOkButton),
+                              Text(
+                                "logout_text",
+                                style: TextStyle(color: colorNotOkButton),
+                              ).tr(),
+                              Icon(
+                                Icons.logout_outlined,
+                                color: colorNotOkButton,
+                              ),
                             ],
                           ),
                         ),
@@ -184,8 +190,23 @@ class DrawerContent extends ConsumerWidget {
   }
 
   void _logout(WidgetRef ref) {
-    ref.read(authStatusProvider.notifier).logout().then((value) {
-      ref.read(signedInUserProvider.notifier).update((state) => null);
-    });
+    final colors = Theme.of(ref.context).colorScheme;
+    showStandardCustomDialog(
+      ref.context,
+      title: "logout_text".tr(),
+      message: "home_screen_logout_alert_msg".tr(),
+      isDestructive: true,
+      okButtonColor: colors.error,
+      onOkPressed: () async {
+        await ref.read(authStatusProvider.notifier).logout().then((_) {
+          ref.read(signedInUserProvider.notifier).update((state) => null);
+          if (!ref.context.mounted) return;
+          showCustomSnackbar(
+            ref.context,
+            'home_screen_logout_success_snackbar'.tr(),
+          );
+        });
+      },
+    );
   }
 }
