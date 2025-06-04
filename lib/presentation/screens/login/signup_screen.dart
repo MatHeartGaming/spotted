@@ -20,7 +20,6 @@ class SignupScreen extends ConsumerStatefulWidget {
 }
 
 class SignupScreenState extends ConsumerState<SignupScreen> {
-  final multiSelectorCountriesController = MultiSelectController<String>();
 
   @override
   void initState() {
@@ -32,7 +31,6 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
 
   @override
   void dispose() {
-    multiSelectorCountriesController.dispose();
     super.dispose();
   }
 
@@ -148,7 +146,7 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
                         () => _submitFormAction(authStatusNotifier, ref),
                   ),
                   CountrySelector(
-                    controller: multiSelectorCountriesController,
+                    controller: signupFormState.countryController,
                     items: countryMenuItems,
                   ),
                   CustomTextFormField(

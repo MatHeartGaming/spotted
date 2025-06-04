@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/infrastructure/input_validations/inputs.dart';
@@ -23,8 +24,8 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
           passwordController: TextEditingController(),
           repeatPasswordController: TextEditingController(),
           usernameController: TextEditingController(),
-          countryController: TextEditingController(),
           cityController: TextEditingController(),
+          countryController: MultiSelectController<String>(),
         ),
       );
 
@@ -39,16 +40,20 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
     state.surnameController?.text = user.surname;
     state.emailController?.text = user.email;
     state.usernameController?.text = user.username;
-    //state.usernameController?.text = user.username;
-    //state.usernameController?.text = user.username;
+    state.countryController?.selectWhere((item) => item.value == user.country);
+    state.cityController?.text = user.city;
     state = state.copyWith(
       nameController: state.nameController,
       surnameController: state.surnameController,
       emailController: state.emailController,
       usernameController: state.usernameController,
+      cityController: state.cityController,
+      countryController: state.countryController,
       name: GenericText.dirty(user.name),
       surname: GenericText.dirty(user.surname),
       username: GenericText.dirty(user.username),
+      city: GenericText.dirty(user.city),
+      country: GenericText.dirty(user.country),
       email: Email.dirty(user.email),
       status: FormStatus.invalid,
       isValid: false,
@@ -87,6 +92,7 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
       surname: GenericText.dirty(state.surname.value),
       password: PasswordText.dirty(state.password.value),
       repeatPassword: PasswordText.dirty(state.repeatPassword.value),
+      isValid: Formz.validate(fieldsToValidate),
     );
 
     if (state.password != state.repeatPassword) {
@@ -111,8 +117,18 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
   }
 
   void usernameChanged(String value) {
-    final name = GenericText.dirty(value);
-    _updateField(name, (val) => state.copyWith(username: val));
+    final username = GenericText.dirty(value);
+    _updateField(username, (val) => state.copyWith(username: val));
+  }
+
+  void cityChanged(String value) {
+    final city = GenericText.dirty(value);
+    _updateField(city, (val) => state.copyWith(city: val));
+  }
+
+  void countryChanged(String value) {
+    final country = GenericText.dirty(value);
+    _updateField(country, (val) => state.copyWith(country: val));
   }
 
   void emailChanged(String value) {

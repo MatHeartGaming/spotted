@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:spotted/infrastructure/input_validations/inputs.dart';
 import 'package:spotted/presentation/providers/forms/states/form_status.dart';
 
@@ -22,8 +23,8 @@ class SignupFormState {
   final TextEditingController? nameController;
   final TextEditingController? surnameController;
   final TextEditingController? usernameController;
-  final TextEditingController? countryController;
   final TextEditingController? cityController;
+  final MultiSelectController<String>? countryController;
 
   const SignupFormState({
     this.status = FormStatus.invalid,
@@ -63,30 +64,29 @@ class SignupFormState {
     TextEditingController? nameController,
     TextEditingController? surnameController,
     TextEditingController? usernameController,
-    TextEditingController? countryController,
+    MultiSelectController<String>? countryController,
     TextEditingController? cityController,
-  }) =>
-      SignupFormState(
-        status: status ?? this.status,
-        isValid: isValid ?? this.isValid,
-        email: email ?? this.email,
-        name: name ?? this.name,
-        surname: surname ?? this.surname,
-        username: username ?? this.username,
-        country: country ?? this.country,
-        city: city ?? this.city,
-        password: password ?? this.password,
-        repeatPassword: repeatPassword ?? this.repeatPassword,
-        emailController: emailController ?? this.emailController,
-        passwordController: passwordController ?? this.passwordController,
-        repeatPasswordController:
-            repeatPasswordController ?? this.repeatPasswordController,
-        nameController: nameController ?? this.nameController,
-        surnameController: surnameController ?? this.surnameController,
-        usernameController: usernameController ?? this.usernameController,
-        countryController: countryController ?? this.countryController,
-        cityController: cityController ?? this.cityController,
-      );
+  }) => SignupFormState(
+    status: status ?? this.status,
+    isValid: isValid ?? this.isValid,
+    email: email ?? this.email,
+    name: name ?? this.name,
+    surname: surname ?? this.surname,
+    username: username ?? this.username,
+    country: country ?? this.country,
+    city: city ?? this.city,
+    password: password ?? this.password,
+    repeatPassword: repeatPassword ?? this.repeatPassword,
+    emailController: emailController ?? this.emailController,
+    passwordController: passwordController ?? this.passwordController,
+    repeatPasswordController:
+        repeatPasswordController ?? this.repeatPasswordController,
+    nameController: nameController ?? this.nameController,
+    surnameController: surnameController ?? this.surnameController,
+    usernameController: usernameController ?? this.usernameController,
+    countryController: countryController ?? this.countryController,
+    cityController: cityController ?? this.cityController,
+  );
 
   bool get isPosting => status == FormStatus.posting;
 
