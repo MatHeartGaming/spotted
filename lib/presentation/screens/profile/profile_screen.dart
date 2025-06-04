@@ -133,7 +133,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                       ),
                       SizedBox(height: 20),
                       ChipsGridView(
-                        chips: widget.user.features,
+                        chips: widget.user.featureRefs,
                         onTap: (label) {},
                         showDeleteIcon: isUserYou,
                         onDelete: () {},

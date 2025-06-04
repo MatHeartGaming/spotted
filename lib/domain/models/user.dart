@@ -14,9 +14,10 @@ class User {
   final String username;
   final String profileImageUrl;
   final DateTime dateCreated;
-  final List<String> features;
+  final List<String> featureRefs;
   final List<String> communitiesSubs;
   final List<String> friendsRefs;
+  final List<String> interestsRefs;
   final List<User> friends;
   final List<String> posted;
   final List<String> comments;
@@ -30,9 +31,10 @@ class User {
     required this.username,
     DateTime? dateCreated,
     this.profileImageUrl = '',
-    this.features = const [],
+    this.featureRefs = const [],
     this.communitiesSubs = const [],
     this.friendsRefs = const [],
+    this.interestsRefs = const [],
     this.friends = const [],
     this.posted = const [],
     this.comments = const [],
@@ -48,7 +50,8 @@ class User {
     this.username = '',
     DateTime? dateCreated,
     this.profileImageUrl = '',
-    this.features = const [],
+    this.featureRefs = const [],
+    this.interestsRefs = const [],
     this.communitiesSubs = const [],
     this.friendsRefs = const [],
     this.friends = const [],
@@ -95,13 +98,17 @@ class User {
       username: map['username'] as String,
       profileImageUrl: map['profile_image_url'] as String,
       dateCreated: (map['date_created'] as Timestamp?)?.toDate(),
-      features:
-          map.containsKey('communities_subs')
-              ? List<String>.from(map['features'] as List<String>)
+      featureRefs:
+          map.containsKey('features_ids')
+              ? List<String>.from(map['features_ids'] as List<String>)
+              : [],
+      interestsRefs:
+          map.containsKey('interests_ids')
+              ? List<String>.from(map['interests_ids'] as List<String>)
               : [],
       communitiesSubs:
           map.containsKey('communities_subs')
-              ? List<String>.from(map['communitiesSubs'] as List<String>)
+              ? List<String>.from(map['communities_subs'] as List<String>)
               : [],
       friendsRefs:
           map.containsKey('friends_ids')
@@ -128,7 +135,8 @@ class User {
       'username': username,
       'profileImageUrl': profileImageUrl,
       'dateCreated': dateCreated,
-      'features': features,
+      'features_ids': featureRefs,
+      'interests_ids': interestsRefs,
       'communitiesSubs': communitiesSubs,
       'friends_ids': friendsRefs,
       'posted': posted,
@@ -146,13 +154,17 @@ class User {
       username: map['username'] as String,
       profileImageUrl: map['profile_image_url'] as String,
       dateCreated: (map['date_created'] as Timestamp?)?.toDate(),
-      features:
-          map.containsKey('communities_subs')
-              ? List<String>.from(map['features'] as List<String>)
+      featureRefs:
+          map.containsKey('features_ids')
+              ? List<String>.from(map['features_ids'] as List<String>)
+              : [],
+      interestsRefs:
+          map.containsKey('interests_ids')
+              ? List<String>.from(map['interests_ids'] as List<String>)
               : [],
       communitiesSubs:
           map.containsKey('communities_subs')
-              ? List<String>.from(map['communitiesSubs'] as List<String>)
+              ? List<String>.from(map['communities_subs'] as List<String>)
               : [],
       friendsRefs:
           map.containsKey('friends_ids')
@@ -188,9 +200,10 @@ class User {
     String? username,
     String? profileImageUrl,
     DateTime? dateCreated,
-    List<String>? features,
+    List<String>? featureRefs,
     List<String>? communitiesSubs,
     List<String>? friendsRefs,
+    List<String>? interestsRefs,
     List<User>? friends,
     List<String>? posted,
     List<String>? comments,
@@ -204,7 +217,8 @@ class User {
       username: username ?? this.username,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       dateCreated: dateCreated ?? this.dateCreated,
-      features: features ?? this.features,
+      featureRefs: featureRefs ?? this.featureRefs,
+      interestsRefs: interestsRefs ?? this.interestsRefs,
       communitiesSubs: communitiesSubs ?? this.communitiesSubs,
       friendsRefs: friendsRefs ?? this.friendsRefs,
       posted: posted ?? this.posted,
@@ -216,6 +230,6 @@ class User {
 
   @override
   String toString() {
-    return 'User(id: $id, email: $email, name: $name, surname: $surname, username: $username, profileImageUrl: $profileImageUrl, dateCreated: $dateCreated, features: $features, communitiesSubs: $communitiesSubs, friends: $friendsRefs, posted: $posted, comments: $comments, reactions: $reactions)';
+    return 'User(id: $id, email: $email, name: $name, surname: $surname, username: $username, profileImageUrl: $profileImageUrl, dateCreated: $dateCreated, features: $featureRefs, communitiesSubs: $communitiesSubs, friends: $friendsRefs, posted: $posted, comments: $comments, reactions: $reactions)';
   }
 }
