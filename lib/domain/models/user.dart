@@ -12,6 +12,8 @@ class User {
   final String name;
   final String surname;
   final String username;
+  final String city;
+  final String country;
   final String profileImageUrl;
   final DateTime dateCreated;
   final List<String> featureRefs;
@@ -29,6 +31,8 @@ class User {
     required this.name,
     required this.surname,
     required this.username,
+    required this.city,
+    required this.country,
     DateTime? dateCreated,
     this.profileImageUrl = '',
     this.featureRefs = const [],
@@ -48,6 +52,8 @@ class User {
     this.name = '',
     this.surname = '',
     this.username = '',
+    this.city = '',
+    this.country = '',
     DateTime? dateCreated,
     this.profileImageUrl = '',
     this.featureRefs = const [],
@@ -96,6 +102,8 @@ class User {
       name: map['name'] as String,
       surname: map['surname'] as String,
       username: map['username'] as String,
+      city: map['city'] as String,
+      country: map['country'] as String,
       profileImageUrl: map['profile_image_url'] as String,
       dateCreated: (map['date_created'] as Timestamp?)?.toDate(),
       featureRefs:
@@ -133,6 +141,8 @@ class User {
       'name': name,
       'surname': surname,
       'username': username,
+      'city': city,
+      'country': country,
       'profileImageUrl': profileImageUrl,
       'dateCreated': dateCreated,
       'features_ids': featureRefs,
@@ -152,6 +162,8 @@ class User {
       name: map['name'] as String,
       surname: map['surname'] as String,
       username: map['username'] as String,
+      city: map['city'] as String,
+      country: map['country'] as String,
       profileImageUrl: map['profile_image_url'] as String,
       dateCreated: (map['date_created'] as Timestamp?)?.toDate(),
       featureRefs:
@@ -198,6 +210,8 @@ class User {
     String? name,
     String? surname,
     String? username,
+    String? city,
+    String? country,
     String? profileImageUrl,
     DateTime? dateCreated,
     List<String>? featureRefs,
@@ -215,6 +229,8 @@ class User {
       name: name ?? this.name,
       surname: surname ?? this.surname,
       username: username ?? this.username,
+      city: city ?? this.city,
+      country: country ?? this.country,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       dateCreated: dateCreated ?? this.dateCreated,
       featureRefs: featureRefs ?? this.featureRefs,

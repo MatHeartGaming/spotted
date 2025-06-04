@@ -27,6 +27,7 @@
     "login_screen_phone_number_text": "Numero di Telefono",
     "login_screen_name_text": "Nome",
     "login_screen_surname_text": "Cognome",
+    "login_screen_username_text": "Nome utente",
     "login_screen_password_text": "Password",
     "login_screen_reset_password_text": "Resetta Password",
     "login_screen_repeat_password_text": "Riepti Password",
@@ -42,6 +43,9 @@
     "login_screen_email_too_many_attempts_snackbar": "Troppi tentativi. Attendere qualche minuto prima di riprovare.",
     "login_screen_or_login_with_text": "Oppure accedi con",
     "login_screen_password_mismatch_snackbar_text": "Le password devono essere identiche!",
+    "login_screen_countries_hint_text": "Paesi",
+    "login_screen_select_your_country_text": "Seleziona il tuo paese",
+    "login_screen_validation_country_text": "Per favore, seleziona il tuo paese",
 
     "verify_email_screen_app_bar_title": "Verifica Indirizzo Email",
     "verify_email_screen_verification_email_sent_text": "Abbiamo inviato una email all'indirizzo: ",

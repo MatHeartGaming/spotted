@@ -4,18 +4,45 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
-class SignupScreen extends ConsumerWidget {
+class SignupScreen extends ConsumerStatefulWidget {
   static String name = 'SignupScreen';
 
   const SignupScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  SignupScreenState createState() => SignupScreenState();
+}
+
+class SignupScreenState extends ConsumerState<SignupScreen> {
+  final multiSelectorCountriesController = MultiSelectController<String>();
+
+  @override
+  void initState() {
+    super.initState();
+    Future(() {
+      _loadFeaturesAndInterests();
+    });
+  }
+
+  @override
+  void dispose() {
+    multiSelectorCountriesController.dispose();
+    super.dispose();
+  }
+
+  void _loadFeaturesAndInterests() {
+    ref.read(loadFeaturesProvider.notifier).getAllFeatures();
+    ref.read(loadInterestsProvider.notifier).getAllInterests();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final showPassword = ref.watch(showPasswordProvider);
     final showRepeatPassword = ref.watch(showRepeatPasswordProvider);
     final authStatusNotifier = ref.watch(authStatusProvider);
@@ -29,9 +56,10 @@ class SignupScreen extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(right: 16),
               child: IconButton.filledTonal(
-                  tooltip: ("login_screen_signup_title").tr(),
-                  onPressed: () => _submitFormAction(authStatusNotifier, ref),
-                  icon: const Icon(Icons.check_circle_outline_outlined)),
+                tooltip: ("login_screen_signup_title").tr(),
+                onPressed: () => _submitFormAction(authStatusNotifier, ref),
+                icon: const Icon(Icons.check_circle_outline_outlined),
+              ),
             ),
           ],
         ),
@@ -39,167 +67,178 @@ class SignupScreen extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    CustomTextFormField(
-                      initialValue: "",
-                      autoFillHints: const [AutofillHints.name],
-                      label: "login_screen_name_text".tr(),
-                      formatter: FormInputFormatters.text,
-                      errorMessage: signupFormState.isPosting
-                          ? signupFormState.name.errorMessage
-                          : null,
-                      icon: Icons.person,
-                      onChanged: (newValue) {
-                        final signupFormState =
-                            ref.read(signupFormProvider.notifier);
-                        signupFormState.nameChanged(newValue);
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                spacing: 20,
+                children: [
+                  const SizedBox(height: 50),
+                  CustomTextFormField(
+                    initialValue: "",
+                    autoFillHints: const [AutofillHints.name],
+                    label: "login_screen_name_text".tr(),
+                    formatter: FormInputFormatters.text,
+                    errorMessage:
+                        signupFormState.isPosting
+                            ? signupFormState.name.errorMessage
+                            : null,
+                    icon: Icons.person,
+                    onChanged: (newValue) {
+                      final signupFormState = ref.read(
+                        signupFormProvider.notifier,
+                      );
+                      signupFormState.nameChanged(newValue);
+                    },
+                    onSubmitForm:
+                        () => _submitFormAction(authStatusNotifier, ref),
+                  ),
+                  CustomTextFormField(
+                    initialValue: "",
+                    autoFillHints: const [AutofillHints.familyName],
+                    label: "login_screen_surname_text".tr(),
+                    formatter: FormInputFormatters.text,
+                    errorMessage:
+                        signupFormState.isPosting
+                            ? signupFormState.surname.errorMessage
+                            : null,
+                    icon: Icons.person,
+                    onChanged: (newValue) {
+                      final signupFormState = ref.read(
+                        signupFormProvider.notifier,
+                      );
+                      signupFormState.surnameChanged(newValue);
+                    },
+                    onSubmitForm:
+                        () => _submitFormAction(authStatusNotifier, ref),
+                  ),
+                  CustomTextFormField(
+                    initialValue: "",
+                    autoFillHints: const [AutofillHints.email],
+                    label: "login_screen_email_text".tr(),
+                    formatter: FormInputFormatters.email,
+                    errorMessage:
+                        signupFormState.isPosting
+                            ? signupFormState.email.errorMessage
+                            : null,
+                    icon: Icons.email_outlined,
+                    onChanged: (newValue) {
+                      final signupFormState = ref.read(
+                        signupFormProvider.notifier,
+                      );
+                      signupFormState.emailChanged(newValue);
+                    },
+                    onSubmitForm:
+                        () => _submitFormAction(authStatusNotifier, ref),
+                  ),
+                  CustomTextFormField(
+                    initialValue: "",
+                    autoFillHints: const [AutofillHints.newUsername],
+                    label: "login_screen_username_text".tr(),
+                    formatter: FormInputFormatters.text,
+                    errorMessage:
+                        signupFormState.isPosting
+                            ? signupFormState.username.errorMessage
+                            : null,
+                    icon: FontAwesomeIcons.userNinja,
+                    onChanged: (newValue) {
+                      ref
+                          .read(signupFormProvider.notifier)
+                          .usernameChanged(newValue);
+                    },
+                    onSubmitForm:
+                        () => _submitFormAction(authStatusNotifier, ref),
+                  ),
+                  CountrySelector(
+                    controller: multiSelectorCountriesController,
+                    items: countryMenuItems,
+                  ),
+                  CustomTextFormField(
+                    initialValue: "",
+                    autoFillHints: const [AutofillHints.newPassword],
+                    label: "login_screen_password_text".tr(),
+                    trailingIcon: IconButton(
+                      onPressed: () {
+                        ref.read(showPasswordProvider.notifier).state =
+                            !showPassword;
                       },
-                      onSubmitForm: () =>
-                          _submitFormAction(authStatusNotifier, ref),
+                      icon: showHidePasswordIcon(showPassword),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    CustomTextFormField(
-                      initialValue: "",
-                      autoFillHints: const [AutofillHints.familyName],
-                      label: "login_screen_surname_text".tr(),
-                      formatter: FormInputFormatters.text,
-                      errorMessage: signupFormState.isPosting
-                          ? signupFormState.surname.errorMessage
-                          : null,
-                      icon: Icons.person,
-                      onChanged: (newValue) {
-                        final signupFormState =
-                            ref.read(signupFormProvider.notifier);
-                        signupFormState.surnameChanged(newValue);
+                    errorMessage:
+                        signupFormState.isPosting
+                            ? signupFormState.password.errorMessage
+                            : null,
+                    icon: Icons.lock,
+                    obscureText: !showPassword,
+                    onChanged: (newValue) {
+                      final signupFormState = ref.read(
+                        signupFormProvider.notifier,
+                      );
+                      signupFormState.passwordChanged(newValue);
+                    },
+                    onSubmitForm:
+                        () => _submitFormAction(authStatusNotifier, ref),
+                  ),
+                  CustomTextFormField(
+                    initialValue: "",
+                    label: "login_screen_repeat_password_text".tr(),
+                    trailingIcon: IconButton(
+                      onPressed: () {
+                        ref.read(showRepeatPasswordProvider.notifier).state =
+                            !showRepeatPassword;
                       },
-                      onSubmitForm: () =>
-                          _submitFormAction(authStatusNotifier, ref),
+                      icon: showHidePasswordIcon(showRepeatPassword),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    CustomTextFormField(
-                      initialValue: "",
-                      autoFillHints: const [AutofillHints.email],
-                      label: "login_screen_email_text".tr(),
-                      formatter: FormInputFormatters.email,
-                      errorMessage: signupFormState.isPosting
-                          ? signupFormState.email.errorMessage
-                          : null,
-                      icon: Icons.email_outlined,
-                      onChanged: (newValue) {
-                        final signupFormState =
-                            ref.read(signupFormProvider.notifier);
-                        signupFormState.emailChanged(newValue);
-                      },
-                      onSubmitForm: () =>
-                          _submitFormAction(authStatusNotifier, ref),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    CustomTextFormField(
-                      initialValue: "",
-                      autoFillHints: const [AutofillHints.newPassword],
-                      label: "login_screen_password_text".tr(),
-                      trailingIcon: IconButton(
-                          onPressed: () {
-                            ref.read(showPasswordProvider.notifier).state =
-                                !showPassword;
-                          },
-                          icon: showHidePasswordIcon(showPassword)),
-                      errorMessage: signupFormState.isPosting
-                          ? signupFormState.password.errorMessage
-                          : null,
-                      icon: Icons.lock,
-                      obscureText: !showPassword,
-                      onChanged: (newValue) {
-                        final signupFormState =
-                            ref.read(signupFormProvider.notifier);
-                        signupFormState.passwordChanged(newValue);
-                      },
-                      onSubmitForm: () =>
-                          _submitFormAction(authStatusNotifier, ref),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    CustomTextFormField(
-                      initialValue: "",
-                      label: "login_screen_repeat_password_text".tr(),
-                      trailingIcon: IconButton(
-                          onPressed: () {
-                            ref
-                                .read(showRepeatPasswordProvider.notifier)
-                                .state = !showRepeatPassword;
-                          },
-                          icon: showHidePasswordIcon(showRepeatPassword)),
-                      errorMessage: signupFormState.isPosting
-                          ? signupFormState.repeatPassword.errorMessage
-                          : null,
-                      icon: Icons.lock,
-                      obscureText: !showRepeatPassword,
-                      onChanged: (newValue) {
-                        final signupFormState =
-                            ref.read(signupFormProvider.notifier);
-                        signupFormState.repeatPasswordChanged(newValue);
-                      },
-                      onSubmitForm: () =>
-                          _submitFormAction(authStatusNotifier, ref),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
+                    errorMessage:
+                        signupFormState.isPosting
+                            ? signupFormState.repeatPassword.errorMessage
+                            : null,
+                    icon: Icons.lock,
+                    obscureText: !showRepeatPassword,
+                    onChanged: (newValue) {
+                      final signupFormState = ref.read(
+                        signupFormProvider.notifier,
+                      );
+                      signupFormState.repeatPasswordChanged(newValue);
+                    },
+                    onSubmitForm:
+                        () => _submitFormAction(authStatusNotifier, ref),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("login_screen_have_account_text").tr(),
+                      const SizedBox(width: 2),
+                      TextButton(
+                        onPressed: () {
+                          ref
+                              .read(showLoginSignupProvider.notifier)
+                              .update((state) => !state);
+                        },
+                        child: const Text(
+                          "login_screen_login_title_with_args",
+                        ).tr(args: ["!"]),
+                      ),
+                    ],
+                  ),
+                  FilledButton.tonal(
+                    onPressed: () => _submitFormAction(authStatusNotifier, ref),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("login_screen_have_account_text").tr(),
-                        const SizedBox(
-                          width: 2,
+                        const Text("login_screen_signup_title").tr(),
+                        const SizedBox(width: 6),
+                        ZoomIn(
+                          child: const Icon(
+                            Icons.check_circle_outline_outlined,
+                          ),
                         ),
-                        TextButton(
-                            onPressed: () {
-                              ref.read(showLoginSignupProvider.notifier).update(
-                                    (state) => !state,
-                                  );
-                            },
-                            child:
-                                const Text("login_screen_login_title_with_args")
-                                    .tr(args: ["!"])),
                       ],
                     ),
-                    //_authMethodsRow(ref),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    FilledButton.tonal(
-                        onPressed: () =>
-                            _submitFormAction(authStatusNotifier, ref),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("login_screen_signup_title").tr(),
-                            const SizedBox(
-                              width: 6,
-                            ),
-                            ZoomIn(
-                                child: const Icon(
-                                    Icons.check_circle_outline_outlined))
-                          ],
-                        )),
+                  ),
 
-                    const SizedBox(
-                      height: 50,
-                    ),
-                  ],
-                )),
+                  const SizedBox(height: 50),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -219,6 +258,7 @@ class SignupScreen extends ConsumerWidget {
     //final userRepository = ref.read(userRepositoryProvider);
     final authStatusNotifier = ref.read(authStatusProvider.notifier);
     final colors = Theme.of(ref.context).colorScheme;
+    signupFormNotifier.onSubmit(onSubmit: () {});
     /*signupFormNotifier.onSubmit(
       allowNonVatUserSignup: appConfigs.allowSignupForNonVatUsers,
       onPasswordMismatch: () {
@@ -268,8 +308,6 @@ class SignupScreen extends ConsumerWidget {
   }
 
   void _updateSignedInUserProvider(WidgetRef ref, User user) {
-    ref.read(signedInUserProvider.notifier).update(
-          (state) => user,
-        );
+    ref.read(signedInUserProvider.notifier).update((state) => user);
   }
 }

@@ -22,16 +22,15 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
           emailController: TextEditingController(),
           passwordController: TextEditingController(),
           repeatPasswordController: TextEditingController(),
+          usernameController: TextEditingController(),
+          countryController: TextEditingController(),
+          cityController: TextEditingController(),
         ),
       );
 
   @override
   void dispose() {
-    state.nameController?.dispose();
-    state.surnameController?.dispose();
-    state.emailController?.dispose();
-    state.passwordController?.dispose();
-    state.repeatPasswordController?.dispose();
+    _dispose();
     super.dispose();
   }
 
@@ -39,12 +38,17 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
     state.nameController?.text = user.name;
     state.surnameController?.text = user.surname;
     state.emailController?.text = user.email;
+    state.usernameController?.text = user.username;
+    //state.usernameController?.text = user.username;
+    //state.usernameController?.text = user.username;
     state = state.copyWith(
       nameController: state.nameController,
       surnameController: state.surnameController,
       emailController: state.emailController,
+      usernameController: state.usernameController,
       name: GenericText.dirty(user.name),
       surname: GenericText.dirty(user.surname),
+      username: GenericText.dirty(user.username),
       email: Email.dirty(user.email),
       status: FormStatus.invalid,
       isValid: false,
@@ -61,6 +65,9 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
       state.email,
       state.name,
       state.surname,
+      state.username,
+      state.city,
+      state.country,
       state.password,
       state.repeatPassword,
     ];
@@ -80,7 +87,6 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
       surname: GenericText.dirty(state.surname.value),
       password: PasswordText.dirty(state.password.value),
       repeatPassword: PasswordText.dirty(state.repeatPassword.value),
-      isValid: Formz.validate(fieldsToValidate),
     );
 
     if (state.password != state.repeatPassword) {
@@ -96,84 +102,58 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
 
   void nameChanged(String value) {
     final name = GenericText.dirty(value);
-    List<FormzInput> fieldsToValidate = [
-      name,
-      state.surname,
-      state.email,
-      state.password,
-      state.repeatPassword,
-    ];
-    state = state.copyWith(
-      name: name,
-      isValid:
-          Formz.validate(fieldsToValidate) &&
-          state.password == state.repeatPassword,
-    );
+    _updateField(name, (val) => state.copyWith(name: val));
   }
 
   void surnameChanged(String value) {
     final surname = GenericText.dirty(value);
-    List<FormzInput> fieldsToValidate = [
-      state.name,
-      surname,
-      state.email,
-      state.password,
-      state.repeatPassword,
-    ];
-    state = state.copyWith(
-      surname: surname,
-      isValid:
-          Formz.validate(fieldsToValidate) &&
-          state.password == state.repeatPassword,
-    );
+    _updateField(surname, (val) => state.copyWith(surname: val));
   }
 
-  void passwordChanged(String value) {
-    final password = PasswordText.dirty(value);
-    List<FormzInput> fieldsToValidate = [
-      state.name,
-      state.surname,
-      state.email,
-      password,
-      state.repeatPassword,
-    ];
-    state = state.copyWith(
-      password: password,
-      isValid:
-          Formz.validate(fieldsToValidate) && password == state.repeatPassword,
-    );
-  }
-
-  void repeatPasswordChanged(String value) {
-    final repeatPassword = PasswordText.dirty(value);
-    List<FormzInput> fieldsToValidate = [
-      state.name,
-      state.surname,
-      state.email,
-      state.password,
-      repeatPassword,
-    ];
-    state = state.copyWith(
-      repeatPassword: repeatPassword,
-      isValid:
-          Formz.validate(fieldsToValidate) && state.password == repeatPassword,
-    );
+  void usernameChanged(String value) {
+    final name = GenericText.dirty(value);
+    _updateField(name, (val) => state.copyWith(username: val));
   }
 
   void emailChanged(String value) {
     final email = Email.dirty(value);
-    List<FormzInput> fieldsToValidate = [
-      email,
-      state.password,
+    _updateField(email, (val) => state.copyWith(email: val));
+  }
+
+  void passwordChanged(String value) {
+    final password = PasswordText.dirty(value);
+    _updateField(password, (val) => state.copyWith(password: val));
+  }
+
+  void repeatPasswordChanged(String value) {
+    final repeat = PasswordText.dirty(value);
+    _updateField(repeat, (val) => state.copyWith(repeatPassword: val));
+  }
+
+  void _updateField<T extends FormzInput>(
+    T value,
+    SignupFormState Function(T value) update,
+  ) {
+    state = update(value);
+    _validateForm();
+  }
+
+  void _validateForm() {
+    List<FormzInput> fields = [
       state.name,
       state.surname,
+      state.email,
+      state.password,
+      state.repeatPassword,
+      state.username,
+      state.city,
+      state.country,
     ];
-    state = state.copyWith(
-      email: email,
-      isValid:
-          Formz.validate(fieldsToValidate) &&
-          state.password == state.repeatPassword,
-    );
+
+    final isValid =
+        Formz.validate(fields) && state.password == state.repeatPassword;
+
+    state = state.copyWith(isValid: isValid);
   }
 
   void clearFormState() {
@@ -183,6 +163,18 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
       surname: const GenericText.pure(),
       password: const PasswordText.pure(),
       repeatPassword: const PasswordText.pure(),
+      username: GenericText.pure(),
     );
+  }
+
+  void _dispose() {
+    state.nameController?.dispose();
+    state.surnameController?.dispose();
+    state.emailController?.dispose();
+    state.passwordController?.dispose();
+    state.repeatPasswordController?.dispose();
+    state.usernameController?.dispose();
+    state.countryController?.dispose();
+    state.cityController?.dispose();
   }
 }
