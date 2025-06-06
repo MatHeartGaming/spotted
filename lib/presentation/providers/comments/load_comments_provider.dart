@@ -34,8 +34,8 @@ class LoadCommentsNotifier extends StateNotifier<LoadCommentsState> {
     return comments;
   }
 
-  Future<List<Comment>> createComment(Comment comment) async {
-    if (state.isLoadingComments) return state.comments;
+  Future<(List<Comment>, Comment)> createComment(Comment comment) async {
+    if (state.isLoadingComments) return (state.comments, comment);
     state = state.copyWith(isLoadingComments: true);
 
     final newComment = await _commentsRepository.createComment(comment);
@@ -51,7 +51,7 @@ class LoadCommentsNotifier extends StateNotifier<LoadCommentsState> {
 
     logger.d('Commenti: $comment');
 
-    return state.comments;
+    return (state.comments, newComment);
   }
 
   Future<void> updateComment(Comment updatedComment) async {

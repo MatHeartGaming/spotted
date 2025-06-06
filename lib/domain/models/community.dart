@@ -60,8 +60,12 @@ class Community {
       dateCreated:
           (map['date_created'] as Timestamp?)?.toDate() ?? DateTime.now(),
       pictureUrl: map['picture_url'] as String?,
-      admins: List<String>.from(map['admins'] ?? const []),
-      postsRefs: List<String>.from(map['posts'] ?? const []),
+      admins: map.containsKey('admins')
+              ? (map['admins'] as List).map((e) => e.toString()).toList()
+              : [],
+      postsRefs: map.containsKey('posts')
+              ? (map['posts'] as List).map((e) => e.toString()).toList()
+              : [],
     );
   }
 

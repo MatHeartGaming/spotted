@@ -212,7 +212,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           );
         },
       ),
-      GoRoute(path: '/', redirect: (_, __) => basePath),
+      GoRoute(path: '/', redirect: (_, __) => '$homePath/0'),
     ],
     redirect: (context, state) {
       final isGoingTo = state.matchedLocation;

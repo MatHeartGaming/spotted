@@ -72,11 +72,13 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
             .then((updatedComments) {
               final loadPostsNotifier = ref.read(loadPostsProvider.notifier);
               final loadUsersNotifier = ref.read(loadUserProvider.notifier);
+              final newCommentId = updatedComments.$2.id;
               final updatedUser = signedInUser.copyWith(
-                comments: [...signedInUser.comments, newComment.id],
+                comments: [...signedInUser.comments, newCommentId],
               );
+
               final updatedPost = widget.post.copyWith(
-                commentRefs: [...widget.post.commentRefs, newComment.id],
+                commentRefs: [...widget.post.commentRefs, newCommentId],
               );
               loadPostsNotifier.updatePost(updatedPost);
 

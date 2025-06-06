@@ -13,7 +13,6 @@ import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/providers/forms/states/form_status.dart';
 import 'package:spotted/presentation/providers/providers.dart';
-import 'package:spotted/presentation/widgets/shared/custom_dialogs.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 class CreatePostsScreen extends ConsumerStatefulWidget {
@@ -241,6 +240,7 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
     final context = ref.context;
     final createPostFormNotifier = ref.read(createPostFormProvider.notifier);
     final formState = ref.read(createPostFormProvider);
+    final userRepo = ref.read(usersRepositoryProvider);
 
     createPostFormNotifier.validateFields(status: FormStatus.posting);
 
@@ -269,6 +269,13 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
         final loadPost = ref.read(loadPostsProvider.notifier);
         loadPost.createPost(newPost).then((createdPost) {
           if (createdPost != null) {
+            if (signedInUser != null) {
+              userRepo.updateUser(
+                signedInUser.copyWith(
+                  posted: [createdPost.id, ...signedInUser.posted],
+                ),
+              );
+            }
             smallVibration();
             showCustomSnackbar(
               context,

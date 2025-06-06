@@ -70,8 +70,12 @@ class Post {
       postedIn: map['posted_in'] as String?,
       dateCreated:
           (map['date_created'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      commentRefs: List<String>.from(map['comment_ids'] ?? const []),
-      pictureUrls: List<String>.from(map['picture_urls'] ?? const []),
+      commentRefs: map.containsKey('comment_ids')
+              ? (map['comment_ids'] as List).map((e) => e.toString()).toList()
+              : [],
+      pictureUrls: map.containsKey('picture_urls')
+              ? (map['picture_urls'] as List).map((e) => e.toString()).toList()
+              : [],
       reactions: reactionsMap,
       isAnonymous: map['is_anonymous'] as bool? ?? false,
     );

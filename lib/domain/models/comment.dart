@@ -58,7 +58,9 @@ class Comment {
       postedIn: map['posted_in'] as String?,
       dateCreated:
           (map['date_created'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      replies: List<String>.from(map['replies'] ?? const []),
+      replies: map.containsKey('replies')
+              ? (map['replies'] as List).map((e) => e.toString()).toList()
+              : [],
       reactions: reactionsMap,
     );
   }
@@ -90,7 +92,7 @@ class Comment {
   }) {
     return Comment(
       id: id ?? this.id,
-      text: text ?? this.id,
+      text: text ?? this.text,
       postId: postId ?? this.postId,
       createdById: createdById ?? this.createdById,
       createdByUsername: createdByUsername ?? this.createdByUsername,

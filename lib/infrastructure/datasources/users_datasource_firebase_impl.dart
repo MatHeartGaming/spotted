@@ -150,12 +150,11 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
         .doc(user.username.toLowerCase()); // normalize username
 
     // Prepare the “actual user” document reference:
-    final userDocRef = _db
-        .collection(FirestoreDbCollections.users)
-        .doc(uid);
+    final userDocRef = _db.collection(FirestoreDbCollections.users).doc(uid);
 
     // Build the user data map once, so we can write it into Firestore:
-    final userData = user.copyWith(dateCreated: DateTime.now()).toMap();
+    final userData =
+        user.copyWith(dateCreated: DateTime.now(), friendsRefs: [uid]).toMap();
 
     try {
       // Run everything in one transaction so that “check & write” is atomic:
@@ -180,18 +179,11 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
           emailDocRef,
           {'uid': uid}, // You could store more if you like, but uid is enough
         );
-        transaction.set(
-          usernameDocRef,
-          {'uid': uid},
-        );
-        transaction.set(
-          userDocRef,
-          userData,
-          SetOptions(merge: true),
-        );
+        transaction.set(usernameDocRef, {'uid': uid});
+        transaction.set(userDocRef, userData, SetOptions(merge: true));
 
         // Return a fully‐populated User object (including id = uid).
-        return user.copyWith(dateCreated: DateTime.now(), id: uid);
+        return user.copyWith(id: uid);
       });
 
       logger.i("User created successfully (ID: $uid)");

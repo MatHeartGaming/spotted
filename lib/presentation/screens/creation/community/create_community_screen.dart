@@ -287,12 +287,13 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     createCommunityFormNotifier.onSumbit(
       onSubmit: () async {
         final signedInUser = ref.read(signedInUserProvider);
+        if (signedInUser == null) return;
         final newCommunity = Community(
-          createdById: signedInUser?.id ?? '',
-          createdByUsername: signedInUser?.username ?? '',
+          createdById: signedInUser.id,
+          createdByUsername: signedInUser.username,
           title: formState.title.value,
           description: formState.description.value,
-          admins: formState.adminsRefs ?? [],
+          admins: [signedInUser.id, ...(formState.adminsRefs ?? [])],
           // TODO: Add urls images
         );
         final loadCommunity = ref.read(loadCommunitiesProvider.notifier);
