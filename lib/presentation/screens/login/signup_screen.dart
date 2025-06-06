@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:animate_do/animate_do.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
+import 'package:spotted/infrastructure/datasources/datasources.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
@@ -20,7 +23,6 @@ class SignupScreen extends ConsumerStatefulWidget {
 }
 
 class SignupScreenState extends ConsumerState<SignupScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -35,8 +37,7 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
   }
 
   void _loadFeaturesAndInterests() {
-    ref.read(loadFeaturesProvider.notifier).getAllFeatures();
-    ref.read(loadInterestsProvider.notifier).getAllInterests();
+    ref.read(signupFormProvider.notifier).initCountryDropDownMenu();
   }
 
   @override
@@ -151,6 +152,24 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
                   ),
                   CustomTextFormField(
                     initialValue: "",
+                    autoFillHints: const [AutofillHints.addressCity],
+                    label: "login_screen_city_text".tr(),
+                    formatter: FormInputFormatters.text,
+                    errorMessage:
+                        signupFormState.isPosting
+                            ? signupFormState.city.errorMessage
+                            : null,
+                    icon: FontAwesomeIcons.city,
+                    onChanged: (newValue) {
+                      ref
+                          .read(signupFormProvider.notifier)
+                          .cityChanged(newValue);
+                    },
+                    onSubmitForm:
+                        () => _submitFormAction(authStatusNotifier, ref),
+                  ),
+                  CustomTextFormField(
+                    initialValue: "",
                     autoFillHints: const [AutofillHints.newPassword],
                     label: "login_screen_password_text".tr(),
                     trailingIcon: IconButton(
@@ -206,11 +225,7 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
                       const Text("login_screen_have_account_text").tr(),
                       const SizedBox(width: 2),
                       TextButton(
-                        onPressed: () {
-                          ref
-                              .read(showLoginSignupProvider.notifier)
-                              .update((state) => !state);
-                        },
+                        onPressed: () => _showLoginOrSignupAction(),
                         child: const Text(
                           "login_screen_login_title_with_args",
                         ).tr(args: ["!"]),
@@ -249,63 +264,129 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
         : _signupUsingPassword(ref);
   }
 
-  Future<void> _signupUsingPassword(WidgetRef ref) async {
-    //final appConfigs = ref.read(appConfigsProvider).configs;
-    final signupFormNotifier = ref.read(signupFormProvider.notifier);
-    final signupFormState = ref.read(signupFormProvider);
-    //final userRepository = ref.read(userRepositoryProvider);
-    final authStatusNotifier = ref.read(authStatusProvider.notifier);
-    final colors = Theme.of(ref.context).colorScheme;
-    signupFormNotifier.onSubmit(onSubmit: () {});
-    /*signupFormNotifier.onSubmit(
-      allowNonVatUserSignup: appConfigs.allowSignupForNonVatUsers,
-      onPasswordMismatch: () {
-        showCustomSnackbar(
-            ref.context, 'login_screen_password_mismatch_snackbar_text'.tr(),
-            backgroundColor: Colors.yellow[300], textColor: Colors.black);
-      },
-      onSubmit: () async {
-        await authStatusNotifier.signupUsingPassword(
-            signupFormState.email.value, signupFormState.password.value,
-            onEmailAlreadyExists: () {
-          showCustomSnackbar(
-              ref.context,
-              'login_screen_email_already_exists_snackbar'
-                  .tr(args: [signupFormState.email.value]),
-              backgroundColor: colors.error);
-        }).then(
-          (userCredential) async {
-            final user = User(
-              name: signupFormState.name.value,
-              surname: signupFormState.surname.value,
-              email: signupFormState.email.value,
-              username: ''
-            );
-            final uid = userCredential?.user?.uid;
-            if (uid == null) return;
-            await userRepository.createUser(user, uid).then(
-              (value) async {
-                _updateSignedInUserProvider(ref, user);
-                //if (!ref.context.mounted) return;
-                //ref.context.pop();
-                final authPasswordProvider =
-                    ref.read(authPasswordRepositoryProvider);
-                final isEmailVerified =
-                    await authPasswordProvider.isUserEmailVerified();
-                if (!isEmailVerified && ref.context.mounted) {
-                  ref.context.go(verifyEmailPath, extra: {'newUser': value});
-                }
-              },
-            );
-
-            logger.i('Singup with Password! $user');
-          },
-        );
-      },
-    );*/
+  void _showLoginOrSignupAction() {
+    ref.read(showLoginSignupProvider.notifier).update((state) => !state);
   }
 
-  void _updateSignedInUserProvider(WidgetRef ref, User user) {
+  Future<void> _signupUsingPassword(WidgetRef ref) async {
+    final signupFormNotifier = ref.read(signupFormProvider.notifier);
+    final signupFormState = ref.read(signupFormProvider);
+    final authStatusNotifier = ref.read(authStatusProvider.notifier);
+    final loadUsers = ref.read(loadUserProvider.notifier);
+    final authPasswordProvider = ref.read(authPasswordRepositoryProvider);
+    final signedInUserNotifier = ref.read(signedInUserProvider.notifier);
+    final colors = Theme.of(ref.context).colorScheme;
+
+    signupFormNotifier.onSubmit(
+      onPasswordMismatch: () {
+        showCustomSnackbar(
+          ref.context,
+          'login_screen_password_mismatch_snackbar_text'.tr(),
+          backgroundColor: Colors.yellow[300],
+          textColor: Colors.black,
+        );
+      },
+      onSubmit: () async {
+        // 1) First, try creating via Firebase Auth
+        await authStatusNotifier
+            .signupUsingPassword(
+              signupFormState.email.value,
+              signupFormState.password.value,
+              onEmailAlreadyExists: () {
+                // If Firebase Auth already has a user with that email,
+                // show this snackbar:
+                showCustomSnackbarWithActions(
+                  ref.context,
+                  'login_signupe_email_already_exists_error'.tr(
+                    args: [signupFormState.email.value],
+                  ),
+                  actionLabel: 'yes_text'.tr(),
+                  onActionTap: () => _showLoginOrSignupAction(),
+                  backgroundColor: colors.error,
+                );
+              },
+            )
+            .then((userCredential) async {
+              if (userCredential == null) {
+                return;
+              }
+
+              final uid = userCredential.user?.uid;
+              if (uid == null) return;
+
+              // 2) Now build our domain‐level User and try to persist to Firestore:
+              final newUser = User(
+                id: uid,
+                name: signupFormState.name.value,
+                surname: signupFormState.surname.value,
+                email: signupFormState.email.value,
+                username: signupFormState.username.value,
+                city: signupFormState.city.value,
+                country: signupFormState.country.value,
+              );
+
+              await loadUsers.createUser(user: newUser, authId: uid).then((
+                createdUser,
+              ) async {
+                // If we succeed, createdUser != null. We can update the signed‐in user and navigate.
+                signedInUserNotifier.update((state) => createdUser);
+                //final isEmailVerified = await authPasswordProvider.isUserEmailVerified();
+
+                /*if (!isEmailVerified && ref.context.mounted) {
+                    ref.context.go(verifyEmailPath, extra: {'newUser': createdUser});
+                  }*/
+              });
+
+              // 3) Attempt to create the Firestore document inside a transaction.
+              /*try {
+
+                
+
+              } on EmailAlreadyExistsException {
+                // This should be very rare, because we just signed up via Firebase Auth,
+                // but if somehow Firestore reject in the same transaction, show a snackbar:
+                showCustomSnackbarWithActions(
+                  ref.context,
+                  'login_signupe_email_already_exists_error'.tr(
+                    args: [signupFormState.email.value],
+                  ),
+                  actionLabel: 'yes_text'.tr(),
+                  onActionTap: () => _showLoginOrSignupAction(),
+                  backgroundColor: colors.error,
+                );
+              } on UsernameAlreadyExistsException {
+                // If Firestore says “username” is already taken, show a different snackbar:
+                showCustomSnackbar(
+                  ref.context,
+                  'login_screen_username_already_exists_snackbar'.tr(
+                    args: [signupFormState.username.value],
+                  ),
+                  backgroundColor: colors.error,
+                );
+              } on GenericUserCreationException catch (genericErr) {
+                // Some other Firestore error: show a generic “try again” snackbar.
+                showCustomSnackbar(
+                  ref.context,
+                  'login_signupe_unknown_error_error'.tr(
+                    args: [genericErr.message],
+                  ),
+                  backgroundColor: colors.error,
+                );
+              } catch (e) {
+                // Unexpected error (unlikely), show a catch‐all message.
+                logger.e('Errore brutto: $e');
+                /*showCustomSnackbar(
+                  ref.context,
+                  'login_signupe_unknown_error_error'.tr(),
+                  backgroundColor: colors.error,
+                );*/
+              }*/
+            });
+      },
+    );
+  }
+
+  void _updateSignedInUserProvider(User user) {
     ref.read(signedInUserProvider.notifier).update((state) => user);
   }
 }

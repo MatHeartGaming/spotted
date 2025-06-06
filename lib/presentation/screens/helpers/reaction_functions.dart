@@ -26,16 +26,14 @@ Future<void> updatePostActionWithReaction(
     reactions: _toggleReaction(user.reactions, resultPost.id, reaction),
   );
 
-  final newUserValue = await usersRepo.updateUser(updatedUser);
-  if (newUserValue != null) {
-    // Now updating `signedInUserProvider` will NOT reset LoadPostsNotifier’s state.
-    ref.read(signedInUserProvider.notifier).update((_) => newUserValue);
-  }
+  await usersRepo.updateUser(updatedUser).then((value) {
+    ref.read(signedInUserProvider.notifier).update((_) => updatedUser);
+  });
 }
 
 /// Returns a new map where:
-///  • If [reaction] == '👍', then tapping always “toggles off” any existing reaction, 
-///    or adds 👍 if there was none.  
+///  • If [reaction] == '👍', then tapping always “toggles off” any existing reaction,
+///    or adds 👍 if there was none.
 ///  • Otherwise (reaction is some other emoji), we remove if it matches exactly,
 ///    or overwrite if it’s different.
 Map<String, String> _toggleReaction(
@@ -70,4 +68,3 @@ Map<String, String> _toggleReaction(
   }
   return copy;
 }
-

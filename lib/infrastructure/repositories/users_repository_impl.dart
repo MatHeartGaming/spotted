@@ -30,12 +30,12 @@ class UsersRepositoryImplementation implements UsersRepository {
   }
 
   @override
-  Future<User?> createUser(User user) {
-    return _db.createUser(user);
+  Future<User?> createUser(User user, String uid) {
+    return _db.createUser(user, uid);
   }
 
   @override
-  Future<User?> updateUser(User user) {
+  Future<void> updateUser(User user) {
     return _db.updateUser(user);
   }
 
@@ -45,8 +45,8 @@ class UsersRepositoryImplementation implements UsersRepository {
   }
 
   @override
-  Future<List<User>?> deleteUserById(String id) {
-    return _db.deleteUserById(id);
+  Future<bool> deleteUserById(User user) {
+    return _db.deleteUserById(user);
   }
 
   @override

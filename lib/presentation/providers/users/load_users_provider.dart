@@ -1,8 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotted/config/config.dart';
 
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/repositories/repositories.dart';
+import 'package:spotted/infrastructure/datasources/datasources.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 
 final userScreenCurrentUserProvider = StateProvider.autoDispose<User>((ref) {
@@ -44,14 +46,33 @@ class LoadUserNotifier extends StateNotifier<LoadUserState> {
     return userById;
   }
 
-  Future<User?> updateUser(User user) async {
-    final updatedUser = await _usersRepository.updateUser(user);
-    return updatedUser;
+  Future<void> updateUser(User user) async {
+    await _usersRepository.updateUser(user);
   }
 
   Future<List<User>> getUsersById(List<String> userRefs) async {
     final users = await _usersRepository.getUsersById(userRefs);
     return users ?? [];
+  }
+
+  Future<User?> createUser({required User user, required String authId}) async {
+    try {
+      final newUser = await _usersRepository.createUser(user, authId);
+      return newUser;
+    } on EmailAlreadyExistsException {
+      // rethrow so UI knows “EmailAlreadyExistsException”
+      rethrow;
+    } on UsernameAlreadyExistsException {
+      rethrow;
+    } on GenericUserCreationException catch (genericError) {
+      // If you want, you can package any generic message inside a single
+      // “generic” exception. Or you might prefer to return null and let the UI decide.
+      logger.e('Generic error in User creation: $genericError');
+      rethrow;
+    } catch (e) {
+      // Some unexpected exception – wrap or rethrow.
+      rethrow;
+    }
   }
 }
 
@@ -64,24 +85,18 @@ class LoadUserState {
     this.isLoadingUser = false,
   });
 
- 
-
   @override
   bool operator ==(covariant LoadUserState other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.userForProfileScreen == userForProfileScreen &&
-      other.isLoadingUser == isLoadingUser;
+
+    return other.userForProfileScreen == userForProfileScreen &&
+        other.isLoadingUser == isLoadingUser;
   }
 
   @override
   int get hashCode => userForProfileScreen.hashCode ^ isLoadingUser.hashCode;
 
-  LoadUserState copyWith({
-    User? userForProfileScreen,
-    bool? isLoadingUser,
-  }) {
+  LoadUserState copyWith({User? userForProfileScreen, bool? isLoadingUser}) {
     return LoadUserState(
       userForProfileScreen: userForProfileScreen ?? this.userForProfileScreen,
       isLoadingUser: isLoadingUser ?? this.isLoadingUser,

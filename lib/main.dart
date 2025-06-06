@@ -8,6 +8,10 @@ import 'package:spotted/config/router/app_router.dart';
 import 'package:spotted/flavors.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 
+// Define a top‐level key: for Snackbars and more
+final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
+
 Future<void> main() async {
   await _initialConfigs();
   runApp(
@@ -41,10 +45,11 @@ class MainApp extends ConsumerStatefulWidget {
 }
 
 class MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
+    Future(() {
       _updateSignedInUserProvider();
       _updateAppThemePrimaryHexColor();
     });
@@ -65,23 +70,18 @@ class MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
   }
 
   void _updateSignedInUserProvider() {
-    /*final signedInUser = ref.read(signedInUserProvider);
-    final signeInUserEmail =
-        ref.read(authPasswordRepositoryProvider).signedInUserEmail;
-    final userRepo = ref.read(userRepositoryProvider);
-    if (signeInUserEmail.isNotEmpty && signedInUser == null) {
-      userRepo.getUserByEmail(email: signeInUserEmail).then(
-        (user) {
-          if (user != null) {
-            ref.read(signedInUserProvider.notifier).update(
-              (state) {
-                return user;
-              },
-            );
-          }
-        },
-      );
-    }*/
+    final signedInUser = ref.read(signedInUserProvider);
+    final signeInUserId = ref.read(authPasswordRepositoryProvider).authUid;
+    final userRepo = ref.read(usersRepositoryProvider);
+    if (signeInUserId != null && signedInUser == null) {
+      userRepo.getUserById(signeInUserId).then((user) {
+        if (user != null) {
+          ref.read(signedInUserProvider.notifier).update((state) {
+            return user;
+          });
+        }
+      });
+    }
   }
 
   void _updateAppThemePrimaryHexColor() {
@@ -118,6 +118,7 @@ class MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
     //IosDeepLinksPlugin.setupIosDeepLinksAtLaunch(ref);
 
     return MaterialApp.router(
+      scaffoldMessengerKey: rootScaffoldMessengerKey,
       debugShowCheckedModeBanner: false,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,

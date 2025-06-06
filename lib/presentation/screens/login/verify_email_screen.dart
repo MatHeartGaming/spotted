@@ -30,25 +30,44 @@ class VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
   @override
   void initState() {
     super.initState();
-    /*final authRepository = ref.read(authPasswordRepositoryProvider);
-    final userRepository = ref.read(userRepositoryProvider);
+    final authRepository = ref.read(authPasswordRepositoryProvider);
+    final userRepository = ref.read(usersRepositoryProvider);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       final isUserEmailVerified = await authRepository.isUserEmailVerified();
       if (isUserEmailVerified) {
         _timer.cancel();
         AuthState.emailVerified = true;
         final authPasswordRepo = ref.read(authPasswordRepositoryProvider);
-        await userRepository
-            .createUser(widget.user, authPasswordRepo.authUid ?? '')
+        if (authPasswordRepo.authUid == null) {
+          _logoutAction();
+          return;
+        }
+        await userRepository.getUserById(authPasswordRepo.authUid!).then((
+          user,
+        ) {
+          if (user == null) {
+            _logoutAction();
+            return;
+          }
+          ref
+                  .read(signedInUserProvider.notifier)
+                  .update((state) => user);
+          goToHomeScreenUsingContext(context);
+        });
+        /*await userRepository
+            .createUser(
+              user: widget.user,
+              authId: authPasswordRepo.authUid ?? '',
+            )
             .then((newUser) {
               ref
                   .read(signedInUserProvider.notifier)
                   .update((state) => newUser);
               goToHomeScreenUsingContext(context);
-            });
+            });*/
         return;
       }
-    });*/
+    });
   }
 
   @override
@@ -171,8 +190,8 @@ class VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
   }
 
   Future<void> _enterAction(WidgetRef ref, BuildContext context) async {
-    /*final authRepository = ref.read(authPasswordRepositoryProvider);
-    final userRepository = ref.read(userRepositoryProvider);
+    final authRepository = ref.read(authPasswordRepositoryProvider);
+    final userRepository = ref.read(loadUserProvider.notifier);
     final colors = Theme.of(context).colorScheme;
     await authRepository.isUserEmailVerified().then((
       isUserEmailVerified,
@@ -180,7 +199,10 @@ class VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
       if (isUserEmailVerified) {
         final authPasswordRepo = ref.read(authPasswordRepositoryProvider);
         await userRepository
-            .createUser(widget.user, authPasswordRepo.authUid ?? '')
+            .createUser(
+              user: widget.user,
+              authId: authPasswordRepo.authUid ?? '',
+            )
             .then((newUser) {
               ref
                   .read(signedInUserProvider.notifier)
@@ -196,7 +218,7 @@ class VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
         ),
         backgroundColor: colors.error,
       );
-    });*/
+    });
   }
 
   Future<void> _sendVerificationEmail(

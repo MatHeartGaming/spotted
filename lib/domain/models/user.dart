@@ -104,31 +104,31 @@ class User {
       username: map['username'] as String,
       city: map['city'] as String,
       country: map['country'] as String,
-      profileImageUrl: map['profile_image_url'] as String,
+      profileImageUrl: map['profile_image_url'],
       dateCreated: (map['date_created'] as Timestamp?)?.toDate(),
       featureRefs:
           map.containsKey('features_ids')
-              ? List<String>.from(map['features_ids'] as List<String>)
+              ? (map['features_ids'] as List).map((e) => e.toString()).toList()
               : [],
       interestsRefs:
           map.containsKey('interests_ids')
-              ? List<String>.from(map['interests_ids'] as List<String>)
+              ? (map['interests_ids'] as List).map((e) => e.toString()).toList()
               : [],
       communitiesSubs:
           map.containsKey('communities_subs')
-              ? List<String>.from(map['communities_subs'] as List<String>)
+              ? (map['communities_subs'] as List).map((e) => e.toString()).toList()
               : [],
       friendsRefs:
           map.containsKey('friends_ids')
-              ? List<String>.from(map['friends_ids'] as List<String>)
+              ? (map['friends_ids'] as List).map((e) => e.toString()).toList()
               : [],
       posted:
           map.containsKey('posted')
-              ? List<String>.from(map['posted'] as List<String>)
+              ? (map['posted'] as List).map((e) => e.toString()).toList()
               : [],
       comments:
           map.containsKey('comments')
-              ? List<String>.from(map['comments'] as List<String>)
+              ? (map['comments'] as List).map((e) => e.toString()).toList()
               : [],
       reactions: reactionsMap,
     );
@@ -143,11 +143,11 @@ class User {
       'username': username,
       'city': city,
       'country': country,
-      'profileImageUrl': profileImageUrl,
-      'dateCreated': dateCreated,
+      'profile_image_url': profileImageUrl,
+      'date_created': dateCreated,
       'features_ids': featureRefs,
       'interests_ids': interestsRefs,
-      'communitiesSubs': communitiesSubs,
+      'communities_subs': communitiesSubs,
       'friends_ids': friendsRefs,
       'posted': posted,
       'reactions': reactions,
@@ -156,6 +156,9 @@ class User {
   }
 
   factory User.fromMap(Map<String, dynamic> map) {
+    final reactionsMap = (map['reactions'] as Map).map(
+      (key, value) => MapEntry(key.toString(), value.toString()),
+    );
     return User(
       id: map['id'] as String,
       email: map['email'] as String,
@@ -164,38 +167,33 @@ class User {
       username: map['username'] as String,
       city: map['city'] as String,
       country: map['country'] as String,
-      profileImageUrl: map['profile_image_url'] as String,
+      profileImageUrl: map['profile_image_url'],
       dateCreated: (map['date_created'] as Timestamp?)?.toDate(),
       featureRefs:
           map.containsKey('features_ids')
-              ? List<String>.from(map['features_ids'] as List<String>)
+              ? (map['features_ids'] as List).map((e) => e.toString()).toList()
               : [],
       interestsRefs:
           map.containsKey('interests_ids')
-              ? List<String>.from(map['interests_ids'] as List<String>)
+              ? (map['interests_ids'] as List).map((e) => e.toString()).toList()
               : [],
       communitiesSubs:
           map.containsKey('communities_subs')
-              ? List<String>.from(map['communities_subs'] as List<String>)
+              ? (map['communities_subs'] as List).map((e) => e.toString()).toList()
               : [],
       friendsRefs:
           map.containsKey('friends_ids')
-              ? List<String>.from(map['friends_ids'] as List<String>)
+              ? (map['friends_ids'] as List).map((e) => e.toString()).toList()
               : [],
       posted:
           map.containsKey('posted')
-              ? List<String>.from(map['posted'] as List<String>)
+              ? (map['posted'] as List).map((e) => e.toString()).toList()
               : [],
       comments:
           map.containsKey('comments')
-              ? List<String>.from(map['comments'] as List<String>)
+              ? (map['comments'] as List).map((e) => e.toString()).toList()
               : [],
-      reactions:
-          map.containsKey('reactions')
-              ? Map<String, String>.from(
-                map['reactions'] as Map<String, String>,
-              )
-              : {},
+      reactions: reactionsMap,
     );
   }
 

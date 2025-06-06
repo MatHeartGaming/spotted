@@ -11,6 +11,7 @@ export 'package:spotted/presentation/widgets/shared/user/user_info_row.dart';
 export 'package:spotted/presentation/widgets/shared/comments/comment_tile_widget.dart';
 export 'package:spotted/presentation/widgets/shared/general_icon_widgets.dart';
 export 'package:spotted/presentation/widgets/shared/custom_dialogs.dart';
+export 'package:spotted/presentation/widgets/shared/chips_list_widget.dart';
 
 // Navigation
 export 'package:spotted/presentation/widgets/shared/navigation/drawer_content.dart';

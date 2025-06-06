@@ -70,8 +70,8 @@ class LoadSignedInFriendsNotifier
   }
 
   Future<User?> updateUser(User user) async {
-    final updatedUser = await _usersRepository.updateUser(user);
-    return updatedUser;
+    await _usersRepository.updateUser(user);
+    return user;
   }
 
   Future<List<User>> getUsersById(List<String> userRefs) async {

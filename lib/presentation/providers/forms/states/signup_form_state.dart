@@ -15,6 +15,9 @@ class SignupFormState {
   final GenericText username;
   final GenericText country;
   final GenericText city;
+  final List<String> features;
+  final List<String> selectedFeatures;
+  final List<String> interests;
 
   /// Controllers
   final TextEditingController? emailController;
@@ -25,6 +28,8 @@ class SignupFormState {
   final TextEditingController? usernameController;
   final TextEditingController? cityController;
   final MultiSelectController<String>? countryController;
+  final MultiSelectController<String>? featuresController;
+  final MultiSelectController<String>? interestsController;
 
   const SignupFormState({
     this.status = FormStatus.invalid,
@@ -37,6 +42,9 @@ class SignupFormState {
     this.username = const GenericText.pure(),
     this.country = const GenericText.pure(),
     this.city = const GenericText.pure(),
+    this.features = const [],
+    this.selectedFeatures = const [],
+    this.interests = const [],
     this.emailController,
     this.passwordController,
     this.repeatPasswordController,
@@ -45,6 +53,8 @@ class SignupFormState {
     this.usernameController,
     this.countryController,
     this.cityController,
+    this.featuresController,
+    this.interestsController,
   });
 
   SignupFormState copyWith({
@@ -58,6 +68,9 @@ class SignupFormState {
     GenericText? username,
     GenericText? country,
     GenericText? city,
+    List<String>? features,
+    List<String>? selectedFeatures,
+    List<String>? interests,
     TextEditingController? emailController,
     TextEditingController? passwordController,
     TextEditingController? repeatPasswordController,
@@ -65,6 +78,8 @@ class SignupFormState {
     TextEditingController? surnameController,
     TextEditingController? usernameController,
     MultiSelectController<String>? countryController,
+    MultiSelectController<String>? featuresController,
+    MultiSelectController<String>? interestsController,
     TextEditingController? cityController,
   }) => SignupFormState(
     status: status ?? this.status,
@@ -75,6 +90,9 @@ class SignupFormState {
     username: username ?? this.username,
     country: country ?? this.country,
     city: city ?? this.city,
+    features: features ?? this.features,
+    selectedFeatures: selectedFeatures ?? this.selectedFeatures,
+    interests: interests ?? this.interests,
     password: password ?? this.password,
     repeatPassword: repeatPassword ?? this.repeatPassword,
     emailController: emailController ?? this.emailController,
@@ -86,6 +104,8 @@ class SignupFormState {
     usernameController: usernameController ?? this.usernameController,
     countryController: countryController ?? this.countryController,
     cityController: cityController ?? this.cityController,
+    featuresController: featuresController ?? this.featuresController,
+    interestsController: interestsController ?? this.interestsController,
   );
 
   bool get isPosting => status == FormStatus.posting;
@@ -103,6 +123,8 @@ class SignupFormState {
         other.username == username &&
         other.country == country &&
         other.city == city &&
+        other.features == features &&
+        other.interests == interests &&
         other.surname == surname;
   }
 
@@ -117,6 +139,8 @@ class SignupFormState {
         username.hashCode ^
         surname.hashCode ^
         country.hashCode ^
+        features.hashCode ^
+        interests.hashCode ^
         city.hashCode;
   }
 }

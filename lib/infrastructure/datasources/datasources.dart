@@ -11,3 +11,6 @@ export 'package:spotted/infrastructure/datasources/app_configs_datasource_impl.d
 export 'package:spotted/infrastructure/datasources/app_configs_mock_datasource_impl.dart';
 export 'package:spotted/infrastructure/datasources/feature_datasource_mock_impl.dart';
 export 'package:spotted/infrastructure/datasources/interest_datasource_mock_impl.dart';
+
+// Exceptions
+export 'package:spotted/infrastructure/datasources/exceptions/user_exceptions.dart';

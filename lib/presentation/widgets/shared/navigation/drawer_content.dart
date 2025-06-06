@@ -98,7 +98,7 @@ class DrawerContent extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(10),
                       child: Text(
                         'drawer_following_count',
-                      ).tr(args: ['${user.friends.length - 1}']),
+                      ).tr(args: [user.friends.isEmpty ? '0' : '${user.friends.length - 1}']),
                     ),
                   ],
                 ),

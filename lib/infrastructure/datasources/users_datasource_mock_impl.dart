@@ -6,7 +6,7 @@ import 'package:spotted/domain/preview_data/mock_data.dart';
 
 class UsersDatasourceMockImpl implements UsersDatasource {
   @override
-  Future<User?> createUser(User user) async {
+  Future<User?> createUser(User user, String uid) async {
     var rng = Random();
     int randomTime = rng.nextInt(300);
     return await Future.delayed(Duration(milliseconds: randomTime), () {
@@ -115,12 +115,12 @@ class UsersDatasourceMockImpl implements UsersDatasource {
   }
 
   @override
-  Future<List<User>?> deleteUserById(String id) async {
+  Future<bool> deleteUserById(User user) async {
     var rng = Random();
     int randomTime = rng.nextInt(300);
     return await Future.delayed(Duration(milliseconds: randomTime), () {
-      mockUsers.removeWhere((u) => u.id == id);
-      return mockUsers;
+      mockUsers.removeWhere((u) => u.id == user.id);
+      return true;
     });
   }
 }

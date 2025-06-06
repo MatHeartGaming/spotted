@@ -26,6 +26,8 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
           usernameController: TextEditingController(),
           cityController: TextEditingController(),
           countryController: MultiSelectController<String>(),
+          featuresController: MultiSelectController<String>(),
+          interestsController: MultiSelectController<String>(),
         ),
       );
 
@@ -60,10 +62,18 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
     );
   }
 
+  void initCountryDropDownMenu() {
+    state.countryController?.selectWhere((item) => item.value == "Italy");
+    state = state.copyWith(country: GenericText.dirty("Italy"));
+  }
+
+  void initFeatures(List<Feature> features) {
+    state = state.copyWith(features: features.map((e) => e.name).toList());
+  }
+
   void onSubmit({
     required VoidCallback onSubmit,
     bool validatePasswords = true,
-    bool allowNonVatUserSignup = true,
     VoidCallback? onPasswordMismatch,
   }) {
     List<FormzInput> fieldsToValidate = [
@@ -90,6 +100,9 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
       email: Email.dirty(state.email.value),
       name: GenericText.dirty(state.name.value),
       surname: GenericText.dirty(state.surname.value),
+      city: GenericText.dirty(state.city.value),
+      country: GenericText.dirty(state.country.value),
+      username: GenericText.dirty(state.username.value),
       password: PasswordText.dirty(state.password.value),
       repeatPassword: PasswordText.dirty(state.repeatPassword.value),
       isValid: Formz.validate(fieldsToValidate),
@@ -146,6 +159,23 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
     _updateField(repeat, (val) => state.copyWith(repeatPassword: val));
   }
 
+  void onFeatureSearchChanged(String newValue) {
+    final items =
+        state.featuresController?.items.map((e) => e.value).toList() ?? [];
+    logger.i('OnSearch change: $items');
+    if (!items.contains(newValue)) {
+      logger.i('Controller features: ${state.featuresController} - $newValue');
+      state.featuresController?.addItems([
+        DropdownItem(label: newValue, value: newValue),
+        ...(state.featuresController?.items ?? []),
+      ]);
+      state = state.copyWith(features: [
+        newValue,
+        ...state.features,
+      ]);
+    }
+  }
+
   void _updateField<T extends FormzInput>(
     T value,
     SignupFormState Function(T value) update,
@@ -192,5 +222,7 @@ class SignupNotifier extends StateNotifier<SignupFormState> {
     state.usernameController?.dispose();
     state.countryController?.dispose();
     state.cityController?.dispose();
+    state.featuresController?.dispose();
+    state.interestsController?.dispose();
   }
 }

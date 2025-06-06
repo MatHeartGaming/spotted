@@ -8,7 +8,6 @@ import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
-import 'package:spotted/presentation/widgets/shared/custom_dialogs.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 class CommentsScreen extends ConsumerStatefulWidget {

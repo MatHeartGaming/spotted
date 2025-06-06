@@ -24,6 +24,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
+        name: VerifyEmailScreen.name,
+        path: verifyEmailPath,
+        builder: (context, state) {
+          Map<String, dynamic>? mapExtras =
+              state.extra as Map<String, dynamic>?;
+          User? newUser = mapExtras?['newUser'] as User?;
+          final signedInUser = ref.read(signedInUserProvider) ?? User.empty();
+          return VerifyEmailScreen(user: newUser ?? signedInUser);
+        },
+      ),
+
+      GoRoute(
         name: SettingsListScreen.name,
         path: settingsListPath,
         builder: (context, state) => const SettingsListScreen(),
@@ -207,23 +219,23 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
       final isConnected = ref.watch(connectivityProvider);
       //final platformInfos = ref.watch(platformInfoProvider);
-      final signedInUser = ref.watch(signedInUserProvider);
+      //final signedInUser = ref.watch(signedInUserProvider);
       final authStatus = ref.watch(authStatusProvider).authStatus;
-      //final authRepo = ref.watch(authPasswordRepositoryProvider);
-      //final appConfigsStateAsync = ref.watch(appConfigsFutureProvider);
+      final authRepo = ref.watch(authPasswordRepositoryProvider);
+      final appConfigsStateAsync = ref.watch(appConfigsFutureProvider);
       if (isConnected) {
-        if (signedInUser == null || authStatus == AuthStatus.notAuthenticated) {
+        /*if (signedInUser == null || authStatus == AuthStatus.notAuthenticated) {
           return loginPath;
         }
         if (isGoingTo == basePath) {
           return '$homePath/0';
-        }
-        /*return appConfigsStateAsync.when(
-            data: (configs) async {
-              
-              
-
-              final localBuildNumber = await platformInfos.getBuildNumber();
+        }*/
+        return appConfigsStateAsync.when(
+          data: (configs) async {
+            if (configs.isInMaintenanceMode) {
+              return '/maintenance/${MaintenanceErrors.maintenance.name}';
+            }
+            /*final localBuildNumber = await platformInfos.getBuildNumber();
               if (Platform.isIOS) {
                 if (configs.buildNumberIos > localBuildNumber) {
                   return '/maintenance/${MaintenanceErrors.iOSBuildNumberIsHigher.name}';
@@ -232,20 +244,47 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 if (configs.buildNumberAndroid > localBuildNumber) {
                   return '/maintenance/${MaintenanceErrors.androidBuildNumberIsHigher.name}';
                 }
-              }
-              return isGoingTo;
-            },
-            loading: () => loadingPath,
-            error: (Object error, StackTrace stackTrace) {
-              logger.e('Error while routing: $error');
-              logger.e('StackTrace while routing: $stackTrace');
+              }*/
+            if (isGoingTo == loadingPath && authStatus == AuthStatus.checking) {
               return null;
-            },
-          );*/
+            }
+
+            if (authStatus == AuthStatus.notAuthenticated) {
+              if (isGoingTo == loginPath) return null;
+
+              return loginPath;
+            }
+
+            final emailVerified =
+                (AuthState.emailVerified == null ||
+                        AuthState.emailVerified == false)
+                    ? await authRepo.isUserEmailVerified()
+                    : (AuthState.emailVerified ?? false);
+            AuthState.emailVerified = emailVerified;
+            if (authStatus == AuthStatus.authenticated && !emailVerified) {
+              return verifyEmailPath;
+            }
+
+            if (authStatus == AuthStatus.authenticated) {
+              if (isGoingTo.startsWith(homePath)) return isGoingTo;
+              if (isGoingTo == loginPath ||
+                  isGoingTo == loadingPath ||
+                  isGoingTo == basePath) {
+                return '$homePath/0';
+              }
+            }
+            return null;
+          },
+          loading: () => loadingPath,
+          error: (Object error, StackTrace stackTrace) {
+            logger.e('Error while routing: $error');
+            logger.e('StackTrace while routing: $stackTrace');
+            return null;
+          },
+        );
       } else {
         return '/maintenance/${MaintenanceErrors.noConnection.name}';
       }
-      return isGoingTo;
     },
   );
 });
