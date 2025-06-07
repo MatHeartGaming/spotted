@@ -15,6 +15,7 @@ export 'package:spotted/presentation/screens/explore/explore_screen.dart';
 // Profile
 export 'package:spotted/presentation/screens/profile/profile_handler_screen.dart';
 export 'package:spotted/presentation/screens/profile/profile_screen.dart';
+export 'package:spotted/presentation/screens/profile/add_profile_info_screen.dart';
 
 // Chats
 export 'package:spotted/presentation/screens/chats/chats_screen.dart';

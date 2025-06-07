@@ -37,6 +37,7 @@ export 'package:spotted/presentation/providers/forms/login/login_form_provider.d
 export 'package:spotted/presentation/providers/forms/login_show_passwords_providers.dart';
 export 'package:spotted/presentation/providers/forms/show_login_signup_provider.dart';
 export 'package:spotted/presentation/providers/forms/signup_form_provider.dart';
+export 'package:spotted/presentation/providers/forms/edit_profile_form_provider.dart';
 
 // Clipboard
 export 'package:spotted/presentation/providers/clipboard/clipboard_provider.dart';

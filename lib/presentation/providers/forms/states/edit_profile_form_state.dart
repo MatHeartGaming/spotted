@@ -1,45 +1,47 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:spotted/infrastructure/input_validations/inputs.dart';
 import 'package:spotted/presentation/providers/forms/states/form_status.dart';
 
-class SignupFormState {
+class EditProfileFormState {
   final FormStatus status;
   final bool isValid;
   final Email email;
-  final PasswordText password;
-  final PasswordText repeatPassword;
   final GenericText name;
   final GenericText surname;
   final GenericText username;
   final GenericText country;
   final GenericText city;
+  final List<String> interests;
+  final List<String> features;
+  final Uint8List? profileImageBytes;
+  final XFile? profileImageFile;
 
   /// Controllers
   final TextEditingController? emailController;
-  final TextEditingController? passwordController;
-  final TextEditingController? repeatPasswordController;
   final TextEditingController? nameController;
   final TextEditingController? surnameController;
   final TextEditingController? usernameController;
   final TextEditingController? cityController;
   final MultiSelectController<String>? countryController;
 
-  const SignupFormState({
+  const EditProfileFormState({
     this.status = FormStatus.invalid,
     this.isValid = false,
     this.email = const Email.pure(),
-    this.password = const PasswordText.pure(),
-    this.repeatPassword = const PasswordText.pure(),
     this.name = const GenericText.pure(),
     this.surname = const GenericText.pure(),
     this.username = const GenericText.pure(),
     this.country = const GenericText.pure(),
     this.city = const GenericText.pure(),
+    this.features = const [],
+    this.interests = const [],
+    this.profileImageBytes,
+    this.profileImageFile,
     this.emailController,
-    this.passwordController,
-    this.repeatPasswordController,
     this.nameController,
     this.surnameController,
     this.usernameController,
@@ -47,26 +49,26 @@ class SignupFormState {
     this.cityController,
   });
 
-  SignupFormState copyWith({
+  EditProfileFormState copyWith({
     FormStatus? status,
     bool? isValid,
     Email? email,
-    PasswordText? password,
-    PasswordText? repeatPassword,
     GenericText? name,
     GenericText? surname,
     GenericText? username,
     GenericText? country,
     GenericText? city,
+    List<String>? interests,
+    List<String>? features,
+    Uint8List? profileImageBytes,
+    XFile? profileImageFile,
     TextEditingController? emailController,
-    TextEditingController? passwordController,
-    TextEditingController? repeatPasswordController,
     TextEditingController? nameController,
     TextEditingController? surnameController,
     TextEditingController? usernameController,
     MultiSelectController<String>? countryController,
     TextEditingController? cityController,
-  }) => SignupFormState(
+  }) => EditProfileFormState(
     status: status ?? this.status,
     isValid: isValid ?? this.isValid,
     email: email ?? this.email,
@@ -75,12 +77,11 @@ class SignupFormState {
     username: username ?? this.username,
     country: country ?? this.country,
     city: city ?? this.city,
-    password: password ?? this.password,
-    repeatPassword: repeatPassword ?? this.repeatPassword,
+    profileImageBytes: profileImageBytes ?? this.profileImageBytes,
+    profileImageFile: profileImageFile ?? this.profileImageFile,
+    interests: interests ?? this.interests,
+    features: features ?? this.features,
     emailController: emailController ?? this.emailController,
-    passwordController: passwordController ?? this.passwordController,
-    repeatPasswordController:
-        repeatPasswordController ?? this.repeatPasswordController,
     nameController: nameController ?? this.nameController,
     surnameController: surnameController ?? this.surnameController,
     usernameController: usernameController ?? this.usernameController,
@@ -89,34 +90,4 @@ class SignupFormState {
   );
 
   bool get isPosting => status == FormStatus.posting;
-
-  @override
-  bool operator ==(covariant SignupFormState other) {
-    if (identical(this, other)) return true;
-
-    return other.status == status &&
-        other.isValid == isValid &&
-        other.email == email &&
-        other.password == password &&
-        other.repeatPassword == repeatPassword &&
-        other.name == name &&
-        other.username == username &&
-        other.country == country &&
-        other.city == city &&
-        other.surname == surname;
-  }
-
-  @override
-  int get hashCode {
-    return status.hashCode ^
-        isValid.hashCode ^
-        email.hashCode ^
-        password.hashCode ^
-        repeatPassword.hashCode ^
-        name.hashCode ^
-        username.hashCode ^
-        surname.hashCode ^
-        country.hashCode ^
-        city.hashCode;
-  }
 }

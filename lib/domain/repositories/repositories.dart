@@ -6,3 +6,4 @@ export 'package:spotted/domain/repositories/auth/firebase_auth_password_reposito
 export 'package:spotted/domain/repositories/appconfigs_repository.dart';
 export 'package:spotted/domain/repositories/feature_repository.dart';
 export 'package:spotted/domain/repositories/interest_repository.dart';
+export 'package:spotted/domain/repositories/services/load_images_repository.dart';

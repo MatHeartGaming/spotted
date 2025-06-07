@@ -111,6 +111,10 @@
     "profile_screen_success_follow_btn_text": "Ora segui {}",
     "profile_screen_success_unfollow_btn_text": "Ora non segui più {}",
 
+    "edit_info_screen_load_profile_pic_tooltip_text": "Carica foto profilo",
+    "edit_info_screen_load_profile_pic_snackbar_text": "Carica una foto prodilo, per favore",
+    "edit_info_screen_update_info_btn_text": "Aggiorna informazioni",
+
     "home_search_screen_search_app_bar_title": "Cerca",
     "home_search_screen_search_bar_placeholder": "Cerca Post, Utenti, Comunità",
     "search_results_users_header": "Risultati per Utente",

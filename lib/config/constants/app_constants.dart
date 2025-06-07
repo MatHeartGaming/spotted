@@ -9,6 +9,7 @@ const String explorePath = '/explore';
 const String loadingPath = '/loading';
 const String verifyEmailPath = '/verify-email';
 const String loginPath = '/login-signup';
+const String addProfileInfoPath = '/add-profile-info';
 const String settingsListPath = '/settings_list_screen';
 const String profilePath = '/profile_screen';
 const String communityPath = '/community_screen';

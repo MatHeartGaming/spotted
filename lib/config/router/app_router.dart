@@ -36,6 +36,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
+        name: AddProfileInfoScreen.name,
+        path: addProfileInfoPath,
+        builder: (context, state) => const AddProfileInfoScreen(),
+      ),
+
+      GoRoute(
         name: SettingsListScreen.name,
         path: settingsListPath,
         builder: (context, state) => const SettingsListScreen(),
@@ -266,6 +272,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             }
 
             if (authStatus == AuthStatus.authenticated) {
+              final signedInUser = ref.read(signedInUserProvider);
+              if (!(signedInUser?.isProfileUrlValid ?? false)) {
+                return addProfileInfoPath;
+              }
               if (isGoingTo.startsWith(homePath)) return isGoingTo;
               if (isGoingTo == loginPath ||
                   isGoingTo == loadingPath ||

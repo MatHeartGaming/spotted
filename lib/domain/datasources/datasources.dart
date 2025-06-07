@@ -1,4 +1,3 @@
-
 export 'package:spotted/domain/datasources/posts_datasource.dart';
 export 'package:spotted/domain/datasources/users_datasource.dart';
 export 'package:spotted/domain/datasources/comments_datasource.dart';
@@ -7,6 +6,7 @@ export 'package:spotted/domain/datasources/auth/firebase_auth_password_datasourc
 export 'package:spotted/domain/datasources/appconfigs_datasource.dart';
 export 'package:spotted/domain/datasources/feature_datasource.dart';
 export 'package:spotted/domain/datasources/interest_datasource.dart';
+export 'package:spotted/domain/datasources/services/load_images_datasource.dart';
 
 // Exceptions
 export 'package:spotted/domain/datasources/exceptions/community_exceptions.dart';
