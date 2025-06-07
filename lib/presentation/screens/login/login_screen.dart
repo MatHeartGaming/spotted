@@ -63,7 +63,7 @@ class LoginScreen extends ConsumerWidget {
                       loginFormState.emailChanged(newValue);
                     },
                     onSubmitForm:
-                        () => _submitFormAction(authStatusNotifier, ref),
+                        (_) => _submitFormAction(authStatusNotifier, ref),
                   ),
                   const SizedBox(height: 20),
                   CustomTextFormField(
@@ -90,7 +90,7 @@ class LoginScreen extends ConsumerWidget {
                       loginFormState.passwordChanged(newValue);
                     },
                     onSubmitForm:
-                        () => _submitFormAction(authStatusNotifier, ref),
+                        (_) => _submitFormAction(authStatusNotifier, ref),
                   ),
                   const SizedBox(height: 10),
                   Row(

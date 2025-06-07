@@ -60,4 +60,10 @@ class InterestDatasourceMockImpl implements InterestDatasource {
       return mockInterests.where((f) => f.id?.trim() == id).firstOrNull;
     });
   }
+  
+  @override
+  Future<List<Interest>> getInterestsByIds(List<String> ids) {
+    // TODO: implement getInterestsByIds
+    throw UnimplementedError();
+  }
 }

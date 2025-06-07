@@ -29,6 +29,11 @@ void pushToHomeSearchScreem(BuildContext context) {
   context.push(homeSearchPath);
 }
 
+void pushToEditProfileScreem(BuildContext context) {
+  if (!context.mounted) return;
+  context.push(addProfileInfoPath);
+}
+
 void pushToCreateCommunityScreen(BuildContext context, {Community? community}) {
   if (!context.mounted) return;
   if (community == null) {

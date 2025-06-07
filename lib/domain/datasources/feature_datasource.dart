@@ -6,4 +6,6 @@ abstract class FeatureDatasource {
   Future<List<Feature>> getFeaturesByName(String name);
   Future<Feature?> getFeatureByName(String name);
   Future<Feature?> getFeatureById(String id);
+  Future<List<Feature>> getFeaturesByIds(List<String> ids);
+  Future<List<Feature>> createFeaturesIfNotExist(List<Feature> features);
 }

@@ -88,7 +88,7 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                     controller: communityFormState.titleController,
                     icon: Icons.title_outlined,
                     errorMessage: communityFormState.title.errorMessage,
-                    onSubmitForm: () => _onSubmit(),
+                    onSubmitForm: (_) => _onSubmit(),
                     onChanged: (newValue) {
                       ref
                           .read(createCommunityFormProvder.notifier)
@@ -102,7 +102,7 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                     controller: communityFormState.descriptionController,
                     icon: Icons.title_outlined,
                     errorMessage: communityFormState.description.errorMessage,
-                    onSubmitForm: () => _onSubmit(),
+                    onSubmitForm: (_) => _onSubmit(),
                     onChanged: (newValue) {
                       ref
                           .read(createCommunityFormProvder.notifier)
@@ -115,7 +115,7 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                             .tr(),
                     icon: Icons.title_outlined,
                     errorMessage: null,
-                    onSubmitForm: () => _onSubmit(),
+                    onSubmitForm: (_) => _onSubmit(),
                     onChanged: (newValue) {
                       ref
                           .read(createCommunityFormProvder.notifier)

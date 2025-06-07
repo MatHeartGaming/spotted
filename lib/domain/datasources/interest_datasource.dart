@@ -6,4 +6,5 @@ abstract class InterestDatasource {
   Future<List<Interest>> getInterestsByName(String name);
   Future<Interest?> getInterestByName(String name);
   Future<Interest?> getInterestById(String id);
+  Future<List<Interest>> getInterestsByIds(List<String> ids);
 }

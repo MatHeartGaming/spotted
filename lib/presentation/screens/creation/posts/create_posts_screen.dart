@@ -68,7 +68,7 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
                     controller: formState.titleController,
                     icon: Icons.title_outlined,
                     errorMessage: formState.title.errorMessage,
-                    onSubmitForm: () => _onSumbit(ref),
+                    onSubmitForm: (_) => _onSumbit(ref),
                     onChanged: (newValue) {
                       ref
                           .read(createPostFormProvider.notifier)
@@ -83,7 +83,7 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
                     controller: formState.contentController,
                     icon: Icons.title_outlined,
                     errorMessage: formState.content.errorMessage,
-                    onSubmitForm: () => _onSumbit(ref),
+                    onSubmitForm: (_) => _onSumbit(ref),
                     onChanged: (newValue) {
                       ref
                           .read(createPostFormProvider.notifier)

@@ -18,7 +18,7 @@ class CustomTextFormField extends StatelessWidget {
   final FormInputFormatters formatter;
   final Iterable<String> autoFillHints;
   final Function(String)? onChanged;
-  final VoidCallback? onSubmitForm;
+  final Function(String)? onSubmitForm;
   final String? Function(String?)? validator;
 
   const CustomTextFormField({
@@ -72,9 +72,9 @@ class CustomTextFormField extends StatelessWidget {
       onChanged: onChanged,
       validator: validator,
       obscureText: obscureText,
-      onFieldSubmitted: (_) {
+      onFieldSubmitted: (value) {
         if (onSubmitForm == null) return;
-        onSubmitForm!(); // Submit the form when "Done" is pressed
+        onSubmitForm!(value); // Submit the form when "Done" is pressed
       },
       decoration: InputDecoration(
           enabledBorder: border,

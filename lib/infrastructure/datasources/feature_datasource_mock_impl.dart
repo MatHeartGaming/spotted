@@ -59,4 +59,16 @@ class FeatureDatasourceMockImpl implements FeatureDatasource {
       return mockFeatures.where((f) => f.id?.trim() == id).firstOrNull;
     });
   }
+  
+  @override
+  Future<List<Feature>> getFeaturesByIds(List<String> ids) {
+    // TODO: implement getFeaturesByIds
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<List<Feature>> createFeaturesIfNotExist(List<Feature> features) {
+    // TODO: implement createFeaturesIfNotExist
+    throw UnimplementedError();
+  }
 }

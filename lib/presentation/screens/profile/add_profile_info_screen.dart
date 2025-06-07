@@ -1,11 +1,13 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotted/config/config.dart';
+import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/providers/utility/load_images_provider.dart';
@@ -29,7 +31,22 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
       final signedInUser = ref.read(signedInUserProvider);
       if (signedInUser == null) return;
       ref.read(editProfileFormProvider.notifier).initFormField(signedInUser);
-      
+      ref
+          .read(featureRepositoryProvider)
+          .getFeaturesByIds(signedInUser.featureRefs)
+          .then((features) {
+            ref
+                .read(assignedFeaturesProvider.notifier)
+                .update((state) => features);
+          });
+      ref
+          .read(interestsRepositoryProvider)
+          .getInterestsByIds(signedInUser.interestsRefs)
+          .then((interests) {
+            ref
+                .read(assignedInterestProvider.notifier)
+                .update((state) => interests);
+          });
     });
   }
 
@@ -37,158 +54,282 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
   Widget build(BuildContext context) {
     final signedInUser = ref.watch(signedInUserProvider);
     final editProfileState = ref.watch(editProfileFormProvider);
+    final assignedFeatures = ref.watch(assignedFeaturesProvider);
+    final assignedInterests = ref.watch(assignedInterestProvider);
+    final loadFeaturesState = ref.watch(loadFeaturesProvider);
+
+    final assignedNames =
+        assignedFeatures.map((f) => f.name.toLowerCase().trim()).toSet();
+
+    // only show features whose name isn’t already assigned
+    final unassigned =
+        loadFeaturesState.featuresByName
+            .where((f) => !assignedNames.contains(f.name.toLowerCase().trim()))
+            .toList();
+
     final size = MediaQuery.sizeOf(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Info Profilo').tr(),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: IconButton.filledTonal(
-              tooltip: ("edit_info_screen_update_info_btn_text").tr(),
-              onPressed: () => _submitFormAction(),
-              icon: const Icon(Icons.check_circle_outline_outlined),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Info Profilo').tr(),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: IconButton.filledTonal(
+                tooltip: ("edit_info_screen_update_info_btn_text").tr(),
+                onPressed: () => _submitFormAction(),
+                icon: const Icon(Icons.check_circle_outline_outlined),
+              ),
             ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            spacing: 20,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              RoundedBordersPicture(
-                urlPicture: signedInUser?.profileImageUrl ?? '',
-                imageBytes: editProfileState.profileImageBytes,
-                borderRadius: 10,
-                height: 300,
-                width: size.width,
-              ),
-
-              IconButton.outlined(
-                tooltip: 'edit_info_screen_load_profile_pic_tooltip_text'.tr(),
-                onPressed: () {
-                  _displayPickImageDialog((picList) {
-                    _imagesChosenAction(0, picList);
-                  });
-                },
-                icon: SizedBox.square(
-                  dimension: 50,
-                  child: Icon(Icons.photo, size: 20),
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              spacing: 20,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                GestureDetector(
+                  onTap:
+                      () => _displayPickImageDialog((picList) {
+                        _imagesChosenAction(0, picList);
+                      }),
+                  child: RoundedBordersPicture(
+                    urlPicture: signedInUser?.profileImageUrl ?? '',
+                    imageBytes: editProfileState.profileImageBytes,
+                    borderRadius: 10,
+                    height: 300,
+                    width: size.width,
+                  ),
                 ),
-              ),
 
-              CustomTextFormField(
-                controller: editProfileState.nameController,
-                autoFillHints: const [AutofillHints.name],
-                label: "login_screen_name_text".tr(),
-                formatter: FormInputFormatters.text,
-                errorMessage:
-                    editProfileState.isPosting
-                        ? editProfileState.name.errorMessage
-                        : null,
-                icon: Icons.person,
-                onChanged: (newValue) {
-                  final signupFormState = ref.read(signupFormProvider.notifier);
-                  signupFormState.nameChanged(newValue);
-                },
-                onSubmitForm: () => _submitFormAction(),
-              ),
-              CustomTextFormField(
-                controller: editProfileState.surnameController,
-                autoFillHints: const [AutofillHints.familyName],
-                label: "login_screen_surname_text".tr(),
-                formatter: FormInputFormatters.text,
-                errorMessage:
-                    editProfileState.isPosting
-                        ? editProfileState.surname.errorMessage
-                        : null,
-                icon: Icons.person,
-                onChanged: (newValue) {
-                  final signupFormState = ref.read(signupFormProvider.notifier);
-                  signupFormState.surnameChanged(newValue);
-                },
-                onSubmitForm: () => _submitFormAction(),
-              ),
-              CustomTextFormField(
-                enabled: false,
-                controller: editProfileState.emailController,
-                autoFillHints: const [AutofillHints.email],
-                label: "login_screen_email_text".tr(),
-                formatter: FormInputFormatters.email,
-                errorMessage:
-                    editProfileState.isPosting
-                        ? editProfileState.email.errorMessage
-                        : null,
-                icon: Icons.email_outlined,
-                onChanged: (newValue) {
-                  final signupFormState = ref.read(signupFormProvider.notifier);
-                  signupFormState.emailChanged(newValue);
-                },
-                onSubmitForm: () => _submitFormAction(),
-              ),
-              CustomTextFormField(
-                enabled: false,
-                controller: editProfileState.usernameController,
-                autoFillHints: const [AutofillHints.newUsername],
-                label: "login_screen_username_text".tr(),
-                formatter: FormInputFormatters.text,
-                errorMessage:
-                    editProfileState.isPosting
-                        ? editProfileState.username.errorMessage
-                        : null,
-                icon: FontAwesomeIcons.userNinja,
-                onChanged: (newValue) {
-                  ref
-                      .read(signupFormProvider.notifier)
-                      .usernameChanged(newValue);
-                },
-                onSubmitForm: () => _submitFormAction(),
-              ),
-              CountrySelector(
-                controller: editProfileState.countryController,
-                items: countryMenuItems,
-              ),
-              CustomTextFormField(
-                controller: editProfileState.cityController,
-                autoFillHints: const [AutofillHints.addressCity],
-                label: "login_screen_city_text".tr(),
-                formatter: FormInputFormatters.text,
-                errorMessage:
-                    editProfileState.isPosting
-                        ? editProfileState.city.errorMessage
-                        : null,
-                icon: FontAwesomeIcons.city,
-                onChanged: (newValue) {
-                  ref.read(signupFormProvider.notifier).cityChanged(newValue);
-                },
-                onSubmitForm: () => _submitFormAction(),
-              ),
-
-              FilledButton.tonal(
-                onPressed: editProfileState.isPosting ? null : () => _submitFormAction(),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("edit_info_screen_update_info_btn_text").tr(),
-                    const SizedBox(width: 6),
-                    ZoomIn(
-                      child: const Icon(Icons.check_circle_outline_outlined),
-                    ),
-                  ],
+                IconButton.outlined(
+                  tooltip:
+                      'edit_info_screen_load_profile_pic_tooltip_text'.tr(),
+                  onPressed: () {
+                    _displayPickImageDialog((picList) {
+                      _imagesChosenAction(0, picList);
+                    });
+                  },
+                  icon: SizedBox.square(
+                    dimension: 50,
+                    child: Icon(Icons.photo, size: 20),
+                  ),
                 ),
-              ),
 
-              SizedBox(height: 50),
-            ],
+                CustomTextFormField(
+                  controller: editProfileState.nameController,
+                  autoFillHints: const [AutofillHints.name],
+                  label: "login_screen_name_text".tr(),
+                  formatter: FormInputFormatters.text,
+                  errorMessage:
+                      editProfileState.isPosting
+                          ? editProfileState.name.errorMessage
+                          : null,
+                  icon: Icons.person,
+                  onChanged: (newValue) {
+                    final signupFormState = ref.read(
+                      editProfileFormProvider.notifier,
+                    );
+                    signupFormState.nameChanged(newValue);
+                  },
+                  onSubmitForm: (_) => _submitFormAction(),
+                ),
+                CustomTextFormField(
+                  controller: editProfileState.surnameController,
+                  autoFillHints: const [AutofillHints.familyName],
+                  label: "login_screen_surname_text".tr(),
+                  formatter: FormInputFormatters.text,
+                  errorMessage:
+                      editProfileState.isPosting
+                          ? editProfileState.surname.errorMessage
+                          : null,
+                  icon: Icons.person,
+                  onChanged: (newValue) {
+                    final signupFormState = ref.read(
+                      editProfileFormProvider.notifier,
+                    );
+                    signupFormState.surnameChanged(newValue);
+                  },
+                  onSubmitForm: (_) => _submitFormAction(),
+                ),
+                CustomTextFormField(
+                  enabled: false,
+                  controller: editProfileState.emailController,
+                  autoFillHints: const [AutofillHints.email],
+                  label: "login_screen_email_text".tr(),
+                  formatter: FormInputFormatters.email,
+                  errorMessage:
+                      editProfileState.isPosting
+                          ? editProfileState.email.errorMessage
+                          : null,
+                  icon: Icons.email_outlined,
+                  onChanged: (newValue) {
+                    final signupFormState = ref.read(
+                      editProfileFormProvider.notifier,
+                    );
+                    signupFormState.emailChanged(newValue);
+                  },
+                  onSubmitForm: (_) => _submitFormAction(),
+                ),
+                CustomTextFormField(
+                  enabled: false,
+                  controller: editProfileState.usernameController,
+                  autoFillHints: const [AutofillHints.newUsername],
+                  label: "login_screen_username_text".tr(),
+                  formatter: FormInputFormatters.text,
+                  errorMessage:
+                      editProfileState.isPosting
+                          ? editProfileState.username.errorMessage
+                          : null,
+                  icon: FontAwesomeIcons.userNinja,
+                  onChanged: (newValue) {
+                    ref
+                        .read(editProfileFormProvider.notifier)
+                        .usernameChanged(newValue);
+                  },
+                  onSubmitForm: (_) => _submitFormAction(),
+                ),
+                CountrySelector(
+                  controller: editProfileState.countryController,
+                  items: countryMenuItems,
+                ),
+                CustomTextFormField(
+                  controller: editProfileState.cityController,
+                  autoFillHints: const [AutofillHints.addressCity],
+                  label: "login_screen_city_text".tr(),
+                  formatter: FormInputFormatters.text,
+                  errorMessage:
+                      editProfileState.isPosting
+                          ? editProfileState.city.errorMessage
+                          : null,
+                  icon: FontAwesomeIcons.city,
+                  onChanged: (newValue) {
+                    ref
+                        .read(editProfileFormProvider.notifier)
+                        .cityChanged(newValue);
+                  },
+                  onSubmitForm: (_) => _submitFormAction(),
+                ),
+
+                SizedBox(height: 10),
+                CustomTextFormField(
+                  label: 'edit_info_screen_features_text'.tr(),
+                  formatter: FormInputFormatters.text,
+                  icon: Icons.featured_play_list,
+                  onChanged: (newValue) {
+                    ref
+                        .read(loadFeaturesProvider.notifier)
+                        .getFeaturesByName(newValue);
+                  },
+                  onSubmitForm: (newFeature) {
+                    _submitNewFeaureAction(loadFeaturesState, newFeature);
+                  },
+                ),
+
+                Text(
+                  'edit_info_screen_your_features_text',
+                ).tr(args: [assignedFeatures.length.toString()]),
+                ChipsGridView(
+                  chips: [...assignedFeatures.map((e) => e.name)],
+                  //showDeleteIcon: sign,
+                  onDelete: () {},
+                  onTap: (oldFeature) {
+                    // Delete
+                    ref
+                        .read(assignedFeaturesProvider.notifier)
+                        .update(
+                          (state) =>
+                              state.where((f) => f.name != oldFeature).toList(),
+                        );
+                  },
+                ),
+
+                SizedBox(height: 10),
+                Text('edit_info_screen_features_found_text').tr(
+                  args: [loadFeaturesState.featuresByName.length.toString()],
+                ),
+                ChipsGridView(
+                  chips: unassigned.map((e) => e.name).toList(),
+                  onDelete: () {},
+                  onTap: (name) {
+                    // we know it isn’t in assignedNames, but check again just in case
+                    if (!assignedNames.contains(name.toLowerCase().trim())) {
+                      final feature = unassigned.firstWhere(
+                        (f) => f.name == name,
+                        orElse: () => Feature(name: name),
+                      );
+                      ref
+                          .read(assignedFeaturesProvider.notifier)
+                          .update((state) => [feature, ...state]);
+                    }
+                  },
+                ),
+
+                SizedBox(height: 50),
+
+                FilledButton.tonal(
+                  onPressed:
+                      editProfileState.isPosting
+                          ? null
+                          : () => _submitFormAction(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("edit_info_screen_update_info_btn_text").tr(),
+                      const SizedBox(width: 6),
+                      ZoomIn(
+                        child: const Icon(Icons.check_circle_outline_outlined),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 50),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void _submitNewFeaureAction(
+    LoadFeaturesState loadFeaturesState,
+    String newFeatureName,
+  ) {
+    final assigned = ref.read(assignedFeaturesProvider);
+    final normalized = newFeatureName.toLowerCase().trim();
+
+    // 1) Is it already in assigned?
+    final already = assigned.any(
+      (f) => f.name.toLowerCase().trim() == normalized,
+    );
+    if (already) {
+      smallVibration();
+      showCustomSnackbar(
+        context,
+        'edit_info_screen_feature_already_exits_text'.tr(
+          args: [newFeatureName],
+        ),
+      );
+      return;
+    }
+
+    // 2) Find in the search results (if present) or fallback to a new one
+    final match = loadFeaturesState.featuresByName.firstWhere(
+      (f) => f.name.toLowerCase().trim() == normalized,
+      orElse: () => Feature(name: newFeatureName),
+    );
+
+    // 3) Add it
+    ref
+        .read(assignedFeaturesProvider.notifier)
+        .update((state) => [match, ...state]);
   }
 
   void _displayPickImageDialog(Function(List<XFile>?) onImagesChosen) {
@@ -234,6 +375,7 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
         .read(loadImagesProvider)
         .uploadImage(
           picBytes: editProfileFormState.profileImageBytes!,
+          usernamePath: ref.read(signedInUserProvider)?.username ?? 'username',
           filename: filename,
         );
     return picUrl;
@@ -244,7 +386,9 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
     final editProfileState = ref.read(editProfileFormProvider);
     final editProfileNotifier = ref.read(editProfileFormProvider.notifier);
     final userRepo = ref.read(usersRepositoryProvider);
-    if (!(signedInUser?.isProfileUrlValid ?? false) ||
+    final featuresRepo = ref.read(featureRepositoryProvider);
+
+    if (!(signedInUser?.isProfileUrlValid ?? false) &&
         editProfileState.profileImageBytes == null) {
       mediumVibration();
       showCustomSnackbar(
@@ -258,16 +402,59 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
     editProfileNotifier.onSubmit(
       onSubmit: () async {
         final imageUrl = await _imageUploadAction();
+
+        // 1) grab the two ID-lists
+        final existingIds = signedInUser?.featureRefs ?? <String>[];
+        final assignedFeatures = ref.read(assignedFeaturesProvider);
+        final assignedIds =
+            assignedFeatures.map((f) => f.id).whereType<String>().toList();
+
+        // 2) compare as sets
+        final idsAreEqual = setEquals(
+          Set<String>.from(existingIds),
+          Set<String>.from(assignedIds),
+        );
+
+        // 3) only upload if they've actually changed
+        List<Feature> created = [];
+        if (!idsAreEqual) {
+          created = await featuresRepo.createFeaturesIfNotExist(
+            assignedFeatures,
+          );
+        }
+
+        // 4) build your updated user, injecting the new featureRefs list
         final updatedUser = signedInUser?.copyWith(
           name: editProfileState.name.value,
           surname: editProfileState.surname.value,
           city: editProfileState.city.value,
           country: editProfileState.country.value,
           profileImageUrl: imageUrl.isNotEmpty ? imageUrl : null,
+          dateCreated: signedInUser.dateCreated,
+          featureRefs: [
+            ...existingIds,
+            ...created.map((e) => e.id ?? ''),
+          ], // or created.map((f)=>f.id).toList() if you only want the newly created ones
         );
 
-        if (updatedUser == null) return;
-        userRepo.updateUser(updatedUser);
+        if (updatedUser != null) {
+          await userRepo
+              .updateUser(updatedUser)
+              .then((value) {
+                showCustomSnackbarWithActions(
+                  context,
+                  'edit_info_screen_update_success_snackbar'.tr(),
+                  backgroundColor: colorSuccess,
+                  actionLabel: 'yes_text'.tr(),
+                  onActionTap: () => goToHomeScreenUsingContext(context),
+                );
+              })
+              .whenComplete(() {
+                editProfileNotifier.resetFormStatus();
+              });
+        } else {
+          editProfileNotifier.resetFormStatus();
+        }
       },
     );
   }

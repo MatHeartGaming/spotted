@@ -230,7 +230,7 @@ class User {
       city: city ?? this.city,
       country: country ?? this.country,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
-      dateCreated: dateCreated ?? this.dateCreated,
+      //dateCreated: dateCreated ?? this.dateCreated,
       featureRefs: featureRefs ?? this.featureRefs,
       interestsRefs: interestsRefs ?? this.interestsRefs,
       communitiesSubs: communitiesSubs ?? this.communitiesSubs,

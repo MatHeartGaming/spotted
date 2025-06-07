@@ -48,7 +48,7 @@ class ChipsHorizontalGridView extends StatelessWidget {
             // Force the text to be white so it contrasts against the dark fill:
             label: Text(
               items[index],
-              //style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
             // A bit of extra horizontal padding so longer text doesn’t cramp up.
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),

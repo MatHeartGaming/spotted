@@ -27,10 +27,10 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
   @override
   void initState() {
     super.initState();
-    _initUserPosts();
+    _initUserInfos();
   }
 
-  Future<void> _initUserPosts() async {
+  Future<void> _initUserInfos() async {
     Future(() {
       ref
           .read(loadPostsProvider.notifier)
@@ -39,6 +39,26 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
             ref
                 .read(currentProfilePostsProvider.notifier)
                 .update((state) => postList);
+          });
+
+          final signedInUser = ref.read(signedInUserProvider);
+      if (signedInUser == null) return;
+      ref.read(editProfileFormProvider.notifier).initFormField(signedInUser);
+      ref
+          .read(featureRepositoryProvider)
+          .getFeaturesByIds(signedInUser.featureRefs)
+          .then((features) {
+            ref
+                .read(assignedFeaturesProvider.notifier)
+                .update((state) => features);
+          });
+      ref
+          .read(interestsRepositoryProvider)
+          .getInterestsByIds(signedInUser.interestsRefs)
+          .then((interests) {
+            ref
+                .read(assignedInterestProvider.notifier)
+                .update((state) => interests);
           });
     });
   }
@@ -49,6 +69,10 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
     final texts = TextTheme.of(context);
     final usersPost = ref.watch(currentProfilePostsProvider);
     final signedInUser = ref.watch(signedInUserProvider);
+    final assignedInterests = ref.watch(assignedInterestProvider);
+    final assignedFeatures = ref.watch(assignedFeaturesProvider);
+    final assignedFeatureNames =
+        assignedFeatures.map((f) => f.name).toSet();
     final isUserYou = signedInUser == widget.user;
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
@@ -123,7 +147,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                                     tooltip:
                                         'profile_screen_edit_profile_btn_text'
                                             .tr(),
-                                    onPressed: () {},
+                                    onPressed: () => pushToEditProfileScreem(context),
                                     icon: Icon(Icons.edit),
                                   ),
                                 ),
@@ -133,7 +157,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                       ),
                       SizedBox(height: 20),
                       ChipsGridView(
-                        chips: widget.user.featureRefs,
+                        chips: assignedFeatureNames.toList(),
                         onTap: (label) {},
                         showDeleteIcon: isUserYou,
                         onDelete: () {},
@@ -143,7 +167,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                 ];
               },
               body: RefreshIndicator(
-                onRefresh: () => _initUserPosts(),
+                onRefresh: () => _initUserInfos(),
                 child: ListView.builder(
                   itemCount: usersPost.length,
                   itemBuilder: (context, index) {
@@ -162,7 +186,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                           reaction,
                           ref,
                         ).then((value) {
-                          _initUserPosts();
+                          _initUserInfos();
                         });
                       },
                       onCommentTapped: () {

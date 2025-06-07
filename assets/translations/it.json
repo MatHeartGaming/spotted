@@ -113,7 +113,14 @@
 
     "edit_info_screen_load_profile_pic_tooltip_text": "Carica foto profilo",
     "edit_info_screen_load_profile_pic_snackbar_text": "Carica una foto prodilo, per favore",
+    "edit_info_screen_your_features_text": "Le tue caratteristiche: {}",
+    "edit_info_screen_features_text": "Cerca caratteristiche",
+    "edit_info_screen_feature_already_exits_text": "Hai già una caratteristica chiamata {}",
+    "edit_info_screen_features_found_text": "Caratteristiche trovate: {}",
+    "edit_info_screen_your_interests_text": "I tuoi interessi: {}",
+    "edit_info_screen_interests_found_text": "Interessi trovate: {}",
     "edit_info_screen_update_info_btn_text": "Aggiorna informazioni",
+    "edit_info_screen_update_success_snackbar": "Informazioni aggiornate con successo. Andare alla home?",
 
     "home_search_screen_search_app_bar_title": "Cerca",
     "home_search_screen_search_bar_placeholder": "Cerca Post, Utenti, Comunità",

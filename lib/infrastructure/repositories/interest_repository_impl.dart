@@ -33,4 +33,9 @@ class InterestRepositoryImpl implements InterestRepository {
   Future<List<Interest>> getInterestsByName(String name) {
     return _db.getInterestsByName(name);
   }
+
+  @override
+  Future<List<Interest>> getInterestsByIds(List<String> ids) {
+    return _db.getInterestsByIds(ids);
+  }
 }

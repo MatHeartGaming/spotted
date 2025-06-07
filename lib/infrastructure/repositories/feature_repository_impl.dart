@@ -33,4 +33,14 @@ class FeatureRepositoryImpl implements FeatureRepository {
   Future<List<Feature>> getFeaturesByName(String name) {
     return _db.getFeaturesByName(name);
   }
+
+  @override
+  Future<List<Feature>> getFeaturesByIds(List<String> ids) {
+    return _db.getFeaturesByIds(ids);
+  }
+
+  @override
+  Future<List<Feature>> createFeaturesIfNotExist(List<Feature> features) {
+    return _db.createFeaturesIfNotExist(features);
+  }
 }

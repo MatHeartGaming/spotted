@@ -84,7 +84,7 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
                       signupFormState.nameChanged(newValue);
                     },
                     onSubmitForm:
-                        () => _submitFormAction(authStatusNotifier, ref),
+                        (_) => _submitFormAction(authStatusNotifier, ref),
                   ),
                   CustomTextFormField(
                     initialValue: "",
@@ -103,7 +103,7 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
                       signupFormState.surnameChanged(newValue);
                     },
                     onSubmitForm:
-                        () => _submitFormAction(authStatusNotifier, ref),
+                        (_) => _submitFormAction(authStatusNotifier, ref),
                   ),
                   CustomTextFormField(
                     initialValue: "",
@@ -122,7 +122,7 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
                       signupFormState.emailChanged(newValue);
                     },
                     onSubmitForm:
-                        () => _submitFormAction(authStatusNotifier, ref),
+                        (_) => _submitFormAction(authStatusNotifier, ref),
                   ),
                   CustomTextFormField(
                     initialValue: "",
@@ -140,7 +140,7 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
                           .usernameChanged(newValue);
                     },
                     onSubmitForm:
-                        () => _submitFormAction(authStatusNotifier, ref),
+                        (_) => _submitFormAction(authStatusNotifier, ref),
                   ),
                   CountrySelector(
                     controller: signupFormState.countryController,
@@ -162,7 +162,7 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
                           .cityChanged(newValue);
                     },
                     onSubmitForm:
-                        () => _submitFormAction(authStatusNotifier, ref),
+                        (_) => _submitFormAction(authStatusNotifier, ref),
                   ),
                   CustomTextFormField(
                     initialValue: "",
@@ -188,7 +188,7 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
                       signupFormState.passwordChanged(newValue);
                     },
                     onSubmitForm:
-                        () => _submitFormAction(authStatusNotifier, ref),
+                        (_) => _submitFormAction(authStatusNotifier, ref),
                   ),
                   CustomTextFormField(
                     initialValue: "",
@@ -213,7 +213,7 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
                       signupFormState.repeatPasswordChanged(newValue);
                     },
                     onSubmitForm:
-                        () => _submitFormAction(authStatusNotifier, ref),
+                        (_) => _submitFormAction(authStatusNotifier, ref),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

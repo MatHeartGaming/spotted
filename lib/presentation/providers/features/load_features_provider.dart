@@ -46,6 +46,9 @@ class LoadFeaturesNotifier extends StateNotifier<LoadFeaturesState> {
 
   Future<List<Feature>> getFeaturesByName(String name) async {
     final features = await _featureRepository.getFeaturesByName(name);
+    state = state.copyWith(
+      featuresByName: features,
+    );
     return features;
   }
 
@@ -62,27 +65,32 @@ class LoadFeaturesNotifier extends StateNotifier<LoadFeaturesState> {
 
 class LoadFeaturesState {
   final List<Feature> features;
+  final List<Feature> featuresByName;
   final bool isLoadingFeatures;
 
-  LoadFeaturesState({this.features = const [], this.isLoadingFeatures = false});
+  LoadFeaturesState({this.features = const [], this.featuresByName = const [], this.isLoadingFeatures = false});
 
   @override
   bool operator ==(covariant LoadFeaturesState other) {
     if (identical(this, other)) return true;
-
-    return listEquals(other.features, features) &&
-        other.isLoadingFeatures == isLoadingFeatures;
+  
+    return 
+      listEquals(other.features, features) &&
+      listEquals(other.featuresByName, featuresByName) &&
+      other.isLoadingFeatures == isLoadingFeatures;
   }
 
   @override
-  int get hashCode => features.hashCode ^ isLoadingFeatures.hashCode;
+  int get hashCode => features.hashCode ^ featuresByName.hashCode ^ isLoadingFeatures.hashCode;
 
   LoadFeaturesState copyWith({
     List<Feature>? features,
+    List<Feature>? featuresByName,
     bool? isLoadingFeatures,
   }) {
     return LoadFeaturesState(
       features: features ?? this.features,
+      featuresByName: featuresByName ?? this.featuresByName,
       isLoadingFeatures: isLoadingFeatures ?? this.isLoadingFeatures,
     );
   }
