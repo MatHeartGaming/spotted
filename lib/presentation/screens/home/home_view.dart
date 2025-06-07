@@ -28,6 +28,8 @@ class HomeViewState extends ConsumerState<HomeView>
   Future<void> _loadFriendsPosts() async {
     final signedInUser = ref.read(signedInUserProvider);
     final loadUsersNotifier = ref.read(loadSignedInFriendsProvider.notifier);
+    final authStatus = ref.read(authStatusProvider).authStatus;
+    if (authStatus != AuthStatus.authenticated) return;
     if (signedInUser != null &&
         (signedInUser.isEmpty || signedInUser.friends.isEmpty)) {
       logger.d('Reloading Home Posts...');
