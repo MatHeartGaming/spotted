@@ -38,4 +38,9 @@ class InterestRepositoryImpl implements InterestRepository {
   Future<List<Interest>> getInterestsByIds(List<String> ids) {
     return _db.getInterestsByIds(ids);
   }
+
+  @override
+  Future<List<Interest>> createInterestIfNotExist(List<Interest> interests) {
+    return _db.createInterestIfNotExist(interests);
+  }
 }

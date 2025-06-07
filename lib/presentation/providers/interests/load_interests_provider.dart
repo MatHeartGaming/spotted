@@ -47,8 +47,9 @@ class LoadInterestsNotifier extends StateNotifier<LoadInterestsState> {
   }
 
   Future<List<Interest>> getInterestsByName(String name) async {
-    final features = await _interestRepository.getInterestsByName(name);
-    return features;
+    final interests = await _interestRepository.getInterestsByName(name);
+    state = state.copyWith(interestsByName: interests);
+    return interests;
   }
 
   Future<Interest?> getInterestByName(String name) async {
@@ -64,30 +65,36 @@ class LoadInterestsNotifier extends StateNotifier<LoadInterestsState> {
 
 class LoadInterestsState {
   final List<Interest> interests;
+  final List<Interest> interestsByName;
   final bool isLoadingInterests;
 
   LoadInterestsState({
     this.interests = const [],
+    this.interestsByName = const [],
     this.isLoadingInterests = false,
   });
 
   @override
   bool operator ==(covariant LoadInterestsState other) {
     if (identical(this, other)) return true;
-
-    return listEquals(other.interests, interests) &&
-        other.isLoadingInterests == isLoadingInterests;
+  
+    return 
+      listEquals(other.interests, interests) &&
+      listEquals(other.interestsByName, interestsByName) &&
+      other.isLoadingInterests == isLoadingInterests;
   }
 
   @override
-  int get hashCode => interests.hashCode ^ isLoadingInterests.hashCode;
+  int get hashCode => interests.hashCode ^ interestsByName.hashCode ^ isLoadingInterests.hashCode;
 
   LoadInterestsState copyWith({
     List<Interest>? interests,
+    List<Interest>? interestsByName,
     bool? isLoadingInterests,
   }) {
     return LoadInterestsState(
       interests: interests ?? this.interests,
+      interestsByName: interestsByName ?? this.interestsByName,
       isLoadingInterests: isLoadingInterests ?? this.isLoadingInterests,
     );
   }

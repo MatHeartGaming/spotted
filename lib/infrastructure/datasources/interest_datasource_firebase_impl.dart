@@ -6,13 +6,12 @@ import 'package:spotted/domain/models/models.dart';
 /// Firebase-backed implementation of [InterestDatasource].
 /// Uses auto-generated document IDs as interest IDs.
 class InterestDatasourceFirebaseImpl implements InterestDatasource {
-  final CollectionReference<Interest> _interestsRef =
-      FirebaseFirestore.instance
-          .collection(FirestoreDbCollections.interests)
-          .withConverter<Interest>(
-            fromFirestore: Interest.fromFirestore,
-            toFirestore: (Interest interest, _) => interest.toMap(),
-          );
+  final CollectionReference<Interest> _interestsRef = FirebaseFirestore.instance
+      .collection(FirestoreDbCollections.interests)
+      .withConverter<Interest>(
+        fromFirestore: Interest.fromFirestore,
+        toFirestore: (Interest interest, _) => interest.toMap(),
+      );
 
   @override
   Future<List<Interest>> createInterest(Interest newInterest) async {
@@ -45,10 +44,11 @@ class InterestDatasourceFirebaseImpl implements InterestDatasource {
 
   @override
   Future<Interest?> getInterestByName(String name) async {
-    final snapshot = await _interestsRef
-        .where('name', isEqualTo: name.trim().toLowerCase())
-        .limit(1)
-        .get();
+    final snapshot =
+        await _interestsRef
+            .where('name', isEqualTo: name.trim().toLowerCase())
+            .limit(1)
+            .get();
     if (snapshot.docs.isEmpty) return null;
     return snapshot.docs.first.data();
   }
@@ -70,12 +70,53 @@ class InterestDatasourceFirebaseImpl implements InterestDatasource {
       final end = (i + chunkSize < ids.length) ? i + chunkSize : ids.length;
       final chunk = ids.sublist(i, end);
 
-      final snapshot = await _interestsRef
-          .where(FieldPath.documentId, whereIn: chunk)
-          .get();
+      final snapshot =
+          await _interestsRef.where(FieldPath.documentId, whereIn: chunk).get();
       results.addAll(snapshot.docs.map((d) => d.data()));
     }
 
     return results;
+  }
+
+  @override
+  Future<List<Interest>> createInterestIfNotExist(
+    List<Interest> interests,
+  ) async {
+    if (interests.isEmpty) return [];
+
+    // Prepare normalized names set
+    final names =
+        interests.map((f) => f.name.trim().toLowerCase()).toSet().toList();
+
+    // Fetch existing features by name in chunks
+    final existingNames = <String>{};
+    const chunkSize = 10;
+    for (var i = 0; i < names.length; i += chunkSize) {
+      final end = i + chunkSize < names.length ? i + chunkSize : names.length;
+      final chunk = names.sublist(i, end);
+      final snapshot = await _interestsRef.where('name', whereIn: chunk).get();
+      existingNames.addAll(
+        snapshot.docs.map((d) => d.data().name.trim().toLowerCase()),
+      );
+    }
+
+    // Filter out duplicates
+    final toAdd =
+        interests
+            .where((i) => !existingNames.contains(i.name.trim().toLowerCase()))
+            .toList();
+    if (toAdd.isEmpty) return [];
+
+    // Batch write new features
+    final batch = FirebaseFirestore.instance.batch();
+    final created = <Interest>[];
+    for (var interest in toAdd) {
+      final docRef = _interestsRef.doc();
+      final withId = interest.copyWith(id: docRef.id);
+      batch.set(docRef, withId);
+      created.add(withId);
+    }
+    await batch.commit();
+    return created;
   }
 }

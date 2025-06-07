@@ -57,14 +57,30 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
     final assignedFeatures = ref.watch(assignedFeaturesProvider);
     final assignedInterests = ref.watch(assignedInterestProvider);
     final loadFeaturesState = ref.watch(loadFeaturesProvider);
+    final loadInterestsState = ref.watch(loadInterestsProvider);
 
-    final assignedNames =
+    final assignedFeatureNames =
         assignedFeatures.map((f) => f.name.toLowerCase().trim()).toSet();
 
     // only show features whose name isn’t already assigned
-    final unassigned =
+    final unassignedFeatures =
         loadFeaturesState.featuresByName
-            .where((f) => !assignedNames.contains(f.name.toLowerCase().trim()))
+            .where(
+              (f) =>
+                  !assignedFeatureNames.contains(f.name.toLowerCase().trim()),
+            )
+            .toList();
+
+    final assignedInterestsNames =
+        assignedInterests.map((f) => f.name.toLowerCase().trim()).toSet();
+
+    // only show features whose name isn’t already assigned
+    final unassignedInterests =
+        loadInterestsState.interestsByName
+            .where(
+              (f) =>
+                  !assignedInterestsNames.contains(f.name.toLowerCase().trim()),
+            )
             .toList();
 
     final size = MediaQuery.sizeOf(context);
@@ -250,22 +266,81 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
                 ),
 
                 SizedBox(height: 10),
-                Text('edit_info_screen_features_found_text').tr(
-                  args: [loadFeaturesState.featuresByName.length.toString()],
-                ),
+                Text(
+                  'edit_info_screen_features_found_text',
+                ).tr(args: [unassignedFeatures.length.toString()]),
                 ChipsGridView(
-                  chips: unassigned.map((e) => e.name).toList(),
+                  chips: unassignedFeatures.map((e) => e.name).toList(),
                   onDelete: () {},
                   onTap: (name) {
                     // we know it isn’t in assignedNames, but check again just in case
-                    if (!assignedNames.contains(name.toLowerCase().trim())) {
-                      final feature = unassigned.firstWhere(
+                    if (!assignedFeatureNames.contains(
+                      name.toLowerCase().trim(),
+                    )) {
+                      final feature = unassignedFeatures.firstWhere(
                         (f) => f.name == name,
                         orElse: () => Feature(name: name),
                       );
                       ref
                           .read(assignedFeaturesProvider.notifier)
                           .update((state) => [feature, ...state]);
+                    }
+                  },
+                ),
+
+                // Interests
+                SizedBox(height: 10),
+                CustomTextFormField(
+                  label: 'edit_info_screen_interests_text'.tr(),
+                  formatter: FormInputFormatters.text,
+                  icon: Icons.featured_play_list,
+                  onChanged: (newValue) {
+                    ref
+                        .read(loadInterestsProvider.notifier)
+                        .getInterestsByName(newValue);
+                  },
+                  onSubmitForm: (newInterest) {
+                    _submitNewInterestAction(loadInterestsState, newInterest);
+                  },
+                ),
+                Text(
+                  'edit_info_screen_your_interests_text',
+                ).tr(args: [assignedInterests.length.toString()]),
+                ChipsGridView(
+                  chips: [...assignedInterests.map((e) => e.name)],
+                  onDelete: () {},
+                  onTap: (oldInterest) {
+                    // Delete
+                    ref
+                        .read(assignedInterestProvider.notifier)
+                        .update(
+                          (state) =>
+                              state
+                                  .where((f) => f.name != oldInterest)
+                                  .toList(),
+                        );
+                  },
+                ),
+
+                SizedBox(height: 10),
+                Text(
+                  'edit_info_screen_interests_found_text',
+                ).tr(args: [unassignedInterests.length.toString()]),
+                ChipsGridView(
+                  chips: unassignedInterests.map((e) => e.name).toList(),
+                  onDelete: () {},
+                  onTap: (name) {
+                    // we know it isn’t in assignedNames, but check again just in case
+                    if (!assignedInterestsNames.contains(
+                      name.toLowerCase().trim(),
+                    )) {
+                      final interest = unassignedInterests.firstWhere(
+                        (f) => f.name == name,
+                        orElse: () => Interest(name: name),
+                      );
+                      ref
+                          .read(assignedInterestProvider.notifier)
+                          .update((state) => [interest, ...state]);
                     }
                   },
                 ),
@@ -332,6 +407,40 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
         .update((state) => [match, ...state]);
   }
 
+  void _submitNewInterestAction(
+    LoadInterestsState loadInterestsState,
+    String newInterestName,
+  ) {
+    final assigned = ref.read(assignedInterestProvider);
+    final normalized = newInterestName.toLowerCase().trim();
+
+    // 1) Is it already in assigned?
+    final already = assigned.any(
+      (f) => f.name.toLowerCase().trim() == normalized,
+    );
+    if (already) {
+      smallVibration();
+      showCustomSnackbar(
+        context,
+        'edit_info_screen_interest_already_exits_text'.tr(
+          args: [newInterestName],
+        ),
+      );
+      return;
+    }
+
+    // 2) Find in the search results (if present) or fallback to a new one
+    final match = loadInterestsState.interestsByName.firstWhere(
+      (f) => f.name.toLowerCase().trim() == normalized,
+      orElse: () => Interest(name: newInterestName),
+    );
+
+    // 3) Add it
+    ref
+        .read(assignedInterestProvider.notifier)
+        .update((state) => [match, ...state]);
+  }
+
   void _displayPickImageDialog(Function(List<XFile>?) onImagesChosen) {
     final context = ref.context;
     final picker = ref.read(imagePickerProvider);
@@ -387,6 +496,7 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
     final editProfileNotifier = ref.read(editProfileFormProvider.notifier);
     final userRepo = ref.read(usersRepositoryProvider);
     final featuresRepo = ref.read(featureRepositoryProvider);
+    final interestRepo = ref.read(interestsRepositoryProvider);
 
     if (!(signedInUser?.isProfileUrlValid ?? false) &&
         editProfileState.profileImageBytes == null) {
@@ -403,27 +513,69 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
       onSubmit: () async {
         final imageUrl = await _imageUploadAction();
 
-        // 1) grab the two ID-lists
-        final existingIds = signedInUser?.featureRefs ?? <String>[];
+        // ─── FEATURES ────────────────────────────────────────────────
+        // 1) Read the on‐screen list and split old vs new
         final assignedFeatures = ref.read(assignedFeaturesProvider);
-        final assignedIds =
+        final oldFeatureIds =
             assignedFeatures.map((f) => f.id).whereType<String>().toList();
+        final newFeatures =
+            assignedFeatures.where((f) => f.id == null).toList();
 
-        // 2) compare as sets
-        final idsAreEqual = setEquals(
-          Set<String>.from(existingIds),
-          Set<String>.from(assignedIds),
-        );
-
-        // 3) only upload if they've actually changed
-        List<Feature> created = [];
-        if (!idsAreEqual) {
-          created = await featuresRepo.createFeaturesIfNotExist(
-            assignedFeatures,
+        // 2) Only create if there are truly new ones
+        List<Feature> createdFeatures = [];
+        if (newFeatures.isNotEmpty) {
+          createdFeatures = await featuresRepo.createFeaturesIfNotExist(
+            newFeatures,
           );
+
+          ref.read(assignedFeaturesProvider.notifier).update((state) {
+            return state.map((f) {
+              // replace “name‐only” placeholders with the real version from `createdFeatures`
+              if (f.id == null) {
+                return createdFeatures.firstWhere((c) => c.name == f.name);
+              }
+              return f;
+            }).toList();
+          });
         }
 
-        // 4) build your updated user, injecting the new featureRefs list
+        // 3) Build the final list of featureRefs
+        final finalFeatureRefs = [
+          ...oldFeatureIds,
+          ...createdFeatures.map(
+            (f) => f.id!,
+          ), // safe because newly created always get an ID
+        ];
+
+        // ─── INTERESTS ──────────────────────────────────────────────
+        final assignedInterests = ref.read(assignedInterestProvider);
+        final oldInterestIds =
+            assignedInterests.map((i) => i.id).whereType<String>().toList();
+        final newInterests =
+            assignedInterests.where((i) => i.id == null).toList();
+
+        List<Interest> createdInterests = [];
+        if (newInterests.isNotEmpty) {
+          createdInterests = await interestRepo.createInterestIfNotExist(
+            newInterests,
+          );
+
+          ref.read(assignedInterestProvider.notifier).update((state) {
+            return state.map((i) {
+              if (i.id == null) {
+                return createdInterests.firstWhere((c) => c.name == i.name);
+              }
+              return i;
+            }).toList();
+          });
+        }
+
+        final finalInterestRefs = [
+          ...oldInterestIds,
+          ...createdInterests.map((i) => i.id!),
+        ];
+
+        // ─── UPDATE USER ─────────────────────────────────────────────
         final updatedUser = signedInUser?.copyWith(
           name: editProfileState.name.value,
           surname: editProfileState.surname.value,
@@ -431,16 +583,14 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
           country: editProfileState.country.value,
           profileImageUrl: imageUrl.isNotEmpty ? imageUrl : null,
           dateCreated: signedInUser.dateCreated,
-          featureRefs: [
-            ...existingIds,
-            ...created.map((e) => e.id ?? ''),
-          ], // or created.map((f)=>f.id).toList() if you only want the newly created ones
+          featureRefs: finalFeatureRefs,
+          interestsRefs: finalInterestRefs,
         );
 
         if (updatedUser != null) {
           await userRepo
               .updateUser(updatedUser)
-              .then((value) {
+              .then((_) {
                 showCustomSnackbarWithActions(
                   context,
                   'edit_info_screen_update_success_snackbar'.tr(),

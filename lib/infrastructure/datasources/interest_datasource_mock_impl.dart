@@ -66,4 +66,10 @@ class InterestDatasourceMockImpl implements InterestDatasource {
     // TODO: implement getInterestsByIds
     throw UnimplementedError();
   }
+  
+  @override
+  Future<List<Interest>> createInterestIfNotExist(List<Interest> interests) {
+    // TODO: implement createInterestIfNotExist
+    throw UnimplementedError();
+  }
 }

@@ -7,4 +7,5 @@ abstract class InterestDatasource {
   Future<Interest?> getInterestByName(String name);
   Future<Interest?> getInterestById(String id);
   Future<List<Interest>> getInterestsByIds(List<String> ids);
+  Future<List<Interest>> createInterestIfNotExist(List<Interest> interests);
 }
