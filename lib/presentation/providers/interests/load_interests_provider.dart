@@ -15,7 +15,7 @@ final interestByIdFutureProvider = FutureProvider.family<Interest?, String>((
 });
 
 final loadInterestsProvider =
-    StateNotifierProvider<LoadInterestsNotifier, LoadInterestsState>((ref) {
+    StateNotifierProvider.autoDispose<LoadInterestsNotifier, LoadInterestsState>((ref) {
       final interestsRepo = ref.watch(interestsRepositoryProvider);
       final notifier = LoadInterestsNotifier(interestsRepo);
       return notifier;

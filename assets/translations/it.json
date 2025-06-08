@@ -120,9 +120,9 @@
     "edit_info_screen_features_found_text": "Caratteristiche trovate: {}",
     "edit_info_screen_your_interests_text": "I tuoi interessi: {}",
     "edit_info_screen_interests_found_text": "Interessi trovati: {}",
-    "edit_info_screen_interest_already_exits_text": "Hai già una interesse chiamata {}",
+    "edit_info_screen_interest_already_exits_text": "Hai già una interesse chiamato {}",
     "edit_info_screen_update_info_btn_text": "Aggiorna informazioni",
-    "edit_info_screen_update_success_snackbar": "Informazioni aggiornate con successo. Andare alla home?",
+    "edit_info_screen_update_success_snackbar": "Informazioni aggiornate con successo",
 
     "home_search_screen_search_app_bar_title": "Cerca",
     "home_search_screen_search_bar_placeholder": "Cerca Post, Utenti, Comunità",

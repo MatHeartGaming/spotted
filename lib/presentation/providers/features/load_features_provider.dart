@@ -15,7 +15,7 @@ final featureByIdFutureProvider = FutureProvider.family<Feature?, String>((
 });
 
 final loadFeaturesProvider =
-    StateNotifierProvider<LoadFeaturesNotifier, LoadFeaturesState>((ref) {
+    StateNotifierProvider.autoDispose<LoadFeaturesNotifier, LoadFeaturesState>((ref) {
       final featuresRepo = ref.watch(featureRepositoryProvider);
       final notifier = LoadFeaturesNotifier(featuresRepo);
       return notifier;

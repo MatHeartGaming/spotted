@@ -33,9 +33,9 @@ class InterestDatasourceFirebaseImpl implements InterestDatasource {
   Future<List<Interest>> getInterestsByName(String name) async {
     // For prefix-based search; change to array-contains or full-text if needed
     final query = _interestsRef
-        .where('name', isGreaterThanOrEqualTo: name.trim().toLowerCase())
+        .where('name_lower_cased', isGreaterThanOrEqualTo: name.trim().toLowerCase())
         .where(
-          'name',
+          'name_lower_cased',
           isLessThanOrEqualTo: '${name.trim().toLowerCase()}\uf8ff',
         );
     final snapshot = await query.get();

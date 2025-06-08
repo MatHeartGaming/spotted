@@ -34,9 +34,9 @@ class FeatureDatasourceFirebaseImpl implements FeatureDatasource {
   Future<List<Feature>> getFeaturesByName(String name) async {
     // Performs a prefix query for simplicity. Adjust for substring search if needed.
     final query = _featuresRef
-        .where('name', isGreaterThanOrEqualTo: name.trim().toLowerCase())
+        .where('name_lower_cased', isGreaterThanOrEqualTo: name.trim().toLowerCase())
         .where(
-          'name',
+          'name_lower_cased',
           isLessThanOrEqualTo: '${name.trim().toLowerCase()}\uf8ff',
         );
     final snapshot = await query.get();

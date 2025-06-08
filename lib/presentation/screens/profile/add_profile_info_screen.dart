@@ -252,7 +252,6 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
                 ).tr(args: [assignedFeatures.length.toString()]),
                 ChipsGridView(
                   chips: [...assignedFeatures.map((e) => e.name)],
-                  //showDeleteIcon: sign,
                   onDelete: () {},
                   onTap: (oldFeature) {
                     // Delete
@@ -591,12 +590,10 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
           await userRepo
               .updateUser(updatedUser)
               .then((_) {
-                showCustomSnackbarWithActions(
+                showCustomSnackbar(
                   context,
                   'edit_info_screen_update_success_snackbar'.tr(),
                   backgroundColor: colorSuccess,
-                  actionLabel: 'yes_text'.tr(),
-                  onActionTap: () => goToHomeScreenUsingContext(context),
                 );
               })
               .whenComplete(() {

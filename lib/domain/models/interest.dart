@@ -5,16 +5,17 @@ import 'package:uuid/uuid.dart';
 class Interest {
   final String? id;
   final String name;
+  final String nameLowercased;
 
-  Interest({String? id, required this.name}) : id = id ?? const Uuid().v6();
+  Interest({String? id, required this.name, String? nameLowercased})
+    : id = id ?? const Uuid().v6(),
+      nameLowercased = nameLowercased ?? name.trim().toLowerCase();
 
   @override
   bool operator ==(covariant Interest other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.name == name;
+
+    return other.id == id && other.name == name;
   }
 
   @override
@@ -28,6 +29,7 @@ class Interest {
     return Interest(
       id: map['id'] as String,
       name: map['name'] as String,
+      nameLowercased: map['name_lower_cased'] as String?,
     );
   }
 
@@ -35,6 +37,7 @@ class Interest {
     return <String, dynamic>{
       'id': id,
       'name': name,
+      'name_lower_cased': nameLowercased,
     };
   }
 
@@ -45,13 +48,11 @@ class Interest {
     );
   }
 
-  Interest copyWith({
-    String? id,
-    String? name,
-  }) {
+  Interest copyWith({String? id, String? name}) {
     return Interest(
       id: id ?? this.id,
       name: name ?? this.name,
+      nameLowercased: (name ?? this.name).trim().toLowerCase(),
     );
   }
 
