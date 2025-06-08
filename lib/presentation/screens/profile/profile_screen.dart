@@ -41,7 +41,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                 .update((state) => postList);
           });
 
-          final signedInUser = ref.read(signedInUserProvider);
+      final signedInUser = ref.read(signedInUserProvider);
       if (signedInUser == null) return;
       ref.read(editProfileFormProvider.notifier).initFormField(signedInUser);
       ref
@@ -71,8 +71,8 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
     final signedInUser = ref.watch(signedInUserProvider);
     final assignedInterests = ref.watch(assignedInterestProvider);
     final assignedFeatures = ref.watch(assignedFeaturesProvider);
-    final assignedFeatureNames =
-        assignedFeatures.map((f) => f.name).toSet();
+    final assignedFeatureNames = assignedFeatures.map((f) => f.name).toSet();
+    final assignedInterestsNames = assignedInterests.map((f) => f.name).toSet();
     final isUserYou = signedInUser == widget.user;
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
@@ -147,7 +147,8 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                                     tooltip:
                                         'profile_screen_edit_profile_btn_text'
                                             .tr(),
-                                    onPressed: () => pushToEditProfileScreem(context),
+                                    onPressed:
+                                        () => pushToEditProfileScreem(context),
                                     icon: Icon(Icons.edit),
                                   ),
                                 ),
@@ -156,10 +157,40 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                         ),
                       ),
                       SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
+                        child: Text(
+                          'edit_info_screen_your_features_text',
+                          style: texts.bodySmall,
+                        ).tr(args: [assignedFeatureNames.length.toString()]),
+                      ),
                       ChipsGridView(
                         chips: assignedFeatureNames.toList(),
                         onTap: (label) {},
-                        showDeleteIcon: isUserYou,
+                        showDeleteIcon: false,
+                        spacing: 0,
+                        onDelete: () {},
+                      ),
+
+                      SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
+                        child: Text(
+                          'edit_info_screen_your_interests_text',
+                          style: texts.bodySmall,
+                        ).tr(args: [assignedInterestsNames.length.toString()]),
+                      ),
+                      ChipsGridView(
+                        chips: assignedInterestsNames.toList(),
+                        onTap: (label) {},
+                        showDeleteIcon: false,
+                        spacing: 0,
                         onDelete: () {},
                       ),
                     ]),
