@@ -111,6 +111,51 @@ class LoadPostsNotifier extends StateNotifier<LoadPostsState> {
     return newPost;
   }
 
+  Future<Post?> updatePostLocally(Post updatedPost) async {
+    final newPost = updatedPost;
+    // 1) Replace in postedByFriends
+    final updatedFriendsList =
+        state.postedByFriends
+            .map((p) => p.id == newPost.id ? newPost : p)
+            .toList();
+
+    // 2) Replace in postedInCommunities
+    final updatedCommunitiesList =
+        state.postedInCommunities
+            .map((p) => p.id == newPost.id ? newPost : p)
+            .toList();
+
+    // 3) Emit new state
+    state = state.copyWith(
+      postedByFriends: updatedFriendsList,
+      postedInCommunities: updatedCommunitiesList,
+    );
+    return newPost;
+  }
+
+  Future<void> addComment(String postId, String commentId) async {
+    _postsRepository.addComment(postId, commentId);
+  }
+
+  Future<void> removeComment(String postId, String commentId) async {
+    _postsRepository.removeComment(postId, commentId);
+  }
+
+  Future<void> addReaction({
+    required String postId,
+    required String userId,
+    required String reaction,
+  }) async {
+    _postsRepository.addReaction(postId, userId, reaction);
+  }
+
+  Future<void> removeReaction({
+    required String postId,
+    required String userId,
+  }) async {
+    _postsRepository.removeReaction(postId, userId);
+  }
+
   Future<Post?> createPost(Post updatedPost) async {
     final newPost = await _postsRepository.createPost(updatedPost);
     if (newPost == null) return null;

@@ -263,4 +263,58 @@ class PostsDatasourceFirebaseImpl implements PostsDatasource {
     }
     return allPosts;
   }
+
+  @override
+  Future<bool> addComment(String postId, String commentId) async {
+    try {
+      await _postsRef.doc(postId).update({
+        'comment_ids': FieldValue.arrayUnion([commentId]),
+      });
+      return true;
+    } catch (e) {
+      logger.e('Error adding comment to $postId: $e');
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> removeComment(String postId, String commentId) async {
+    try {
+      await _postsRef.doc(postId).update({
+        'comment_ids': FieldValue.arrayRemove([commentId]),
+      });
+      return true;
+    } catch (e) {
+      logger.e('Error removing comment from $postId: $e');
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> addReaction(String postId, String userId, String reaction) async {
+    try {
+      // This will set or overwrite only the key `reactions.userId`
+      await _postsRef.doc(postId).update({
+        'reactions.$userId': reaction,
+      });
+      return true;
+    } catch (e) {
+      logger.e('Error adding reaction to $postId by $userId: $e');
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> removeReaction(String postId, String userId) async {
+    try {
+      // FieldValue.delete() removes the map entry at reactions.userId
+      await _postsRef.doc(postId).update({
+        'reactions.$userId': FieldValue.delete(),
+      });
+      return true;
+    } catch (e) {
+      logger.e('Error removing reaction from $postId by $userId: $e');
+      return false;
+    }
+  }
 }

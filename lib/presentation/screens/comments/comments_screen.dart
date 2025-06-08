@@ -53,6 +53,7 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
     final commentsFormState = ref.read(commentsFormProvider);
     final signedInUser = ref.read(signedInUserProvider);
     final loadComments = ref.read(loadCommentsProvider.notifier);
+
     if (signedInUser == null || signedInUser.isEmpty) return;
     commentsFormNotifier.onSumbit(
       onSubmit: () {
@@ -80,7 +81,8 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
               final updatedPost = widget.post.copyWith(
                 commentRefs: [...widget.post.commentRefs, newCommentId],
               );
-              loadPostsNotifier.updatePost(updatedPost);
+              loadPostsNotifier.addComment(updatedPost.id, newCommentId);
+              loadPostsNotifier.updatePostLocally(updatedPost);
 
               // Only update user with new comment if it is not an anonymous Comment
               if (!commentsFormState.isAnonymous) {
@@ -265,7 +267,7 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
     await ref
         .read(loadCommentsProvider.notifier)
         .deleteComment(comment.id)
-        .then((value) {
+        .then((_) {
           final loadPostsNotifier = ref.read(loadPostsProvider.notifier);
           final loadUsersNotifier = ref.read(loadUserProvider.notifier);
 
@@ -278,7 +280,8 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
           );
 
           // 3) Push the updated post into your posts‐notifier:
-          loadPostsNotifier.updatePost(updatedPost);
+          loadPostsNotifier.removeComment(updatedPost.id, comment.id);
+          loadPostsNotifier.updatePostLocally(updatedPost);
 
           // 4) Only update the user if this wasn’t an anonymous comment:
           if (comment.createdById != anonymousText) {

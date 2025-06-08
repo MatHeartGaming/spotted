@@ -201,4 +201,28 @@ class PostsDatasourceMockImpl implements PostsDatasource {
       return mockPosts;
     });
   }
+  
+  @override
+  Future<bool> addComment(String postId, String commentId) {
+    // TODO: implement addComment
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<bool> addReaction(String postId, String userId, String reaction) {
+    // TODO: implement addReaction
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<bool> removeComment(String postId, String commentId) {
+    // TODO: implement removeComment
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<bool> removeReaction(String postId, String userId) {
+    // TODO: implement removeReaction
+    throw UnimplementedError();
+  }
 }

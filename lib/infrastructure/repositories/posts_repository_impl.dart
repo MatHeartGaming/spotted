@@ -83,4 +83,24 @@ class PostsRepositoryImplementation implements PostsRepository {
   Future<List<Post>> deletePostById(String postedIn) {
     return _db.deletePostById(postedIn);
   }
+
+  @override
+  Future<bool> addComment(String postId, String commentId) {
+    return _db.addComment(postId, commentId);
+  }
+
+  @override
+  Future<bool> addReaction(String postId, String userId, String reaction) {
+    return _db.addReaction(postId, userId, reaction);
+  }
+
+  @override
+  Future<bool> removeComment(String postId, String commentId) {
+    return _db.removeComment(postId, commentId);
+  }
+
+  @override
+  Future<bool> removeReaction(String postId, String userId) {
+    return _db.removeReaction(postId, userId);
+  }
 }
