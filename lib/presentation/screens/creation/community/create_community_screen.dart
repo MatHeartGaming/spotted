@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:animate_do/animate_do.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/datasources/exceptions/exceptions.dart';
 import 'package:spotted/domain/models/models.dart';
+import 'package:spotted/infrastructure/datasources/services/load_images_datasource_impl.dart';
 import 'package:spotted/presentation/providers/forms/states/form_status.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
@@ -209,12 +211,48 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     );
   }
 
+  Future<String> _imageUploadAction() async {
+    final signedInUser = ref.read(signedInUserProvider);
+    if (signedInUser == null || signedInUser.isEmpty) return "";
+    final formState = ref.read(createCommunityFormProvder);
+    if (formState.imagesFile == null &&
+        (formState.imagesFile?.isEmpty ?? true)) {
+      return "";
+    }
+    final filename =
+        formState.imagesFile!.first.name + Timestamp.now().toString();
+    if (formState.imagesBytes == null &&
+        (formState.imagesBytes?.isEmpty ?? true)) {
+      return "";
+    }
+    String picUrl = await ref
+        .read(loadImagesProvider)
+        .uploadImage(
+          picBytes: formState.imagesBytes!.first,
+          usernamePath: ref.read(signedInUserProvider)?.username ?? 'username',
+          filename: filename,
+          picType: PicType.communityPics,
+        );
+    return picUrl;
+  }
+
   void _updateCommunity() {
     if (widget.community == null) return;
     final createCommunityFormNotifier = ref.read(
       createCommunityFormProvder.notifier,
     );
     final formState = ref.read(createCommunityFormProvder);
+
+    if (widget.community?.pictureUrl == null && (formState.imagesFile == null ||
+        (formState.imagesBytes?.isEmpty ?? true))) {
+      mediumVibration();
+      showCustomSnackbar(
+        context,
+        'create_community_screen_upload_photo_error_snackbar_text'.tr(),
+        backgroundColor: colorWarning,
+      );
+      return;
+    }
 
     createCommunityFormNotifier.validateFields(status: FormStatus.posting);
 
@@ -230,12 +268,13 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     }
 
     createCommunityFormNotifier.onSumbit(
-      onSubmit: () {
+      onSubmit: () async {
+        final communityPic = await _imageUploadAction();
         final communityToUpdate = widget.community?.copyWith(
           title: formState.title.value,
           description: formState.description.value,
           admins: formState.adminsRefs,
-          // TODO: Add urls images
+          pictureUrl: communityPic.isEmpty ? null : communityPic,
         );
         if (communityToUpdate == null) return;
         final loadCommunity = ref.read(loadCommunitiesProvider.notifier);
@@ -271,6 +310,17 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     );
     final formState = ref.read(createCommunityFormProvder);
 
+    if (widget.community?.pictureUrl == null && (formState.imagesFile == null ||
+        (formState.imagesBytes?.isEmpty ?? true))) {
+      mediumVibration();
+      showCustomSnackbar(
+        context,
+        'create_community_screen_upload_photo_error_snackbar_text'.tr(),
+        backgroundColor: colorWarning,
+      );
+      return;
+    }
+
     createCommunityFormNotifier.validateFields(status: FormStatus.posting);
 
     if (!formState.isValid) {
@@ -288,13 +338,14 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
       onSubmit: () async {
         final signedInUser = ref.read(signedInUserProvider);
         if (signedInUser == null) return;
+        final communityPic = await _imageUploadAction();
         final newCommunity = Community(
           createdById: signedInUser.id,
           createdByUsername: signedInUser.username,
           title: formState.title.value,
           description: formState.description.value,
           admins: [signedInUser.id, ...(formState.adminsRefs ?? [])],
-          // TODO: Add urls images
+          pictureUrl: communityPic.isEmpty ? null : communityPic,
         );
         final loadCommunity = ref.read(loadCommunitiesProvider.notifier);
         loadCommunity
