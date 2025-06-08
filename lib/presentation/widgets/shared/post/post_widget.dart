@@ -79,6 +79,8 @@ class PostWidget extends StatelessWidget {
               visible: onLike != null && onCommentTapped != null && onShare != null,
               child: ReactionRowWidget(
                 reaction: reaction,
+                reactionNumber: post.reactions.length.toString(),
+                commentNumber: post.commentRefs.length.toString(),
                 onLike: () {
                   if (onLike != null) {
                     onLike!();

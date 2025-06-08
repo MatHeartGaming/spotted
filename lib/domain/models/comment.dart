@@ -114,6 +114,6 @@ class Comment {
 
   @override
   String toString() {
-    return 'Comment(text: $text, createdById: $createdById, createdByUsername: $createdByUsername, postedIn: $postedIn)';
+    return 'Comment(id: $id, text: $text, createdById: $createdById, createdByUsername: $createdByUsername, postedIn: $postedIn)';
   }
 }

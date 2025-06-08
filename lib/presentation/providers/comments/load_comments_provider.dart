@@ -46,10 +46,10 @@ class LoadCommentsNotifier extends StateNotifier<LoadCommentsState> {
 
     state = state.copyWith(
       isLoadingComments: false,
-      comments: [...state.comments, comment],
+      comments: [...state.comments, newComment],
     );
 
-    logger.d('Commenti: $comment');
+    logger.d('Commenti: $newComment');
 
     return (state.comments, newComment);
   }
