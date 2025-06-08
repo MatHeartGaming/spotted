@@ -238,9 +238,16 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
                   formatter: FormInputFormatters.text,
                   icon: Icons.featured_play_list,
                   onChanged: (newValue) {
-                    ref
-                        .read(loadFeaturesProvider.notifier)
-                        .getFeaturesByName(newValue);
+                    final featuresNotifier = ref.read(
+                      loadFeaturesProvider.notifier,
+                    );
+                    final editProfileNotifier = ref.read(
+                      editProfileFormProvider.notifier,
+                    );
+                    editProfileNotifier.onFeatureSearchChanged(
+                      newValue,
+                      (search) => featuresNotifier.getFeaturesByName(search),
+                    );
                   },
                   onSubmitForm: (newFeature) {
                     _submitNewFeaureAction(loadFeaturesState, newFeature);
@@ -294,9 +301,16 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
                   formatter: FormInputFormatters.text,
                   icon: Icons.featured_play_list,
                   onChanged: (newValue) {
-                    ref
-                        .read(loadInterestsProvider.notifier)
-                        .getInterestsByName(newValue);
+                    final interstsNotifier = ref.read(
+                      loadInterestsProvider.notifier,
+                    );
+                    final editProfileNotifier = ref.read(
+                      editProfileFormProvider.notifier,
+                    );
+                    editProfileNotifier.onInterstsSearchChanged(
+                      newValue,
+                      (search) => interstsNotifier.getInterestsByName(search),
+                    );
                   },
                   onSubmitForm: (newInterest) {
                     _submitNewInterestAction(loadInterestsState, newInterest);

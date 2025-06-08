@@ -26,6 +26,8 @@ class EditProfileFormState {
   final TextEditingController? surnameController;
   final TextEditingController? usernameController;
   final TextEditingController? cityController;
+  final TextEditingController? featureController;
+  final TextEditingController? interestsController;
   final MultiSelectController<String>? countryController;
 
   const EditProfileFormState({
@@ -47,6 +49,8 @@ class EditProfileFormState {
     this.usernameController,
     this.countryController,
     this.cityController,
+    this.featureController,
+    this.interestsController,
   });
 
   EditProfileFormState copyWith({
@@ -68,6 +72,8 @@ class EditProfileFormState {
     TextEditingController? usernameController,
     MultiSelectController<String>? countryController,
     TextEditingController? cityController,
+    TextEditingController? featureController,
+    TextEditingController? interestsController,
   }) => EditProfileFormState(
     status: status ?? this.status,
     isValid: isValid ?? this.isValid,
@@ -87,6 +93,8 @@ class EditProfileFormState {
     usernameController: usernameController ?? this.usernameController,
     countryController: countryController ?? this.countryController,
     cityController: cityController ?? this.cityController,
+    featureController: featureController ?? this.featureController,
+    interestsController: interestsController ?? this.interestsController,
   );
 
   bool get isPosting => status == FormStatus.posting;

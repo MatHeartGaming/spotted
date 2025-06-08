@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
+import 'package:spotted/config/constants/app_constants.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/infrastructure/input_validations/inputs.dart';
 import 'package:spotted/presentation/providers/forms/states/edit_profile_form_state.dart';
@@ -18,6 +21,10 @@ final editProfileFormProvider = StateNotifierProvider.autoDispose<
 });
 
 class EditProfileNotifierNotifier extends StateNotifier<EditProfileFormState> {
+  /// We debounce input so that we don't hammer the repo on every keystroke.
+  Timer? _debounceFeatures;
+  Timer? _debounceInterests;
+
   EditProfileNotifierNotifier()
     : super(
         EditProfileFormState(
@@ -26,6 +33,8 @@ class EditProfileNotifierNotifier extends StateNotifier<EditProfileFormState> {
           emailController: TextEditingController(),
           usernameController: TextEditingController(),
           cityController: TextEditingController(),
+          featureController: TextEditingController(),
+          interestsController: TextEditingController(),
           countryController: MultiSelectController<String>(),
         ),
       );
@@ -160,12 +169,30 @@ class EditProfileNotifierNotifier extends StateNotifier<EditProfileFormState> {
     state = state.copyWith(isValid: isValid);
   }
 
+  void onFeatureSearchChanged(String value, Function(String) onSearch) {
+    if (_debounceFeatures?.isActive ?? false) _debounceFeatures!.cancel();
+    _debounceFeatures = Timer(const Duration(milliseconds: 300), () {
+      logger.i('Start feature search: $value');
+      onSearch(value);
+    });
+  }
+
+  void onInterstsSearchChanged(String value, Function(String) onSearch) {
+    if (_debounceInterests?.isActive ?? false) _debounceInterests!.cancel();
+    _debounceInterests = Timer(const Duration(milliseconds: 300), () {
+      logger.i('Start interest search: $value');
+      onSearch(value);
+    });
+  }
+
   void clearFormState() {
     state.cityController?.clear();
     state.emailController?.clear();
     state.nameController?.clear();
     state.surnameController?.clear();
     state.usernameController?.clear();
+    state.featureController?.clear();
+    state.interestsController?.clear();
 
     state = state.copyWith(
       email: const Email.pure(),
@@ -186,5 +213,9 @@ class EditProfileNotifierNotifier extends StateNotifier<EditProfileFormState> {
     state.usernameController?.dispose();
     state.countryController?.dispose();
     state.cityController?.dispose();
+    state.featureController?.dispose();
+    state.interestsController?.dispose();
+    _debounceFeatures?.cancel();
+    _debounceInterests?.cancel();
   }
 }
