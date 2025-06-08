@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:animate_do/animate_do.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +12,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
+import 'package:spotted/infrastructure/datasources/services/load_images_datasource_impl.dart';
 import 'package:spotted/presentation/providers/forms/states/form_status.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
@@ -236,11 +238,40 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
     }
   }
 
+  Future<List<String>> _uploadPostImages() async {
+    final signedInUser = ref.read(signedInUserProvider);
+    if (signedInUser == null || signedInUser.isEmpty) return [];
+    final formState = ref.read(createPostFormProvider);
+    final files = formState.imagesFile ?? [];
+    if (files.isEmpty) return [];
+
+    final username = ref.read(signedInUserProvider)?.username ?? 'anonymous';
+
+    // Kick off one upload‐future per file:
+    final uploadFutures = files.map((xfile) async {
+      final bytes = await xfile.readAsBytes();
+      final uniqueName =
+          '${xfile.name}_${DateTime.now().millisecondsSinceEpoch}';
+      return ref
+          .read(loadImagesProvider)
+          .uploadImage(
+            picBytes: bytes,
+            usernamePath: username,
+            filename: uniqueName,
+            picType: PicType.postPics,
+          );
+    });
+
+    // await them all at once:
+    return await Future.wait(uploadFutures);
+  }
+
   void _onSumbit(WidgetRef ref) {
     final context = ref.context;
     final createPostFormNotifier = ref.read(createPostFormProvider.notifier);
     final formState = ref.read(createPostFormProvider);
     final userRepo = ref.read(usersRepositoryProvider);
+    final signedInUserNotifier = ref.read(signedInUserProvider.notifier);
 
     createPostFormNotifier.validateFields(status: FormStatus.posting);
 
@@ -258,6 +289,7 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
     createPostFormNotifier.onSumbit(
       onSubmit: () async {
         final signedInUser = ref.read(signedInUserProvider);
+        final imagesUrl = await _uploadPostImages();
         final newPost = Post(
           createdById: signedInUser?.id ?? '',
           createdByUsername: signedInUser?.username ?? '',
@@ -265,16 +297,17 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
           content: formState.content.value,
           postedIn: formState.postedIn?.value,
           isAnonymous: formState.isAnonymous,
+          pictureUrls: imagesUrl,
         );
         final loadPost = ref.read(loadPostsProvider.notifier);
         loadPost.createPost(newPost).then((createdPost) {
           if (createdPost != null) {
             if (signedInUser != null) {
-              userRepo.updateUser(
-                signedInUser.copyWith(
-                  posted: [createdPost.id, ...signedInUser.posted],
-                ),
+              final signedInUserUpdated = signedInUser.copyWith(
+                posted: [createdPost.id, ...signedInUser.posted],
               );
+              userRepo.updateUser(signedInUserUpdated);
+              signedInUserNotifier.update((state) => signedInUserUpdated);
             }
             smallVibration();
             showCustomSnackbar(

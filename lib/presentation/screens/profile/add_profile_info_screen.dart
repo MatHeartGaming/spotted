@@ -463,13 +463,13 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
       onGalleryChosen: () async {
         await picker.selectPhotos(limit: 1).then((files) {
           onImagesChosen(files.cast<XFile>());
-          popContext(context);
+          if(context.mounted) popContext(context);
         });
       },
       onTakePicChosen: () async {
         await picker.takePhoto().then((file) {
           onImagesChosen([file]);
-          popContext(context);
+          if(context.mounted) popContext(context);
         });
       },
     );

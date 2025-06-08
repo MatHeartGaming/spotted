@@ -28,6 +28,7 @@ export 'package:spotted/presentation/providers/bottom_bar_app_bar_providers/bott
 
 // Utility
 export 'package:spotted/presentation/providers/utility/image_picker_provider.dart';
+export 'package:spotted/presentation/providers/utility/load_images_provider.dart';
 
 // Forms
 export 'package:spotted/presentation/providers/forms/create_post_form_provider.dart';
