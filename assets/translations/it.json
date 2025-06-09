@@ -76,6 +76,7 @@
     
     "create_post_list_tile_title": "Crea Post",
     "create_post_screen_publish_btn_text": "Pubblica",
+    "create_post_screen_publish_in_btn_text": "Pubblica in {}",
     "create_post_screen_title_textfield_placeholder": "Titolo",
     "create_post_screen_content_textfield_placeholder": "Contenuto",
     "create_post_screen_add_images_btn_tooltip": "Aggiungi immagini",

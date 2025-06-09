@@ -47,14 +47,26 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
     final topPadding = MediaQuery.paddingOf(context).top;
     final texts = TextTheme.of(context);
     final signedInUser = ref.watch(signedInUserProvider);
-    final communityToUse =
-        widget.community.isEmpty
-            ? ref.watch(communityScreenCurrentCommunityProvider)
-            : widget.community;
+    final communityToUse = ref.watch(communityScreenCurrentCommunityProvider);
     final isUserAdmin = communityToUse.admins.contains(signedInUser?.id);
+    if (communityToUse.isEmpty) {
+      return LoadingDefaultWidget();
+    }
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {},
       child: Scaffold(
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => _openCreatePostSheet(),
+          label: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 4,
+            children: [
+              Icon(Icons.edit),
+              Text('create_post_list_tile_title').tr(),
+            ],
+          ),
+        ),
         body: Stack(
           children: [
             NestedScrollView(
@@ -238,5 +250,12 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
       logger.i('Community: ${communities.first}');
       pushToCommunityScreen(ref.context, community: communities.first);
     });
+  }
+
+  void _openCreatePostSheet() {
+    showCustomBottomSheet(
+      context,
+      child: CreatePostsScreen(communityId: widget.community.id),
+    );
   }
 }

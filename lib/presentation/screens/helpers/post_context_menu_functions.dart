@@ -50,6 +50,7 @@ void _openCommentsScreen(BuildContext context, Post post) {
 void _deletePostAction(WidgetRef ref, Post post) {
   final context = ref.context;
   final postsNotifier = ref.read(loadPostsProvider.notifier);
+  final communitiesNotifier = ref.read(loadCommunitiesProvider.notifier);
   postsNotifier.deletePostById(post.id).then((newPosts) {
     if (newPosts == null) {
       hardVibration();
@@ -61,6 +62,9 @@ void _deletePostAction(WidgetRef ref, Post post) {
       return;
     }
 
+    if (post.postedIn != null) {
+      communitiesNotifier.removePost(post.postedIn!, post.id);
+    }
     ref
         .read(signedInUserProvider.notifier)
         .update(

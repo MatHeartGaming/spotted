@@ -3,7 +3,6 @@
 import 'dart:math';
 
 import 'package:animate_do/animate_do.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,9 +18,10 @@ import 'package:spotted/presentation/widgets/widgets.dart';
 
 class CreatePostsScreen extends ConsumerStatefulWidget {
   final Post? post;
+  final String? communityId;
   static const name = 'CreatePostsScreen';
 
-  const CreatePostsScreen({super.key, this.post});
+  const CreatePostsScreen({super.key, this.post, this.communityId});
 
   @override
   CreatePostsScreenState createState() => CreatePostsScreenState();
@@ -39,6 +39,7 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
   @override
   Widget build(BuildContext context) {
     final formState = ref.watch(createPostFormProvider);
+    final community = ref.watch(communityScreenCurrentCommunityProvider);
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
@@ -174,7 +175,12 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
                   child: ElevatedButton(
                     onPressed:
                         formState.isPosting ? null : () => _onSumbit(ref),
-                    child: Text('create_post_screen_publish_btn_text').tr(),
+                    child:
+                        widget.communityId == null
+                            ? Text('create_post_screen_publish_btn_text').tr()
+                            : Text(
+                              'create_post_screen_publish_in_btn_text',
+                            ).tr(args: [community.title]),
                   ),
                 ),
                 SizedBox(height: 50),
@@ -272,6 +278,7 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
     final formState = ref.read(createPostFormProvider);
     final userRepo = ref.read(usersRepositoryProvider);
     final signedInUserNotifier = ref.read(signedInUserProvider.notifier);
+    final laodCommunityNotifier = ref.read(loadCommunitiesProvider.notifier);
 
     createPostFormNotifier.validateFields(status: FormStatus.posting);
 
@@ -295,7 +302,7 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
           createdByUsername: signedInUser?.username ?? '',
           title: formState.title.value,
           content: formState.content.value,
-          postedIn: formState.postedIn?.value,
+          postedIn: widget.communityId,
           isAnonymous: formState.isAnonymous,
           pictureUrls: imagesUrl,
         );
@@ -308,6 +315,20 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
               );
               userRepo.updateUser(signedInUserUpdated);
               signedInUserNotifier.update((state) => signedInUserUpdated);
+              if (widget.communityId != null) {
+                laodCommunityNotifier.addPost(
+                  widget.communityId!,
+                  createdPost.id,
+                );
+                ref
+                    .read(communityScreenCurrentCommunityProvider.notifier)
+                    .update(
+                      (state) => state.copyWith(
+                        posts: [createdPost, ...state.posts],
+                        postsRefs: [createdPost.id, ...state.postsRefs],
+                      ),
+                    );
+              }
             }
             smallVibration();
             showCustomSnackbar(

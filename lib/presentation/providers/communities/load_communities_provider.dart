@@ -115,6 +115,26 @@ class LoadCommunitiesNotifier extends StateNotifier<LoadCommunitiesState> {
 
     return created;
   }
+
+  Future<bool> addPost(String commId, String postId) async {
+    final result = await _communityRepository.addPost(commId, postId);
+    return result;
+  }
+
+  Future<bool> removePost(String commId, String postId) async {
+    final result = await _communityRepository.removePost(commId, postId);
+    return result;
+  }
+
+  Future<bool> addSub(String commId, String userId) async {
+    final result = await _communityRepository.addSub(commId, userId);
+    return result;
+  }
+
+  Future<bool> removeSub(String commId, String userId) async {
+    final result = await _communityRepository.removeSub(commId, userId);
+    return result;
+  }
 }
 
 class LoadCommunitiesState {

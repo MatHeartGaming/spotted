@@ -203,9 +203,15 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                   itemCount: usersPost.length,
                   itemBuilder: (context, index) {
                     final post = usersPost[index];
+                    final currentUserId = signedInUser?.id;
+                    final currentUserReaction =
+                        (currentUserId != null)
+                            ? post.reactions[currentUserId]
+                            : null;
                     return ReactionablePostWidget(
                       isLiked: false,
                       author: widget.user,
+                      reaction: currentUserReaction,
                       post: post,
                       onCommunityTapped:
                           () => _actionCommunityTap(ref, post.postedIn),

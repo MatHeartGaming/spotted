@@ -72,4 +72,14 @@ class CommunityRepositoryImplementation implements CommunityRepository {
   Future<bool> removeSub(String commId, String userId) {
     return _db.removeSub(commId, userId);
   }
+
+  @override
+  Future<bool> addPost(String commId, String postId) {
+    return _db.addPost(commId, postId);
+  }
+
+  @override
+  Future<bool> removePost(String commId, String postId) {
+    return _db.removePost(commId, postId);
+  }
 }

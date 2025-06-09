@@ -156,4 +156,16 @@ class CommunityDatasourceMockImpl implements CommunityDatasource {
     // TODO: implement removeSub
     throw UnimplementedError();
   }
+  
+  @override
+  Future<bool> addPost(String commId, String postId) {
+    // TODO: implement addPost
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<bool> removePost(String commId, String postId) {
+    // TODO: implement removePost
+    throw UnimplementedError();
+  }
 }

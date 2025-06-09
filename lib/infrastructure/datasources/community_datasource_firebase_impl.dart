@@ -185,4 +185,30 @@ class CommunityDatasourceFirebaseImpl implements CommunityDatasource {
       return false;
     }
   }
+  
+  @override
+  Future<bool> addPost(String commId, String postId) async {
+    try {
+      await _communitiesRef.doc(commId).update({
+        'posts': FieldValue.arrayUnion([postId]),
+      });
+      return true;
+    } catch (e) {
+      logger.e('Error adding post to $commId: $e');
+      return false;
+    }
+  }
+  
+  @override
+  Future<bool> removePost(String commId, String postId) async {
+    try {
+      await _communitiesRef.doc(commId).update({
+        'posts': FieldValue.arrayRemove([postId]),
+      });
+      return true;
+    } catch (e) {
+      logger.e('Error removing post to $commId: $e');
+      return false;
+    }
+  }
 }
