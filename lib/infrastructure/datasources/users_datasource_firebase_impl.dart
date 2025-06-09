@@ -7,6 +7,14 @@ import 'package:spotted/infrastructure/datasources/exceptions/user_exceptions.da
 class UsersDatasourceFirebaseImpl implements UsersDatasource {
   final _db = FirebaseFirestore.instance;
 
+  final CollectionReference<User> _usersRef = FirebaseFirestore
+      .instance
+      .collection(FirestoreDbCollections.communities)
+      .withConverter<User>(
+        fromFirestore: User.fromFirestore,
+        toFirestore: (User user, _) => user.toMap(),
+      );
+
   @override
   Future<List<User>> getAllUsers() async {
     List<User> result = [];
@@ -277,5 +285,31 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
     final usernameExists = await getUserByUsername(user.username);
     if (usernameExists != null) return true;
     return false;
+  }
+
+  @override
+  Future<bool> addSub(String userId, String commId) async {
+    try {
+      await _usersRef.doc(userId).update({
+        'communities_subs': FieldValue.arrayUnion([commId]),
+      });
+      return true;
+    } catch (e) {
+      logger.e('Error adding sub $commId from User $userId: $e');
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> removeSub(String userId, String commId) async {
+    try {
+      await _usersRef.doc(userId).update({
+        'communities_subs': FieldValue.arrayRemove([commId]),
+      });
+      return true;
+    } catch (e) {
+      logger.e('Error removing sub $commId from User $userId: $e');
+      return false;
+    }
   }
 }

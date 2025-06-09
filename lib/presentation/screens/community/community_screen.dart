@@ -47,8 +47,11 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
     final topPadding = MediaQuery.paddingOf(context).top;
     final texts = TextTheme.of(context);
     final signedInUser = ref.watch(signedInUserProvider);
-    final community = ref.watch(communityScreenCurrentCommunityProvider);
-    final isUserAdmin = community.admins.contains(signedInUser?.username);
+    final communityToUse =
+        widget.community.isEmpty
+            ? ref.watch(communityScreenCurrentCommunityProvider)
+            : widget.community;
+    final isUserAdmin = communityToUse.admins.contains(signedInUser?.id);
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {},
       child: Scaffold(
@@ -64,7 +67,7 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
                         fit: BoxFit.cover,
                         height: 300,
                         placeholder: MemoryImage(kTransparentImage),
-                        image: NetworkImage(community.pictureUrl ?? ''),
+                        image: NetworkImage(communityToUse.pictureUrl ?? ''),
                       ),
                       SizedBox(height: 20),
                       FadeIn(
@@ -78,13 +81,13 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    community.title,
+                                    communityToUse.title,
                                     style: texts.titleLarge?.copyWith(
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                   Text(
-                                    community.description,
+                                    communityToUse.description,
                                     style: texts.titleSmall?.copyWith(
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -96,7 +99,7 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
                                 visible:
                                     !isUserAdmin &&
                                     !(signedInUser?.communitiesSubs.contains(
-                                          community.title,
+                                          communityToUse.id,
                                         ) ??
                                         false),
                                 child: FilledButton(
@@ -112,12 +115,12 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
                                 visible: isUserAdmin,
                                 child: IconButton.filledTonal(
                                   tooltip:
-                                      'profile_screen_edit_profile_btn_text'
+                                      'create_community_screen_edit_community_btn_text'
                                           .tr(),
                                   onPressed:
                                       () => pushToCreateCommunityScreen(
                                         context,
-                                        community: community,
+                                        community: communityToUse,
                                       ),
                                   icon: Icon(Icons.edit),
                                 ),
@@ -134,9 +137,9 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
               body: RefreshIndicator(
                 onRefresh: () => _initCommunityPosts(),
                 child: ListView.builder(
-                  itemCount: community.posts.length,
+                  itemCount: communityToUse.posts.length,
                   itemBuilder: (context, index) {
-                    final post = community.posts[index];
+                    final post = communityToUse.posts[index];
                     return ref
                         .watch(userFutureByIdProvider(post.createdById))
                         .when(

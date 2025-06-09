@@ -97,6 +97,7 @@
     "create_community_screen_update_community_success_snackbar_text": "Comunità aggiornata con successo!",
     "create_community_screen_upload_photo_error_snackbar_text": "Per favore carica una immagine per la comunità",
     "create_community_screen_community_error_snackbar_text": "Errore durante la creazione della comunità. Riprova.",
+    "create_community_screen_edit_community_btn_text": "Modifica informazioni Comunità",
 
     "create_community_list_tile_title": "Crea Community",
 

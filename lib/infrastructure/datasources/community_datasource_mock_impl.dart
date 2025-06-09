@@ -144,4 +144,16 @@ class CommunityDatasourceMockImpl implements CommunityDatasource {
       return mockCommunities;
     });
   }
+  
+  @override
+  Future<bool> addSub(String commId, String userId) {
+    // TODO: implement addSub
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<bool> removeSub(String commId, String userId) {
+    // TODO: implement removeSub
+    throw UnimplementedError();
+  }
 }

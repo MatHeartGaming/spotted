@@ -53,4 +53,14 @@ class UsersRepositoryImplementation implements UsersRepository {
   Future<List<User>?> getUsersByUsername(String username) {
     return _db.getUsersByUsername(username);
   }
+
+  @override
+  Future<bool> addSub(String userId, String commId) {
+    return _db.addSub(userId, commId);
+  }
+
+  @override
+  Future<bool> removeSub(String userId, String commId) {
+    return _db.removeSub(userId, commId);
+  }
 }

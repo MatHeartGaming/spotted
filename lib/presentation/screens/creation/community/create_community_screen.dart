@@ -129,6 +129,7 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
 
                   GridImagesWidget(
                     images: communityFormState.imagesBytes ?? [],
+                    imagesUrl: communityFormState.imagesUrl ?? [],
                     onImageDelete: (deleteIndex) {
                       ref
                           .read(createCommunityFormProvder.notifier)
@@ -215,7 +216,7 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     final signedInUser = ref.read(signedInUserProvider);
     if (signedInUser == null || signedInUser.isEmpty) return "";
     final formState = ref.read(createCommunityFormProvder);
-    if (formState.imagesFile == null &&
+    if (formState.imagesFile == null ||
         (formState.imagesFile?.isEmpty ?? true)) {
       return "";
     }
@@ -243,8 +244,9 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     );
     final formState = ref.read(createCommunityFormProvder);
 
-    if (widget.community?.pictureUrl == null && (formState.imagesFile == null ||
-        (formState.imagesBytes?.isEmpty ?? true))) {
+    if (widget.community?.pictureUrl == null &&
+        (formState.imagesFile == null ||
+            (formState.imagesBytes?.isEmpty ?? true))) {
       mediumVibration();
       showCustomSnackbar(
         context,
@@ -281,6 +283,13 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
         loadCommunity
             .updateCommunity(communityToUpdate)
             .then((updatedComm) {
+              if (updatedComm == null) {
+                _handleCommunityErrors(null, communityToUpdate);
+                return;
+              }
+              ref
+                  .read(communityScreenCurrentCommunityProvider.notifier)
+                  .update((state) => updatedComm);
               smallVibration();
               showCustomSnackbar(
                 context,
@@ -310,8 +319,9 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     );
     final formState = ref.read(createCommunityFormProvder);
 
-    if (widget.community?.pictureUrl == null && (formState.imagesFile == null ||
-        (formState.imagesBytes?.isEmpty ?? true))) {
+    if (widget.community?.pictureUrl == null &&
+        (formState.imagesFile == null ||
+            (formState.imagesBytes?.isEmpty ?? true))) {
       mediumVibration();
       showCustomSnackbar(
         context,
@@ -334,6 +344,8 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
       return;
     }
 
+    final userRepo = ref.read(usersRepositoryProvider);
+    final signedInUserNotifier = ref.read(signedInUserProvider.notifier);
     createCommunityFormNotifier.onSumbit(
       onSubmit: () async {
         final signedInUser = ref.read(signedInUserProvider);
@@ -346,11 +358,21 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
           description: formState.description.value,
           admins: [signedInUser.id, ...(formState.adminsRefs ?? [])],
           pictureUrl: communityPic.isEmpty ? null : communityPic,
+          subscribed: [signedInUser.id],
         );
         final loadCommunity = ref.read(loadCommunitiesProvider.notifier);
         loadCommunity
             .createCommunity(newCommunity)
             .then((createdCommunity) {
+              if (createdCommunity == null) {
+                _handleCommunityErrors(null, newCommunity);
+                return;
+              }
+              final userToUpdate = signedInUser.copyWith(
+                communitiesSubs: [createdCommunity.id],
+              );
+              userRepo.updateUser(userToUpdate);
+              signedInUserNotifier.update((state) => userToUpdate);
               // success path
               smallVibration();
               showCustomSnackbar(

@@ -15,4 +15,6 @@ abstract class CommunityRepository {
   Future<Community?> createCommunity(Community community);
   Future<Community?> updateCommunity(Community community);
   Future<List<Community>?> deleteCommunityById(String id);
+  Future<bool> addSub(String commId, String userId);
+  Future<bool> removeSub(String commId, String userId);
 }

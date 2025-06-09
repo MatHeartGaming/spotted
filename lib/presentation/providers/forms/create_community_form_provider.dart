@@ -111,13 +111,12 @@ class CreateCommunityNotifier extends StateNotifier<CreateCommunityFormState> {
     final bytes = List<Uint8List>.from(state.imagesBytes ?? []);
     final urls = List<String>.from(state.imagesUrl ?? []);
 
-    if (index < 0 || index >= files.length) return;
+    if (index < 0) return;
 
-    files.removeAt(index);
-    bytes.removeAt(index);
+    if (files.isNotEmpty) files.removeAt(index);
+    if(bytes.isNotEmpty) bytes.removeAt(index);
 
-    // TODO: Check this when urls are enabled!!
-    //urls.removeAt(index);
+    if (urls.isNotEmpty) urls.removeAt(index);
 
     state = state.copyWith(
       imagesFile: files,

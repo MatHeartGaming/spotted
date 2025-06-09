@@ -35,7 +35,12 @@ class _CommunityScreenState extends ConsumerState<CommunityScreenHandler> {
   }
 
   void _fetchCommunity() {
-    if (widget.community != null) return;
+    if (widget.community != null) {
+      ref
+          .read(communityScreenCurrentCommunityProvider.notifier)
+          .update((state) => widget.community!);
+      return;
+    }
     if (widget.communityId != null) {
       ref
           .read(loadCommunitiesProvider.notifier)

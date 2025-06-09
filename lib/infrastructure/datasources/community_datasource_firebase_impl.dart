@@ -159,4 +159,30 @@ class CommunityDatasourceFirebaseImpl implements CommunityDatasource {
     if (snapshot.docs.isEmpty) return null;
     return snapshot.docs.first.data();
   }
+
+  @override
+  Future<bool> addSub(String commId, String userId) async {
+    try {
+      await _communitiesRef.doc(commId).update({
+        'subscribed': FieldValue.arrayUnion([userId]),
+      });
+      return true;
+    } catch (e) {
+      logger.e('Error adding sub to $commId: $e');
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> removeSub(String commId, String userId) async {
+    try {
+      await _communitiesRef.doc(commId).update({
+        'subscribed': FieldValue.arrayRemove([userId]),
+      });
+      return true;
+    } catch (e) {
+      logger.e('Error removing sub from $commId: $e');
+      return false;
+    }
+  }
 }

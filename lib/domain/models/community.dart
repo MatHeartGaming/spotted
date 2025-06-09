@@ -12,6 +12,7 @@ class Community {
   final DateTime dateCreated;
   final String? pictureUrl;
   final List<String> admins;
+  final List<String> subscribed;
   final List<String> postsRefs;
   final List<Post> posts;
 
@@ -24,6 +25,7 @@ class Community {
     DateTime? dateCreated,
     this.pictureUrl,
     this.admins = const [],
+    this.subscribed = const [],
     this.postsRefs = const [],
     this.posts = const [],
   }) : id = id ?? const Uuid().v6(),
@@ -38,6 +40,7 @@ class Community {
     dateCreated,
     this.pictureUrl,
     this.admins = const [],
+    this.subscribed = const [],
     this.postsRefs = const [],
     this.posts = const [],
   }) : id = id ?? const Uuid().v6(),
@@ -66,6 +69,9 @@ class Community {
       postsRefs: map.containsKey('posts')
               ? (map['posts'] as List).map((e) => e.toString()).toList()
               : [],
+    subscribed: map.containsKey('subscribed')
+              ? (map['subscribed'] as List).map((e) => e.toString()).toList()
+              : [],
     );
   }
 
@@ -81,6 +87,7 @@ class Community {
       'picture_url': pictureUrl,
       'admins': admins,
       'posts': postsRefs,
+      'subscribed': subscribed,
     };
   }
 
@@ -93,6 +100,7 @@ class Community {
     DateTime? dateCreated,
     String? pictureUrl,
     List<String>? admins,
+    List<String>? subscribed,
     List<String>? postsRefs,
     List<Post>? posts,
   }) {
@@ -107,6 +115,7 @@ class Community {
       admins: admins ?? this.admins,
       postsRefs: postsRefs ?? this.postsRefs,
       posts: posts ?? this.posts,
+      subscribed: subscribed ?? this.subscribed,
     );
   }
 

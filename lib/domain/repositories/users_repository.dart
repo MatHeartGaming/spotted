@@ -10,4 +10,6 @@ abstract class UsersRepository {
   Future<User?> createUser(User user, String uid);
   Future<void> updateUser(User user);
   Future<bool> deleteUserById(User user);
+  Future<bool> addSub(String userId, String commId);
+  Future<bool> removeSub(String userId, String commId);
 }

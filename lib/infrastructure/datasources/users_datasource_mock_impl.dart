@@ -123,4 +123,16 @@ class UsersDatasourceMockImpl implements UsersDatasource {
       return true;
     });
   }
+  
+  @override
+  Future<bool> addSub(String userId, String commId) {
+    // TODO: implement addSub
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<bool> removeSub(String userId, String commId) {
+    // TODO: implement removeSub
+    throw UnimplementedError();
+  }
 }
