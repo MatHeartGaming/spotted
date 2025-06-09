@@ -88,7 +88,7 @@ class CreateCommunityNotifier extends StateNotifier<CreateCommunityFormState> {
 
   void onAddAdmin(String newAdminRef) {
     state = state.copyWith(
-      adminsRefs: [...state.adminsRefs ?? [], newAdminRef],
+      adminsRefs: [...state.adminsRefs, newAdminRef],
     );
   }
 

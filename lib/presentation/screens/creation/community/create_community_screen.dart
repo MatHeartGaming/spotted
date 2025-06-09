@@ -55,6 +55,7 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
   @override
   Widget build(BuildContext context) {
     final communityFormState = ref.watch(createCommunityFormProvder);
+    final size = MediaQuery.sizeOf(context);
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         _refreshCommunityPage();
@@ -83,6 +84,7 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                 spacing: 12,
                 children: [
                   SizedBox(height: 8),
+
                   CustomTextFormField(
                     label:
                         'create_community_screen_title_textfield_placeholder'
@@ -120,10 +122,12 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                     onSubmitForm: (_) => _onSubmit(),
                     onChanged: (newValue) {
                       ref
-                          .read(createCommunityFormProvder.notifier)
-                          .onAddAdmin(newValue);
+                          .read(communityUsersSearchBarTextProvider.notifier)
+                          .update((state) => newValue);
                     },
                   ),
+
+                  SizedBox(height: 120, child: _showAllUsers()),
 
                   SizedBox(height: 30),
 
@@ -176,6 +180,40 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _showAllUsers() {
+    final usersFound = ref.watch(ownerUsersSearchBarProvider);
+    final communityFormState = ref.watch(createCommunityFormProvder);
+
+    return HorizontalProductList(
+      usersList: [
+        ...usersFound,
+        User.empty(
+          name: 'Mat',
+          surname: 'B',
+          username: 'Mammmdfdfddfd',
+          email: 'm@ciao.com',
+        ),
+      ],
+      onItemTap: (user) {
+        if (!user.isEmpty) return;
+        ref.read(createCommunityFormProvder.notifier).onAddAdmin(user.id);
+      },
+      sectionItemBuilder: (user) {
+        return UserMiniItem(
+          profileImageUrl: user.profileImageUrl,
+          username: user.atUsername,
+          isSelected: communityFormState.adminsRefs.contains(user.id),
+          onTap: () {
+            // only fire for non‐empty users
+            if (!user.isEmpty) {
+              ref.read(createCommunityFormProvder.notifier).onAddAdmin(user.id);
+            }
+          },
+        );
+      },
     );
   }
 
@@ -356,7 +394,7 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
           createdByUsername: signedInUser.username,
           title: formState.title.value,
           description: formState.description.value,
-          admins: [signedInUser.id, ...(formState.adminsRefs ?? [])],
+          admins: [signedInUser.id, ...(formState.adminsRefs)],
           pictureUrl: communityPic.isEmpty ? null : communityPic,
           subscribed: [signedInUser.id],
         );

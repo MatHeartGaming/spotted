@@ -11,7 +11,7 @@ class CreateCommunityFormState {
   final bool isValid;
   final GenericText title;
   final GenericText description;
-  final List<String>? adminsRefs;
+  final List<String> adminsRefs;
   final List<Uint8List>? imagesBytes;
   final List<XFile>? imagesFile;
   final List<String>? imagesUrl;

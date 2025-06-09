@@ -33,6 +33,8 @@ export 'package:spotted/presentation/widgets/shared/post/post_list_tile.dart';
 
 // Shared - User
 export 'package:spotted/presentation/widgets/shared/user/user_list_tile.dart';
+export 'package:spotted/presentation/widgets/shared/user/horizontal_users_list.dart';
+export 'package:spotted/presentation/widgets/shared/user/user_mini_item.dart';
 
 // Shared - Community
 export 'package:spotted/presentation/widgets/shared/community/community_list_tile.dart';
