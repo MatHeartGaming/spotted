@@ -9,7 +9,7 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
 
   final CollectionReference<User> _usersRef = FirebaseFirestore
       .instance
-      .collection(FirestoreDbCollections.communities)
+      .collection(FirestoreDbCollections.users)
       .withConverter<User>(
         fromFirestore: User.fromFirestore,
         toFirestore: (User user, _) => user.toMap(),
@@ -309,6 +309,32 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
       return true;
     } catch (e) {
       logger.e('Error removing sub $commId from User $userId: $e');
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> addPost(String userId, String postId) async {
+    try {
+      await _usersRef.doc(userId).update({
+        'posted': FieldValue.arrayUnion([postId]),
+      });
+      return true;
+    } catch (e) {
+      logger.e('Error adding post $postId from User $userId: $e');
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> removePost(String userId, String postId) async {
+    try {
+      await _usersRef.doc(userId).update({
+        'posted': FieldValue.arrayRemove([postId]),
+      });
+      return true;
+    } catch (e) {
+      logger.e('Error removing post $postId from User $userId: $e');
       return false;
     }
   }

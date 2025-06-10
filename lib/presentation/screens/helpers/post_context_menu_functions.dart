@@ -51,6 +51,9 @@ void _deletePostAction(WidgetRef ref, Post post) {
   final context = ref.context;
   final postsNotifier = ref.read(loadPostsProvider.notifier);
   final communitiesNotifier = ref.read(loadCommunitiesProvider.notifier);
+  final usersRepo = ref.read(usersRepositoryProvider);
+  final signedInUser = ref.read(signedInUserProvider);
+  if (signedInUser == null) return;
   postsNotifier.deletePostById(post.id).then((newPosts) {
     if (newPosts == null) {
       hardVibration();
@@ -65,6 +68,7 @@ void _deletePostAction(WidgetRef ref, Post post) {
     if (post.postedIn != null) {
       communitiesNotifier.removePost(post.postedIn!, post.id);
     }
+    usersRepo.removePost(signedInUser.id, post.id);
     ref
         .read(signedInUserProvider.notifier)
         .update(

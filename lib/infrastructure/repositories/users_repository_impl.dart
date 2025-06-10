@@ -63,4 +63,14 @@ class UsersRepositoryImplementation implements UsersRepository {
   Future<bool> removeSub(String userId, String commId) {
     return _db.removeSub(userId, commId);
   }
+
+  @override
+  Future<bool> addPost(String userId, String postId) {
+    return _db.addPost(userId, postId);
+  }
+
+  @override
+  Future<bool> removePost(String userId, String postId) {
+    return _db.removePost(userId, postId);
+  }
 }

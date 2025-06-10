@@ -313,7 +313,7 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
               final signedInUserUpdated = signedInUser.copyWith(
                 posted: [createdPost.id, ...signedInUser.posted],
               );
-              userRepo.updateUser(signedInUserUpdated);
+              userRepo.addPost(signedInUserUpdated.id, createdPost.id);
               signedInUserNotifier.update((state) => signedInUserUpdated);
               if (widget.communityId != null) {
                 laodCommunityNotifier.addPost(

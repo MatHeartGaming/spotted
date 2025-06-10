@@ -135,4 +135,16 @@ class UsersDatasourceMockImpl implements UsersDatasource {
     // TODO: implement removeSub
     throw UnimplementedError();
   }
+  
+  @override
+  Future<bool> addPost(String userId, String postId) {
+    // TODO: implement addPost
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<bool> removePost(String userId, String postId) {
+    // TODO: implement removePost
+    throw UnimplementedError();
+  }
 }

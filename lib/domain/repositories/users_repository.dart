@@ -12,4 +12,6 @@ abstract class UsersRepository {
   Future<bool> deleteUserById(User user);
   Future<bool> addSub(String userId, String commId);
   Future<bool> removeSub(String userId, String commId);
+  Future<bool> addPost(String userId, String postId);
+  Future<bool> removePost(String userId, String postId);
 }
