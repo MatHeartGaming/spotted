@@ -105,8 +105,13 @@ class FirebaseAuthDatasourceImpl implements AuthDatasource {
 
   @override
   Future<void> deleteUser() async {
-    _auth.currentUser?.delete().onError((error, stackTrace) {
-      logger.e(error.toString());
-    });
+    _auth.currentUser
+        ?.delete()
+        .then((value) {
+          logout();
+        })
+        .onError((error, stackTrace) {
+          logger.e(error.toString());
+        });
   }
 }
