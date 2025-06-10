@@ -48,68 +48,6 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
     });
   }
 
-  Future<void> _handleSend() async {
-    final commentsFormNotifier = ref.read(commentsFormProvider.notifier);
-    final commentsFormState = ref.read(commentsFormProvider);
-    final signedInUser = ref.read(signedInUserProvider);
-    final loadComments = ref.read(loadCommentsProvider.notifier);
-
-    if (signedInUser == null || signedInUser.isEmpty) return;
-    commentsFormNotifier.onSumbit(
-      onSubmit: () {
-        final newComment = Comment(
-          text: commentsFormState.comment.value,
-          createdById:
-              commentsFormState.isAnonymous ? anonymousText : signedInUser.id,
-          createdByUsername:
-              commentsFormState.isAnonymous
-                  ? anonymousText
-                  : signedInUser.username,
-          postId: widget.post.id,
-        );
-
-        loadComments
-            .createComment(newComment)
-            .then((updatedComments) {
-              final loadPostsNotifier = ref.read(loadPostsProvider.notifier);
-              final loadUsersNotifier = ref.read(loadUserProvider.notifier);
-              final newCommentId = updatedComments.$2.id;
-              final updatedUser = signedInUser.copyWith(
-                comments: [...signedInUser.comments, newCommentId],
-              );
-
-              final updatedPost = widget.post.copyWith(
-                commentRefs: [...widget.post.commentRefs, newCommentId],
-              );
-              loadPostsNotifier.addComment(updatedPost.id, newCommentId);
-              loadPostsNotifier.updatePostLocally(updatedPost);
-
-              // Only update user with new comment if it is not an anonymous Comment
-              if (!commentsFormState.isAnonymous) {
-                loadUsersNotifier.updateUser(updatedUser);
-                ref
-                    .read(signedInUserProvider.notifier)
-                    .update((state) => updatedUser);
-              }
-              commentsFormNotifier.clearComment();
-              smallVibration();
-            })
-            .catchError((error) {
-              hardVibration();
-              showCustomSnackbar(
-                context,
-                'comments_screen_error_posting_text'.tr(),
-                backgroundColor: colorNotOkButton,
-              );
-            })
-            .whenComplete(() {
-              commentsFormNotifier.resetFormStatus();
-              FocusScope.of(context).unfocus();
-            });
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.paddingOf(context).bottom;
@@ -257,6 +195,68 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
         ),
       );
     }
+  }
+
+  Future<void> _handleSend() async {
+    final commentsFormNotifier = ref.read(commentsFormProvider.notifier);
+    final commentsFormState = ref.read(commentsFormProvider);
+    final signedInUser = ref.read(signedInUserProvider);
+    final loadComments = ref.read(loadCommentsProvider.notifier);
+
+    if (signedInUser == null || signedInUser.isEmpty) return;
+    commentsFormNotifier.onSumbit(
+      onSubmit: () {
+        final newComment = Comment(
+          text: commentsFormState.comment.value,
+          createdById:
+              commentsFormState.isAnonymous ? anonymousText : signedInUser.id,
+          createdByUsername:
+              commentsFormState.isAnonymous
+                  ? anonymousText
+                  : signedInUser.username,
+          postId: widget.post.id,
+        );
+
+        loadComments
+            .createComment(newComment)
+            .then((updatedComments) {
+              final loadPostsNotifier = ref.read(loadPostsProvider.notifier);
+              final loadUsersNotifier = ref.read(loadUserProvider.notifier);
+              final newCommentId = updatedComments.$2.id;
+              final updatedUser = signedInUser.copyWith(
+                comments: [...signedInUser.comments, newCommentId],
+              );
+
+              final updatedPost = widget.post.copyWith(
+                commentRefs: [...widget.post.commentRefs, newCommentId],
+              );
+              loadPostsNotifier.addComment(updatedPost.id, newCommentId);
+              loadPostsNotifier.updatePostLocally(updatedPost);
+
+              // Only update user with new comment if it is not an anonymous Comment
+              if (!commentsFormState.isAnonymous) {
+                loadUsersNotifier.updateUser(updatedUser);
+                ref
+                    .read(signedInUserProvider.notifier)
+                    .update((state) => updatedUser);
+              }
+              commentsFormNotifier.clearComment();
+              smallVibration();
+            })
+            .catchError((error) {
+              hardVibration();
+              showCustomSnackbar(
+                context,
+                'comments_screen_error_posting_text'.tr(),
+                backgroundColor: colorNotOkButton,
+              );
+            })
+            .whenComplete(() {
+              commentsFormNotifier.resetFormStatus();
+              FocusScope.of(context).unfocus();
+            });
+      },
+    );
   }
 
   Future<void> _deleteCommentAction(Comment comment) async {

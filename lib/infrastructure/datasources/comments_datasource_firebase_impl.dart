@@ -79,17 +79,23 @@ class CommentsDatasourceFirebaseImpl implements CommentsDatasource {
   @override
   Future<List<Comment>> getCommentsByCreatedById(String createdById) async {
     final querySnapshot =
-        await _commentsRef.where('created_by_id', isEqualTo: createdById).get();
+        await _commentsRef
+            .where('created_by_id', isEqualTo: createdById)
+            .orderBy('date_created', descending: true)
+            .get();
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
 
   /// Fetch all comments where `created_by_username` == [createdByUsername].
   @override
   Future<List<Comment>> getCommentsByCreatedByUsername(
-      String createdByUsername) async {
-    final querySnapshot = await _commentsRef
-        .where('created_by_username', isEqualTo: createdByUsername)
-        .get();
+    String createdByUsername,
+  ) async {
+    final querySnapshot =
+        await _commentsRef
+            .where('created_by_username', isEqualTo: createdByUsername)
+            .orderBy('date_created', descending: true)
+            .get();
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
 
@@ -97,7 +103,10 @@ class CommentsDatasourceFirebaseImpl implements CommentsDatasource {
   @override
   Future<List<Comment>> getCommentsByPostId(String postId) async {
     final querySnapshot =
-        await _commentsRef.where('post_id', isEqualTo: postId).get();
+        await _commentsRef
+            .where('post_id', isEqualTo: postId)
+            .orderBy('date_created', descending: true)
+            .get();
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
 
@@ -105,7 +114,10 @@ class CommentsDatasourceFirebaseImpl implements CommentsDatasource {
   @override
   Future<List<Comment>> getCommentsByPostedInCommunity(String postedIn) async {
     final querySnapshot =
-        await _commentsRef.where('posted_in', isEqualTo: postedIn).get();
+        await _commentsRef
+            .where('posted_in', isEqualTo: postedIn)
+            .orderBy('date_created', descending: true)
+            .get();
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
 }
