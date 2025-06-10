@@ -152,6 +152,11 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
                   itemCount: communityToUse.posts.length,
                   itemBuilder: (context, index) {
                     final post = communityToUse.posts[index];
+                    final currentUserId = signedInUser?.id;
+                    final currentUserReaction =
+                        (currentUserId != null)
+                            ? post.reactions[currentUserId]
+                            : null;
                     return ref
                         .watch(userFutureByIdProvider(post.createdById))
                         .when(
@@ -162,6 +167,7 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
                                         isLiked: false,
                                         author: user,
                                         post: post,
+                                        reaction: currentUserReaction,
                                         onCommunityTapped:
                                             () => _actionCommunityTap(
                                               ref,

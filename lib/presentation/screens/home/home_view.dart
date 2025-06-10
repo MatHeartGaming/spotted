@@ -97,6 +97,7 @@ class HomeViewState extends ConsumerState<HomeView>
                   await _loadFriendsPosts();
                 },
                 child: ListView.builder(
+                  padding: EdgeInsets.only(bottom: 100),
                   controller: scrollController,
                   itemCount: postsProvider.postedByFriends.length,
                   itemBuilder: (_, i) {
