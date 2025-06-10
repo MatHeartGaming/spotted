@@ -7,6 +7,7 @@ class UserMiniItem extends StatelessWidget {
   final String username;
   final bool isSelected;
   final VoidCallback? onTap;
+  final double width;
 
   const UserMiniItem({
     super.key,
@@ -14,6 +15,7 @@ class UserMiniItem extends StatelessWidget {
     required this.username,
     this.isSelected = false,
     this.onTap,
+    this.width = 150,
   });
 
   @override
@@ -24,7 +26,7 @@ class UserMiniItem extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: SizedBox(
-        width: 150, // fix the width so the overflow behavior is predictable
+        width: width,
         child: Stack(
           clipBehavior: Clip.none,
           children: [
@@ -35,7 +37,10 @@ class UserMiniItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 8,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [

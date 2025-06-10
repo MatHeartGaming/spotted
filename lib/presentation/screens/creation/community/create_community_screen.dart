@@ -55,7 +55,6 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
   @override
   Widget build(BuildContext context) {
     final communityFormState = ref.watch(createCommunityFormProvder);
-    final size = MediaQuery.sizeOf(context);
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         _refreshCommunityPage();

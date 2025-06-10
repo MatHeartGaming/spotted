@@ -31,15 +31,24 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
 
   Future<void> _initCommunityPosts() async {
     Future(() {
+      final communityToUse = ref.read(communityScreenCurrentCommunityProvider);
       ref
           .read(loadPostsProvider.notifier)
-          .loadPostsWithListRef(widget.community.postsRefs)
+          .loadPostsWithListRef(communityToUse.postsRefs)
           .then((posts) {
             ref
                 .read(communityScreenCurrentCommunityProvider.notifier)
-                .update((state) => widget.community.copyWith(posts: posts));
+                .update((state) => communityToUse.copyWith(posts: posts));
           });
     });
+  }
+
+  @override
+  void didUpdateWidget(CommunityScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget != widget) {
+      _initCommunityPosts();
+    }
   }
 
   @override
