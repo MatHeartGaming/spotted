@@ -8,6 +8,7 @@ export 'package:spotted/presentation/providers/users/load_signed_in_friends_prov
 // Communitiy
 export 'package:spotted/presentation/providers/communities/community_repository_provider.dart';
 export 'package:spotted/presentation/providers/communities/load_communities_provider.dart';
+export 'package:spotted/presentation/providers/communities/community_future_providers.dart';
 
 // Posts
 export 'package:spotted/presentation/providers/posts/posts_repository_provider.dart';

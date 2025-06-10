@@ -184,10 +184,10 @@ class HomeViewState extends ConsumerState<HomeView>
     logger.i('Community: $postedIn');
     if (postedIn == null) return;
     final loadCommunity = ref.read(loadCommunitiesProvider.notifier);
-    loadCommunity.loadUsersCommunityByTitle(postedIn).then((communities) {
-      if (communities == null || communities.isEmpty) return;
-      logger.i('Community: ${communities.first}');
-      pushToCommunityScreen(context, community: communities.first);
+    loadCommunity.loadUsersCommunityById(postedIn).then((community) {
+      if (community == null || community.isEmpty) return;
+      logger.i('Community: $community');
+      pushToCommunityScreen(context, community: community);
     });
   }
 }
