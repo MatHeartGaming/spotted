@@ -30,6 +30,7 @@ export 'package:spotted/presentation/widgets/shared/post/post_widget.dart';
 export 'package:spotted/presentation/widgets/shared/reactions/reactionable_post_widget.dart';
 export 'package:spotted/presentation/widgets/shared/reactions/reaction_row_widget.dart';
 export 'package:spotted/presentation/widgets/shared/post/post_list_tile.dart';
+export 'package:spotted/presentation/widgets/shared/post/posts_list_view.dart';
 
 // Shared - User
 export 'package:spotted/presentation/widgets/shared/user/user_list_tile.dart';

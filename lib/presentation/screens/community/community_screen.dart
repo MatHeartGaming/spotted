@@ -157,77 +157,34 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
               },
               body: RefreshIndicator(
                 onRefresh: () => _initCommunityPosts(),
-                child: ListView.builder(
-                  itemCount: communityToUse.posts.length,
-                  itemBuilder: (context, index) {
-                    final post = communityToUse.posts[index];
-                    final currentUserId = signedInUser?.id;
-                    final currentUserReaction =
-                        (currentUserId != null)
-                            ? post.reactions[currentUserId]
-                            : null;
-                    return ref
-                        .watch(userFutureByIdProvider(post.createdById))
-                        .when(
-                          data:
-                              (user) =>
-                                  user != null
-                                      ? ReactionablePostWidget(
-                                        isLiked: false,
-                                        author: user,
-                                        post: post,
-                                        reaction: currentUserReaction,
-                                        onCommunityTapped:
-                                            () => _actionCommunityTap(
-                                              ref,
-                                              post.postedIn,
-                                            ),
-                                        onUserInfoTapped:
-                                            () => pushToProfileScreen(
-                                              context,
-                                              user: user,
-                                            ),
-                                        onReaction: (reaction) async {
-                                          await updatePostActionWithReaction(
-                                            post,
-                                            reaction,
-                                            ref,
-                                          ).then((value) {
-                                            _initCommunityPosts();
-                                          });
-                                        },
-                                        onCommentTapped: () {
-                                          showCustomBottomSheet(
-                                            context,
-                                            child: CommentsScreen(
-                                              post: post,
-                                              comments: post.comments,
-                                              onPostComment: (
-                                                postId,
-                                                commentText,
-                                              ) async {
-                                                logger.i(
-                                                  'Comment on: $postId - $commentText',
-                                                );
-                                              },
-                                            ),
-                                          );
-                                        },
-                                        onContextMenuTap:
-                                            (menuItem) =>
-                                                handleContextMenuPostItemAction(
-                                                  ref,
-                                                  menuItem,
-                                                  post,
-                                                ),
-                                      )
-                                      : Text('User not found'),
-
-                          error:
-                              (error, stackTrace) =>
-                                  Text('Error while loading user: $error'),
-                          loading: () => LoadingDefaultWidget(),
-                        );
+                child: PostsListView(
+                  posts: communityToUse.posts,
+                  onCommunityTap: (post) => {},
+                  onProfileTap:
+                      (user) => pushToProfileScreen(context, user: user),
+                  onReaction: (post, reaction) async {
+                    await updatePostActionWithReaction(
+                      post,
+                      reaction,
+                      ref,
+                    ).then((value) {
+                      _initCommunityPosts();
+                    });
+                  },
+                  onContextMenu:
+                      (post, item) =>
+                          handleContextMenuPostItemAction(ref, item, post),
+                  onComment: (post) {
+                    showCustomBottomSheet(
+                      context,
+                      child: CommentsScreen(
+                        post: post,
+                        comments: post.comments,
+                        onPostComment: (postId, commentText) async {
+                          logger.i('Comment on: $postId - $commentText');
+                        },
+                      ),
+                    );
                   },
                 ),
               ),
@@ -254,17 +211,6 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
         ),
       ),
     );
-  }
-
-  Future<void> _actionCommunityTap(WidgetRef ref, String? postedIn) async {
-    logger.i('Community: $postedIn');
-    if (postedIn == null) return;
-    final loadCommunity = ref.read(loadCommunitiesProvider.notifier);
-    loadCommunity.loadUsersCommunityByTitle(postedIn).then((communities) {
-      if (communities == null || communities.isEmpty) return;
-      logger.i('Community: ${communities.first}');
-      pushToCommunityScreen(ref.context, community: communities.first);
-    });
   }
 
   void _openCreatePostSheet() {

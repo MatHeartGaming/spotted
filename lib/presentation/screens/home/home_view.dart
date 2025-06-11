@@ -96,76 +96,30 @@ class HomeViewState extends ConsumerState<HomeView>
                 onRefresh: () async {
                   await _loadFriendsPosts();
                 },
-                child: ListView.builder(
-                  padding: EdgeInsets.only(bottom: 100),
-                  controller: scrollController,
-                  itemCount: postsProvider.postedByFriends.length,
-                  itemBuilder: (_, i) {
-                    final post = postsProvider.postedByFriends[i];
-                    final currentUserId = signedInUser?.id;
-                    final currentUserReaction =
-                        (currentUserId != null)
-                            ? post.reactions[currentUserId]
-                            : null;
-
-                    return ref
-                        .watch(userFutureByIdProvider(post.createdById))
-                        .when(
-                          data:
-                              (user) =>
-                                  user != null
-                                      ? ReactionablePostWidget(
-                                        isLiked: false,
-                                        post: post,
-                                        author: user,
-                                        reaction: currentUserReaction,
-                                        onCommunityTapped:
-                                            () => _actionCommunityTap(
-                                              post.postedIn,
-                                            ),
-                                        onUserInfoTapped:
-                                            () => pushToProfileScreen(
-                                              context,
-                                              user: user,
-                                            ),
-                                        onReaction:
-                                            (reaction) =>
-                                                updatePostActionWithReaction(
-                                                  post,
-                                                  reaction,
-                                                  ref,
-                                                ),
-                                        onContextMenuTap:
-                                            (menuItem) =>
-                                                handleContextMenuPostItemAction(
-                                                  ref,
-                                                  menuItem,
-                                                  post,
-                                                ),
-                                        onCommentTapped: () {
-                                          showCustomBottomSheet(
-                                            context,
-                                            child: CommentsScreen(
-                                              post: post,
-                                              comments: post.comments,
-                                              onPostComment: (
-                                                postId,
-                                                commentText,
-                                              ) async {
-                                                logger.i(
-                                                  'Comment on: $postId - $commentText',
-                                                );
-                                              },
-                                            ),
-                                          );
-                                        },
-                                      )
-                                      : const Text('User not found'),
-                          error:
-                              (error, stackTrace) =>
-                                  Text('Error while loading user: $error'),
-                          loading: () => const LoadingDefaultWidget(),
-                        );
+                child: // inside your build()
+                    PostsListView(
+                  posts: postsProvider.postedByFriends,
+                  scrollController: scrollController,
+                  onCommunityTap: (post) => _actionCommunityTap(post.postedIn),
+                  onProfileTap:
+                      (user) => pushToProfileScreen(context, user: user),
+                  onReaction:
+                      (post, reaction) =>
+                          updatePostActionWithReaction(post, reaction, ref),
+                  onContextMenu:
+                      (post, item) =>
+                          handleContextMenuPostItemAction(ref, item, post),
+                  onComment: (post) {
+                    showCustomBottomSheet(
+                      context,
+                      child: CommentsScreen(
+                        post: post,
+                        comments: post.comments,
+                        onPostComment: (postId, commentText) async {
+                          logger.i('Comment on: $postId - $commentText');
+                        },
+                      ),
+                    );
                   },
                 ),
               ),

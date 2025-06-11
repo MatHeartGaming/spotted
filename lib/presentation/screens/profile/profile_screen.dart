@@ -199,51 +199,33 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
               },
               body: RefreshIndicator(
                 onRefresh: () => _initUserInfos(),
-                child: ListView.builder(
-                  itemCount: usersPost.length,
-                  itemBuilder: (context, index) {
-                    final post = usersPost[index];
-                    final currentUserId = signedInUser?.id;
-                    final currentUserReaction =
-                        (currentUserId != null)
-                            ? post.reactions[currentUserId]
-                            : null;
-                    return ReactionablePostWidget(
-                      isLiked: false,
-                      author: widget.user,
-                      reaction: currentUserReaction,
-                      post: post,
-                      onCommunityTapped:
-                          () => _actionCommunityTap(ref, post.postedIn),
-                      onUserInfoTapped:
-                          () => pushToProfileScreen(context, user: widget.user),
-                      onReaction: (reaction) async {
-                        await updatePostActionWithReaction(
-                          post,
-                          reaction,
-                          ref,
-                        ).then((value) {
-                          _initUserInfos();
-                        });
-                      },
-                      onCommentTapped: () {
-                        showCustomBottomSheet(
-                          context,
-                          child: CommentsScreen(
-                            post: post,
-                            comments: post.comments,
-                            onPostComment: (postId, commentText) async {
-                              logger.i('Comment on: $postId - $commentText');
-                            },
-                          ),
-                        );
-                      },
-                      onContextMenuTap:
-                          (menuItem) => handleContextMenuPostItemAction(
-                            ref,
-                            menuItem,
-                            post,
-                          ),
+                child: PostsListView(
+                  posts: usersPost,
+                  onCommunityTap: (post) => _actionCommunityTap(post.postedIn),
+                  onProfileTap:
+                      (user) => pushToProfileScreen(context, user: user),
+                  onReaction: (post, reaction) async {
+                    await updatePostActionWithReaction(
+                      post,
+                      reaction,
+                      ref,
+                    ).then((value) {
+                      _initUserInfos();
+                    });
+                  },
+                  onContextMenu:
+                      (post, item) =>
+                          handleContextMenuPostItemAction(ref, item, post),
+                  onComment: (post) {
+                    showCustomBottomSheet(
+                      context,
+                      child: CommentsScreen(
+                        post: post,
+                        comments: post.comments,
+                        onPostComment: (postId, commentText) async {
+                          logger.i('Comment on: $postId - $commentText');
+                        },
+                      ),
                     );
                   },
                 ),
@@ -273,14 +255,14 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
     );
   }
 
-  Future<void> _actionCommunityTap(WidgetRef ref, String? postedIn) async {
+  Future<void> _actionCommunityTap(String? postedIn) async {
     logger.i('Community: $postedIn');
     if (postedIn == null) return;
     final loadCommunity = ref.read(loadCommunitiesProvider.notifier);
-    loadCommunity.loadUsersCommunityByTitle(postedIn).then((communities) {
-      if (communities == null || communities.isEmpty) return;
-      logger.i('Community: ${communities.first}');
-      pushToCommunityScreen(ref.context, community: communities.first);
+    loadCommunity.loadUsersCommunityById(postedIn).then((community) {
+      if (community == null || community.isEmpty) return;
+      logger.i('Community: $community');
+      pushToCommunityScreen(ref.context, community: community);
     });
   }
 
