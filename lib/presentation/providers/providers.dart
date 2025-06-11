@@ -68,3 +68,6 @@ export 'package:spotted/presentation/providers/features/assigned_features_provid
 export 'package:spotted/presentation/providers/interests/interests_repository_provider.dart';
 export 'package:spotted/presentation/providers/interests/load_interests_provider.dart';
 export 'package:spotted/presentation/providers/interests/assigned_categories_provider.dart';
+
+// User Notifications
+export 'package:spotted/presentation/providers/user_notifications/user_notification_repository_provider.dart';

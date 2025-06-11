@@ -6,6 +6,7 @@ export 'package:spotted/domain/datasources/auth/firebase_auth_password_datasourc
 export 'package:spotted/domain/datasources/appconfigs_datasource.dart';
 export 'package:spotted/domain/datasources/feature_datasource.dart';
 export 'package:spotted/domain/datasources/interest_datasource.dart';
+export 'package:spotted/domain/datasources/user_notification_datasource.dart';
 export 'package:spotted/domain/datasources/services/load_images_datasource.dart';
 
 // Exceptions
