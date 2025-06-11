@@ -108,6 +108,7 @@ class CreatePostsScreenState extends ConsumerState<CreatePostsScreen> {
                         (index) => showImagesGalleryBytes(
                           context,
                           formState.imagesBytes ?? [],
+                          initialIndex: index,
                         ),
                   ),
                 ),

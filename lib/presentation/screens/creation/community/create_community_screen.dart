@@ -142,6 +142,7 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                         (index) => showImagesGalleryBytes(
                           context,
                           communityFormState.imagesBytes ?? [],
+                          initialIndex: index,
                         ),
                   ),
 
