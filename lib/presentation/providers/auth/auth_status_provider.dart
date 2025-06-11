@@ -5,11 +5,11 @@ import 'package:spotted/domain/repositories/repositories.dart';
 import 'package:spotted/infrastructure/errors/login_signup_messages.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 
-final authStatusProvider =
-    StateNotifierProvider<AuthStateNotifier, AuthState>((ref) {
+final authStatusProvider = StateNotifierProvider<AuthStateNotifier, AuthState>((
+  ref,
+) {
   final authPasswordProvider = ref.watch(authPasswordRepositoryProvider);
-  
-  
+
   return AuthStateNotifier(
     authPasswordRepository: authPasswordProvider,
     //authAppleRepository: authAppleProvider,
@@ -20,9 +20,8 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
   final AuthRepository authPasswordRepository;
   final _logger = Logger();
 
-  AuthStateNotifier({
-    required this.authPasswordRepository,
-  }) : super(AuthState()) {
+  AuthStateNotifier({required this.authPasswordRepository})
+    : super(AuthState()) {
     checkAuthStatus();
   }
 
@@ -44,11 +43,15 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(authStatus: AuthStatus.authenticated);
   }
 
-  Future<UserCredential?> loginUsingPassword(String email, String password,
-      {Function? onInvalidCredentials,
-      Function? onTooManyAttempts,
-      Function? onUnkownError}) async {
-    state = state.copyWith(authStatus: AuthStatus.checking);
+  Future<UserCredential?> loginUsingPassword(
+    String email,
+    String password, {
+    Function? onInvalidCredentials,
+    Function? onTooManyAttempts,
+    Function? onUnkownError,
+    Future<bool> Function(UserCredential?)? onAuthSuccess,
+  }) async {
+    //state = state.copyWith(authStatus: AuthStatus.checking);
     final userCredential = await authPasswordRepository.loginIntoAccount(
       email,
       password,
@@ -57,32 +60,44 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     if (message != null && message != LoginSignupMessages.success) {
       switch (message) {
         case LoginSignupMessages.invalidCredentials:
-          if (onInvalidCredentials != null) onInvalidCredentials();
           state = state.copyWith(authStatus: AuthStatus.notAuthenticated);
+          if (onInvalidCredentials != null) onInvalidCredentials();
           return null;
         case LoginSignupMessages.unkownError:
-          if (onUnkownError != null) onUnkownError();
           state = state.copyWith(authStatus: AuthStatus.notAuthenticated);
+          if (onUnkownError != null) onUnkownError();
           return null;
         case LoginSignupMessages.tooManyAttempts:
-          if (onTooManyAttempts != null) onTooManyAttempts();
           state = state.copyWith(authStatus: AuthStatus.notAuthenticated);
+          if (onTooManyAttempts != null) onTooManyAttempts();
           return null;
         default:
           return null;
       }
     }
     if (userCredential.$2 != null) {
-      state = state.copyWith(authStatus: AuthStatus.authenticated);
+      bool userCreationResult = false;
+      if (onAuthSuccess != null) {
+        userCreationResult = await onAuthSuccess(userCredential.$2);
+      }
+      if (userCreationResult) {
+        state = state.copyWith(authStatus: AuthStatus.authenticated);
+      } else {
+        state = state.copyWith(authStatus: AuthStatus.notAuthenticated);
+      }
     } else {
       state = state.copyWith(authStatus: AuthStatus.notAuthenticated);
     }
     return userCredential.$2;
   }
 
-  Future<UserCredential?> signupUsingPassword(String email, String password,
-      {Function? onEmailAlreadyExists}) async {
-    state = state.copyWith(authStatus: AuthStatus.checking);
+  Future<UserCredential?> signupUsingPassword(
+    String email,
+    String password, {
+    Function? onEmailAlreadyExists,
+    Future<bool> Function(UserCredential?)? onAuthSuccess,
+  }) async {
+    //state = state.copyWith(authStatus: AuthStatus.checking);
     final userCredential = await authPasswordRepository.createAccount(
       email,
       password,
@@ -91,15 +106,24 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     if (message != null && message != LoginSignupMessages.success) {
       switch (message) {
         case LoginSignupMessages.emailAlreadyExists:
-          if (onEmailAlreadyExists != null) onEmailAlreadyExists();
           state = state.copyWith(authStatus: AuthStatus.notAuthenticated);
+          if (onEmailAlreadyExists != null) onEmailAlreadyExists();
           return null;
         default:
           return null;
       }
     }
     if (userCredential.$2 != null) {
-      state = state.copyWith(authStatus: AuthStatus.authenticated);
+      bool userCreationResult = false;
+      if (onAuthSuccess != null) {
+        userCreationResult = await onAuthSuccess(userCredential.$2);
+      }
+      if (userCreationResult) {
+        state = state.copyWith(authStatus: AuthStatus.authenticated);
+      } else {
+        // The User could not be created on DB too
+        authPasswordRepository.deleteUser();
+      }
     } else {
       state = state.copyWith(authStatus: AuthStatus.notAuthenticated);
     }
@@ -108,8 +132,10 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
 
   Future<void> logout() async {
     state = state.copyWith(authStatus: AuthStatus.checking);
-    await authPasswordRepository.logout().then((value) =>
-        state = state.copyWith(authStatus: AuthStatus.notAuthenticated));
+    await authPasswordRepository.logout().then(
+      (value) =>
+          state = state.copyWith(authStatus: AuthStatus.notAuthenticated),
+    );
   }
 }
 
@@ -121,17 +147,19 @@ class AuthState {
   final String errorMessage;
   static bool? emailVerified;
 
-  AuthState(
-      {this.authStatus = AuthStatus.checking,
-      //this.userCredential,
-      this.errorMessage = ""});
+  AuthState({
+    this.authStatus = AuthStatus.checking,
+    //this.userCredential,
+    this.errorMessage = "",
+  });
 
-  AuthState copyWith(
-          {AuthStatus? authStatus,
-          //UserCredential? userCredential,
-          String? errorMessage}) =>
-      AuthState(
-          authStatus: authStatus ?? this.authStatus,
-          //userCredential: userCredential ?? this.userCredential,
-          errorMessage: errorMessage ?? this.errorMessage);
+  AuthState copyWith({
+    AuthStatus? authStatus,
+    //UserCredential? userCredential,
+    String? errorMessage,
+  }) => AuthState(
+    authStatus: authStatus ?? this.authStatus,
+    //userCredential: userCredential ?? this.userCredential,
+    errorMessage: errorMessage ?? this.errorMessage,
+  );
 }
