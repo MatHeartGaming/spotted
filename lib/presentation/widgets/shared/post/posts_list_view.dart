@@ -21,6 +21,7 @@ class PostsListView extends ConsumerWidget {
   final ReactionCallback onReaction;
   final ContextMenuCallback onContextMenu;
   final CommentTapCallback onComment;
+  final double bottomListViewPadding;
 
   const PostsListView({
     super.key,
@@ -31,6 +32,7 @@ class PostsListView extends ConsumerWidget {
     required this.onReaction,
     required this.onContextMenu,
     required this.onComment,
+    this.bottomListViewPadding = 100,
   });
 
   @override
@@ -39,16 +41,12 @@ class PostsListView extends ConsumerWidget {
 
     return ListView.builder(
       controller: scrollController,
-      padding: scrollController != null 
-          ? const EdgeInsets.only(bottom: 100) 
-          : null,
+      padding: EdgeInsets.only(bottom: bottomListViewPadding),
       itemCount: posts.length,
       itemBuilder: (_, i) {
         final post = posts[i];
         final currUid = signedInUser?.id;
-        final currReaction = currUid == null
-            ? null
-            : post.reactions[currUid];
+        final currReaction = currUid == null ? null : post.reactions[currUid];
 
         return ref
             .watch(userFutureByIdProvider(post.createdById))

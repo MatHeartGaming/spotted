@@ -81,6 +81,11 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
         }
       },
       child: Scaffold(
+        floatingActionButton: AddFab(
+          onTap: () => _showAddPostOrCommunitySheet(),
+          heroTag: 1,
+          tooltip: 'add_fab_home_tooltip_text'.tr(),
+        ),
         body: Stack(
           children: [
             NestedScrollView(
@@ -200,6 +205,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
               body: RefreshIndicator(
                 onRefresh: () => _initUserInfos(),
                 child: PostsListView(
+                  bottomListViewPadding: 110,
                   posts: usersPost,
                   onCommunityTap: (post) => _actionCommunityTap(post.postedIn),
                   onProfileTap:
@@ -309,5 +315,9 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
               .update((state) => updatedUser);
           _hasChanged = true;
         });
+  }
+
+  void _showAddPostOrCommunitySheet() {
+    showNavigatableSheet(context, child: CreatePostOrCommunityScreen());
   }
 }
