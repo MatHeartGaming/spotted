@@ -54,6 +54,10 @@ class CustomBottomNavigationBar extends ConsumerWidget {
           icon: const Icon(FontAwesomeIcons.solidMessage),
           text: 'app_bar_chats_btn_tooltip'.tr(),
         ),
+        Tab(
+          icon: const Icon(Icons.notifications, size: 35,),
+          text: 'app_bar_notifications_btn_tooltip'.tr(),
+        ),
       ],
     );
   }

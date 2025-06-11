@@ -56,6 +56,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
+        name: NotificationScreen.name,
+        path: notificationsPath,
+        builder: (context, state) => const NotificationScreen(),
+      ),
+
+      GoRoute(
         name: CreateCommunityScreen.name,
         path: createCommunityPath,
         builder: (context, state) {
@@ -215,6 +221,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             homeView: HomeView(),
             exploreView: ExploreScreen(),
             messagesView: ChatsScreen(),
+            notificationsView: NotificationScreen(),
           );
         },
       ),

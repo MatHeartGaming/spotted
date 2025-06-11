@@ -10,6 +10,7 @@
 
     "app_bar_search_btn_tooltip": "Cerca Utenti, Post, Comunità",
     "app_bar_chats_btn_tooltip": "Messaggi",
+    "app_bar_notifications_btn_tooltip": "Notifiche",
 
     "nav_bar_home_item": "Inizio",
     "nav_bar_explore_item": "Esplora",

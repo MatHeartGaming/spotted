@@ -65,6 +65,7 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
       onPopInvokedWithResult: (didPop, result) {},
       child: Scaffold(
         floatingActionButton: FloatingActionButton.extended(
+          heroTag: 1,
           onPressed: () => _openCreatePostSheet(),
           label: Row(
             mainAxisSize: MainAxisSize.min,

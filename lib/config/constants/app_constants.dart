@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// ignore: depend_on_referenced_packages
 import 'package:logger/logger.dart';
 
 // Paths
@@ -12,6 +13,7 @@ const String loginPath = '/login-signup';
 const String addProfileInfoPath = '/add-profile-info';
 const String settingsListPath = '/settings_list_screen';
 const String profilePath = '/profile_screen';
+const String notificationsPath = '/notifications_screen';
 const String communityPath = '/community_screen';
 const String chatPath = '/chat_screen';
 const String chatsPath = '/chats_screen';

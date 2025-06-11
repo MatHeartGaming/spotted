@@ -9,6 +9,7 @@ class HomeScreen extends ConsumerStatefulWidget {
   final Widget homeView;
   final Widget exploreView;
   final Widget messagesView;
+  final Widget notificationsView;
 
   static const name = 'HomeScreen';
 
@@ -18,6 +19,7 @@ class HomeScreen extends ConsumerStatefulWidget {
     required this.homeView,
     required this.exploreView,
     required this.messagesView,
+    required this.notificationsView,
   });
 
   @override
@@ -36,7 +38,7 @@ class HomeScreenState extends ConsumerState<HomeScreen>
 
     // TabController for two tabs
     _tabController = TabController(
-      length: 3,
+      length: 4,
       vsync: this,
       initialIndex: widget.pageIndex,
     );
@@ -70,6 +72,7 @@ class HomeScreenState extends ConsumerState<HomeScreen>
       widget.homeView,
       widget.exploreView,
       widget.messagesView,
+      widget.notificationsView,
     ];
     final isVisible = ref.watch(tabBarVisibilityProvider);
 

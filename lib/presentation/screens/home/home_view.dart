@@ -95,8 +95,7 @@ class HomeViewState extends ConsumerState<HomeView>
                 onRefresh: () async {
                   await _loadFriendsPosts();
                 },
-                child: // inside your build()
-                    PostsListView(
+                child: PostsListView(
                   posts: postsProvider.postedByFriends,
                   scrollController: scrollController,
                   onCommunityTap: (post) => _actionCommunityTap(post.postedIn),

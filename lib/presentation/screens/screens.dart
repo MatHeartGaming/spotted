@@ -53,3 +53,6 @@ export 'package:spotted/presentation/screens/login/verify_email_screen.dart';
 
 // Maintenance
 export 'package:spotted/presentation/screens/maintenance_or_no_connection/maintenance_no_connection_screen.dart';
+
+// Notifications
+export 'package:spotted/presentation/screens/notifications/notification_screen.dart';
