@@ -46,15 +46,16 @@ class PostWidget extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             community.maybeWhen(
-              data: (comm) => GestureDetector(
-                onTap: onCommunityTapped,
-                child: Text(
-                  comm?.title ?? '',
-                  style: texts.labelLarge?.copyWith(
-                    color: colors.onPrimaryContainer,
+              data:
+                  (comm) => GestureDetector(
+                    onTap: onCommunityTapped,
+                    child: Text(
+                      comm?.title ?? '',
+                      style: texts.labelLarge?.copyWith(
+                        color: colors.onPrimaryContainer,
+                      ),
+                    ),
                   ),
-                ),
-              ),
               orElse: () => SizedBox.shrink(),
             ),
             SizedBox(height: 8),
@@ -77,6 +78,24 @@ class PostWidget extends ConsumerWidget {
             // Content
             const SizedBox(height: 8),
             Text(post.content, style: texts.bodySmall),
+
+            /*if (post.pictureUrls.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              _PostImage(
+                urlImages: post.pictureUrls,
+                onImageTap: () => showImagesUrl(context, post.pictureUrls),
+              ),
+            ],*/
+            if (post.pictureUrls.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              ImagesPageViewer(
+                urlImages: post.pictureUrls,
+                onImageTap: (index) {
+                  // open full-screen viewer at the tapped index:
+                  showImagesUrl(context, post.pictureUrls, initialIndex: index);
+                },
+              ),
+            ],
 
             Visibility(
               visible:

@@ -17,10 +17,14 @@ void onImageTapped(BuildContext context, String imageUrl) {
   );
 }
 
-void showImagesGalleryBytes(BuildContext context, List<Uint8List> images) {
+void showImagesGalleryBytes(
+  BuildContext context,
+  List<Uint8List> images, {
+  int initialIndex = 0,
+}) {
   MultiImageProvider multiImageProvider = MultiImageProvider([
     ...images.map((e) => MemoryImage(e)),
-  ]);
+  ], initialIndex: initialIndex);
 
   showImageViewerPager(
     context,
@@ -37,14 +41,21 @@ void showImagesGalleryBytes(BuildContext context, List<Uint8List> images) {
   );
 }
 
-void showImagesUrl(BuildContext context, List<String> images) {
+void showImagesUrl(
+  BuildContext context,
+  List<String> images, {
+  int initialIndex = 0,
+}) {
   MultiImageProvider multiImageProvider = MultiImageProvider([
     ...images.map((e) => NetworkImage(e)),
-  ]);
+  ], initialIndex: initialIndex);
 
   showImageViewerPager(
     context,
     multiImageProvider,
+    useSafeArea: true,
+    swipeDismissible: true,
+    doubleTapZoomable: true,
     onPageChanged: (page) {
       logger.i("page changed to $page");
     },

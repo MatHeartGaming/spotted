@@ -46,7 +46,6 @@ class HomeViewState extends ConsumerState<HomeView>
 
   @override
   Widget build(BuildContext context) {
-    final signedInUser = ref.watch(signedInUserProvider);
     final postsProvider = ref.watch(loadPostsProvider);
     final hideAppbar = ref.watch(appBarVisibilityProvider);
 
