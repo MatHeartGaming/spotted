@@ -131,12 +131,14 @@
     "home_search_screen_search_app_bar_title": "Cerca",
     "home_search_screen_search_bar_placeholder": "Cerca Post, Utenti, Comunità",
     "search_results_users_header": "Risultati per Utente",
-    "search_results_posts_header": "Risultati per Post",
+    "search_results_posts_header": "Risultati per Post (Vedi Tutti)",
     "search_results_communities_header": "Risultati per Comunità",
 
     "friends_screen_title": "Persone che segui",
     "friends_screen_confirm_delete_friend_dialog_title": "Attenzione",
     "friends_screen_confirm_delete_friend_dialog_message": "Stai per smettere di seguire {}. Sei sicuro?",
+
+    "post_list_screen_app_bar_title": "Posts per {}",
 
     "comments_screen_app_bar_title": "Commenti su {}",
     "comments_screen_write_comment_placeholder_text": "Scrivi un commento...",

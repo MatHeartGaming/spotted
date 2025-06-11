@@ -207,7 +207,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                 child: PostsListView(
                   bottomListViewPadding: 110,
                   posts: usersPost,
-                  onCommunityTap: (post) => _actionCommunityTap(post.postedIn),
+                  onCommunityTap: (post) => actionCommunityTap(ref, post.postedIn),
                   onProfileTap:
                       (user) => pushToProfileScreen(context, user: user),
                   onReaction: (post, reaction) async {
@@ -259,17 +259,6 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
         ),
       ),
     );
-  }
-
-  Future<void> _actionCommunityTap(String? postedIn) async {
-    logger.i('Community: $postedIn');
-    if (postedIn == null) return;
-    final loadCommunity = ref.read(loadCommunitiesProvider.notifier);
-    loadCommunity.loadUsersCommunityById(postedIn).then((community) {
-      if (community == null || community.isEmpty) return;
-      logger.i('Community: $community');
-      pushToCommunityScreen(ref.context, community: community);
-    });
   }
 
   void _onFollowTapped() {

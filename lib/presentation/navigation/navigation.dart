@@ -1,8 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotted/config/config.dart';
-import 'package:spotted/domain/models/community.dart';
-import 'package:spotted/domain/models/user.dart';
+import 'package:spotted/domain/models/models.dart';
 
 void pushToChatsScreen(BuildContext context) {
   if (!context.mounted) return;
@@ -64,4 +63,14 @@ void pushToCommunityScreen(
   if (!context.mounted) return;
   Map<String, dynamic> mapExtras = {'community': community, 'title': title};
   context.push('$communityPath/$communityId', extra: mapExtras);
+}
+
+void pushToPostListScreen(
+  BuildContext context, {
+  required List<Post> postList,
+  String? searched,
+}) {
+  if (!context.mounted) return;
+  Map<String, dynamic> mapExtras = {'post_list': postList};
+  context.push('$postListPath/${searched ?? ''}', extra: mapExtras);
 }

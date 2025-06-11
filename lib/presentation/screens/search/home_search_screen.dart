@@ -203,8 +203,27 @@ class _HomeSearchScreenState extends ConsumerState<HomeSearchScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SectionHeader(textKey: 'search_results_posts_header'.tr()),
-        ...posts.map((p) => PostListTile(post: p, onTap: () => {})),
+        GestureDetector(
+          onTap: () {
+            pushToPostListScreen(
+              context,
+              postList: posts,
+              searched: _searchQuery.trim(),
+            );
+          },
+          child: _SectionHeader(textKey: 'search_results_posts_header'.tr()),
+        ),
+        ...posts.map(
+          (p) => PostListTile(
+            post: p,
+            onTap:
+                () => pushToPostListScreen(
+                  context,
+                  postList: [p],
+                  searched: p.title,
+                ),
+          ),
+        ),
         const Divider(thickness: 1),
       ],
     );

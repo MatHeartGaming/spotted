@@ -98,7 +98,7 @@ class HomeViewState extends ConsumerState<HomeView>
                 child: PostsListView(
                   posts: postsProvider.postedByFriends,
                   scrollController: scrollController,
-                  onCommunityTap: (post) => _actionCommunityTap(post.postedIn),
+                  onCommunityTap: (post) => actionCommunityTap(ref, post.postedIn),
                   onProfileTap:
                       (user) => pushToProfileScreen(context, user: user),
                   onReaction:
@@ -130,16 +130,5 @@ class HomeViewState extends ConsumerState<HomeView>
 
   void _showAddPostOrCommunitySheet() {
     showNavigatableSheet(context, child: CreatePostOrCommunityScreen());
-  }
-
-  Future<void> _actionCommunityTap(String? postedIn) async {
-    logger.i('Community: $postedIn');
-    if (postedIn == null) return;
-    final loadCommunity = ref.read(loadCommunitiesProvider.notifier);
-    loadCommunity.loadUsersCommunityById(postedIn).then((community) {
-      if (community == null || community.isEmpty) return;
-      logger.i('Community: $community');
-      pushToCommunityScreen(context, community: community);
-    });
   }
 }

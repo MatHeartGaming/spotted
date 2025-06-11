@@ -156,6 +156,25 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
+        name: PostListScreen.name,
+        path: '$postListPath/:searched',
+        builder: (context, state) {
+          Map<String, dynamic>? mapExtras =
+              state.extra as Map<String, dynamic>?;
+          List<Post> postList = mapExtras?['post_list'] ?? [];
+          String? searched =
+              state.pathParameters.containsKey('searched')
+                  ? state.pathParameters['searched'].toString()
+                  : null;
+
+          return PostListScreen(
+            postList: postList,
+            searched: searched,
+          );
+        },
+      ),
+
+      GoRoute(
         name: MaintenanceNoConnectionScreen.name,
         path: '/maintenance/:issue',
         builder: (context, state) {
