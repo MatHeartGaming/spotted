@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:spotted/config/helpers/number_transormers.dart';
 
 class ReactionRowWidget extends StatelessWidget {
   final String? reaction; // e.g. "👍" or whatever emoji
@@ -45,13 +46,18 @@ class ReactionRowWidget extends StatelessWidget {
       );
     }
 
+    final int commentsIntNumber =
+        (commentNumber == null ? 0 : int.tryParse(commentNumber!)) ?? 0;
+    final int reactionsIntNumber =
+        (reactionNumber == null ? 0 : int.tryParse(reactionNumber!)) ?? 0;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         // Like button (or reaction emoji)
         buildButtonWithBadge(
           onPressed: onLike,
-          badge: reactionNumber,
+          badge: formatWithSuffix(reactionsIntNumber),
           icon:
               reaction != null && reaction!.isNotEmpty
                   ? SlideInDown(
@@ -67,7 +73,7 @@ class ReactionRowWidget extends StatelessWidget {
         // Comment button
         buildButtonWithBadge(
           onPressed: onComment,
-          badge: commentNumber,
+          badge: formatWithSuffix(commentsIntNumber),
           icon: const Icon(FontAwesomeIcons.comment, size: 20),
         ),
 

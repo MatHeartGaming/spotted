@@ -172,6 +172,7 @@ class LoginScreen extends ConsumerWidget {
           loginFormState.email.value,
           loginFormState.password.value,
           onInvalidCredentials: () {
+            mediumVibration();
             showCustomSnackbar(
               ref.context,
               'login_screen_email_invalid_credentials_snackbar'.tr(),
@@ -179,6 +180,7 @@ class LoginScreen extends ConsumerWidget {
             );
           },
           onUnkownError: () {
+            hardVibration();
             showCustomSnackbar(
               ref.context,
               'login_screen_email_unexpected_error_snackbar'.tr(),
@@ -186,6 +188,7 @@ class LoginScreen extends ConsumerWidget {
             );
           },
           onTooManyAttempts: () {
+            hardVibration();
             showCustomSnackbar(
               ref.context,
               'login_screen_email_too_many_attempts_snackbar'.tr(),
@@ -208,6 +211,7 @@ class LoginScreen extends ConsumerWidget {
                 .getUserByEmail(loginFormState.email.value)
                 .then((user) {
                   if (user != null) {
+                    smallVibration();
                     signedInUserNotifier.update((state) => user);
                   }
                   logger.i('Login with Password! $user');
