@@ -49,8 +49,9 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     Function? onInvalidCredentials,
     Function? onTooManyAttempts,
     Function? onUnkownError,
+    Future<bool> Function(UserCredential?)? onAuthSuccess,
   }) async {
-    state = state.copyWith(authStatus: AuthStatus.checking);
+    //state = state.copyWith(authStatus: AuthStatus.checking);
     final userCredential = await authPasswordRepository.loginIntoAccount(
       email,
       password,
@@ -59,23 +60,31 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     if (message != null && message != LoginSignupMessages.success) {
       switch (message) {
         case LoginSignupMessages.invalidCredentials:
-          if (onInvalidCredentials != null) onInvalidCredentials();
           state = state.copyWith(authStatus: AuthStatus.notAuthenticated);
+          if (onInvalidCredentials != null) onInvalidCredentials();
           return null;
         case LoginSignupMessages.unkownError:
-          if (onUnkownError != null) onUnkownError();
           state = state.copyWith(authStatus: AuthStatus.notAuthenticated);
+          if (onUnkownError != null) onUnkownError();
           return null;
         case LoginSignupMessages.tooManyAttempts:
-          if (onTooManyAttempts != null) onTooManyAttempts();
           state = state.copyWith(authStatus: AuthStatus.notAuthenticated);
+          if (onTooManyAttempts != null) onTooManyAttempts();
           return null;
         default:
           return null;
       }
     }
     if (userCredential.$2 != null) {
-      state = state.copyWith(authStatus: AuthStatus.authenticated);
+      bool userCreationResult = false;
+      if (onAuthSuccess != null) {
+        userCreationResult = await onAuthSuccess(userCredential.$2);
+      }
+      if (userCreationResult) {
+        state = state.copyWith(authStatus: AuthStatus.authenticated);
+      } else {
+        state = state.copyWith(authStatus: AuthStatus.notAuthenticated);
+      }
     } else {
       state = state.copyWith(authStatus: AuthStatus.notAuthenticated);
     }
