@@ -59,3 +59,6 @@ export 'package:spotted/presentation/widgets/shared/inputs/currency_input_format
 export 'package:spotted/presentation/widgets/shared/inputs/custom_input_form_field.dart';
 export 'package:spotted/presentation/widgets/shared/inputs/phone_number_input_formatter.dart';
 export 'package:spotted/presentation/widgets/shared/inputs/comment_text_field.dart';
+
+// User Notifications
+export 'package:spotted/presentation/widgets/shared/user_notification/user_notification_item.dart';

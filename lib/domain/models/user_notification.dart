@@ -8,6 +8,7 @@ class UserNotification {
   final String receiverId;
   final String postId;
   final String content;
+  final bool clicked;
 
   UserNotification({
     String? id,
@@ -16,6 +17,18 @@ class UserNotification {
     required this.receiverId,
     required this.postId,
     required this.content,
+    this.clicked = false,
+  }) : id = id ?? const Uuid().v6(),
+       dateCreated = dateCreated ?? DateTime.now();
+
+  UserNotification.empty({
+    String? id,
+    DateTime? dateCreated,
+    this.senderId = '',
+    this.receiverId = '',
+    this.postId = '',
+    this.content = '',
+    this.clicked = false,
   }) : id = id ?? const Uuid().v6(),
        dateCreated = dateCreated ?? DateTime.now();
 
@@ -32,6 +45,7 @@ class UserNotification {
       dateCreated:
           (map['date_created'] as Timestamp?)?.toDate() ?? DateTime.now(),
       postId: map['post_id'],
+      clicked: map['clicked'] as bool,
     );
   }
 
@@ -43,6 +57,7 @@ class UserNotification {
       'content': content,
       'date_created': dateCreated,
       'post_id': postId,
+      'clicked': clicked,
     };
   }
 
@@ -67,6 +82,7 @@ class UserNotification {
     String? content,
     String? postId,
     DateTime? dateCreated,
+    bool? clicked,
   }) {
     return UserNotification(
       id: id ?? this.id,
@@ -75,6 +91,7 @@ class UserNotification {
       content: content ?? this.content,
       postId: postId ?? this.postId,
       dateCreated: dateCreated ?? this.dateCreated,
+      clicked: clicked ?? this.clicked,
     );
   }
 }

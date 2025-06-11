@@ -5,4 +5,6 @@ abstract class UserNotificationDatasource {
     UserNotification newNotification,
   );
   Future<UserNotification?> getNotificationById(String id);
+  Future<List<UserNotification>> getNotificationsByReceiverId(String id);
+  Future<List<UserNotification>> getNotificationsBySenderId(String id);
 }

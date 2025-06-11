@@ -20,4 +20,14 @@ class UserNotificationRepositoryImpl implements UserNotificationRepository {
   Future<UserNotification?> getNotificationById(String id) {
     return _db.getNotificationById(id);
   }
+
+  @override
+  Future<List<UserNotification>> getNotificationsByReceiverId(String id) {
+    return _db.getNotificationsByReceiverId(id);
+  }
+
+  @override
+  Future<List<UserNotification>> getNotificationsBySenderId(String id) {
+    return _db.getNotificationsBySenderId(id);
+  }
 }

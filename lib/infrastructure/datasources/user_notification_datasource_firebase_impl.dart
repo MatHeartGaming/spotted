@@ -28,4 +28,29 @@ class UserNotificationDatasourceFirebaseImpl
     final doc = await _userNotificationRef.doc(id).get();
     return doc.exists ? doc.data() : null;
   }
+
+    @override
+  Future<List<UserNotification>> getNotificationsByReceiverId(String id) async {
+    final querySnapshot = await _userNotificationRef
+        .where('receiver_id', isEqualTo: id)
+        .orderBy('date_created', descending: true)
+        .get();
+
+    return querySnapshot.docs
+        .map((doc) => doc.data())
+        .toList();
+  }
+
+  @override
+  Future<List<UserNotification>> getNotificationsBySenderId(String id) async {
+    final querySnapshot = await _userNotificationRef
+        .where('sender_id', isEqualTo: id)
+        .orderBy('date_created', descending: true)
+        .get();
+
+    return querySnapshot.docs
+        .map((doc) => doc.data())
+        .toList();
+  }
+
 }

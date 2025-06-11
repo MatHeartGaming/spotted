@@ -149,6 +149,10 @@
     "comments_screen_write_new_comment_hint_text": "Scrivi nuovo commento",
     "comments_screen_edit_comment_alert_title": "Modifica commento",
     "comments_screen_delete_comment_success_snackbar": "Commento eliminato con successo",
+    
+    "user_notifications_screen_no_notifications_texts": "Non ci sono notifiche. Interagisci con altri utenti!",
+    "user_notifications_screen_user_has_commented_text": "{} ha commentato il post {}",
+    "user_notifications_screen_user_has_posted_text": "{} ha postato su {}",
 
     "drawer_following_count": "Mi seguono: {}",
     "drawer_profile_item": "Profilo",
