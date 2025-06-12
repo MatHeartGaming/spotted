@@ -86,6 +86,27 @@ class LoadCommunitiesNotifier extends StateNotifier<LoadCommunitiesState> {
     return updated;
   }
 
+  Future<Community?> updateCommunityLocally(Community community) async {
+    if (state.isLoadingUsersCommunities) return null;
+
+    // mark as loading
+    state = state.copyWith(isUpdatingUsersCommunities: true);
+
+    // build a new list, swapping in the updated community
+    final updatedList =
+        state.usersCommunities
+            .map((c) => c.id == community.id ? community : c)
+            .toList();
+
+    // emit the new list + clear loading
+    state = state.copyWith(
+      isUpdatingUsersCommunities: false,
+      usersCommunities: updatedList,
+    );
+  
+    return community;
+  }
+
   Future<Community?> createCommunity(Community community) async {
     if (state.isLoadingUsersCommunities) return null;
 

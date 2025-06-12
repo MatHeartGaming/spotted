@@ -43,10 +43,15 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
 
       final signedInUser = ref.read(signedInUserProvider);
       if (signedInUser == null) return;
+      final isOtherUserProfile = signedInUser != widget.user;
       ref.read(editProfileFormProvider.notifier).initFormField(signedInUser);
       ref
           .read(featureRepositoryProvider)
-          .getFeaturesByIds(signedInUser.featureRefs)
+          .getFeaturesByIds(
+            isOtherUserProfile
+                ? widget.user.featureRefs
+                : signedInUser.featureRefs,
+          )
           .then((features) {
             ref
                 .read(assignedFeaturesProvider.notifier)
@@ -54,7 +59,11 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
           });
       ref
           .read(interestsRepositoryProvider)
-          .getInterestsByIds(signedInUser.interestsRefs)
+          .getInterestsByIds(
+            isOtherUserProfile
+                ? widget.user.interestsRefs
+                : signedInUser.interestsRefs,
+          )
           .then((interests) {
             ref
                 .read(assignedInterestProvider.notifier)
@@ -207,7 +216,8 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                 child: PostsListView(
                   bottomListViewPadding: 110,
                   posts: usersPost,
-                  onCommunityTap: (post) => actionCommunityTap(ref, post.postedIn),
+                  onCommunityTap:
+                      (post) => actionCommunityTap(ref, post.postedIn),
                   onProfileTap:
                       (user) => pushToProfileScreen(context, user: user),
                   onReaction: (post, reaction) async {

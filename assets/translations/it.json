@@ -105,7 +105,8 @@
 
     "community_screen_user_not_found_error": "Utente non trovato.",
     "community_screen_community_not_found_error": "Community non trovata.",
-    "community_screen_subscribe_text": "Iscriviti.",
+    "community_screen_subscribe_text": "Iscriviti",
+    "community_screen_unsubscribe_text": "Disiscriviti",
 
     "profile_screen_edit_profile_btn_text": "Modifica informazioni profilo",
     "profile_screen_follow_btn_text": "Segui",
@@ -117,12 +118,12 @@
 
     "edit_info_screen_load_profile_pic_tooltip_text": "Carica foto profilo",
     "edit_info_screen_load_profile_pic_snackbar_text": "Carica una foto prodilo, per favore",
-    "edit_info_screen_your_features_text": "Le tue caratteristiche: {}",
+    "edit_info_screen_your_features_text": "Caratteristiche: {}",
     "edit_info_screen_features_text": "Cerca caratteristiche",
     "edit_info_screen_interests_text": "Cerca interessi",
     "edit_info_screen_feature_already_exits_text": "Hai già una caratteristica chiamata {}",
     "edit_info_screen_features_found_text": "Caratteristiche trovate: {}",
-    "edit_info_screen_your_interests_text": "I tuoi interessi: {}",
+    "edit_info_screen_your_interests_text": "Interessi: {}",
     "edit_info_screen_interests_found_text": "Interessi trovati: {}",
     "edit_info_screen_interest_already_exits_text": "Hai già una interesse chiamato {}",
     "edit_info_screen_update_info_btn_text": "Aggiorna informazioni",

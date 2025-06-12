@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uuid/uuid.dart';
 
 class Feature {
   final String? id;
@@ -10,11 +9,10 @@ class Feature {
   final String nameLowercased;
 
   Feature({
-    String? id,
+    this.id,
     required this.name,
     String? nameLowercased,
-  })  : id = id ?? const Uuid().v6(),
-        nameLowercased = nameLowercased ?? name.trim().toLowerCase();
+  })  : nameLowercased = nameLowercased ?? name.trim().toLowerCase();
 
   @override
   bool operator ==(covariant Feature other) {

@@ -1,15 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uuid/uuid.dart';
 
 class Interest {
   final String? id;
   final String name;
   final String nameLowercased;
 
-  Interest({String? id, required this.name, String? nameLowercased})
-    : id = id ?? const Uuid().v6(),
-      nameLowercased = nameLowercased ?? name.trim().toLowerCase();
+  Interest({this.id, required this.name, String? nameLowercased})
+    : nameLowercased = nameLowercased ?? name.trim().toLowerCase();
 
   @override
   bool operator ==(covariant Interest other) {

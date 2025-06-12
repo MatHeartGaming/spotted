@@ -61,6 +61,8 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
     if (communityToUse.isEmpty) {
       return LoadingDefaultWidget();
     }
+    final notSubscribed =
+        !(signedInUser?.communitiesSubs.contains(communityToUse.id) ?? false);
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {},
       child: Scaffold(
@@ -118,17 +120,14 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
                               ),
 
                               Visibility(
-                                visible:
-                                    !isUserAdmin &&
-                                    !(signedInUser?.communitiesSubs.contains(
-                                          communityToUse.id,
-                                        ) ??
-                                        false),
+                                visible: !isUserAdmin,
                                 child: FilledButton(
-                                  onPressed: () {},
+                                  onPressed: () => _onSubscribeAction(),
                                   child:
                                       Text(
-                                        'community_screen_subscribe_text',
+                                        notSubscribed
+                                            ? 'community_screen_subscribe_text'
+                                            : 'community_screen_unsubscribe_text',
                                       ).tr(),
                                 ),
                               ),
@@ -219,5 +218,70 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
       context,
       child: CreatePostsScreen(communityId: widget.community.id),
     );
+  }
+
+  void _onSubscribeAction() {
+    final signedInUser = ref.read(signedInUserProvider);
+    if (signedInUser == null || signedInUser.isEmpty) return;
+
+    final signedInUserNotifier = ref.read(signedInUserProvider.notifier);
+    final userRepo = ref.read(usersRepositoryProvider);
+    final loadCommunities = ref.read(loadCommunitiesProvider.notifier);
+
+    final commId = widget.community.id;
+    final userId = signedInUser.id;
+
+    // If not already subscribed → add subscription
+    if (!signedInUser.communitiesSubs.contains(commId)) {
+      loadCommunities.addSub(commId, userId).then((addSubSuccess) {
+        if (!addSubSuccess) return;
+
+        // Update community locally
+        loadCommunities.updateCommunityLocally(
+          widget.community.copyWith(
+            subscribed: [userId, ...widget.community.subscribed],
+          ),
+        );
+
+        // Persist to user repo
+        userRepo.addSub(userId, commId).then((success) {
+          if (!success) return;
+          // Update signed-in user state
+          final updatedUser = signedInUser.copyWith(
+            communitiesSubs: [commId, ...signedInUser.communitiesSubs],
+          );
+          signedInUserNotifier.update((_) => updatedUser);
+        });
+      });
+    }
+    // Already subscribed → remove subscription
+    else {
+      loadCommunities.removeSub(commId, userId).then((removeSubSuccess) {
+        if (!removeSubSuccess) return;
+
+        // Update community locally
+        loadCommunities.updateCommunityLocally(
+          widget.community.copyWith(
+            subscribed:
+                widget.community.subscribed
+                    .where((id) => id != userId)
+                    .toList(),
+          ),
+        );
+
+        // Persist removal in user repo
+        userRepo.removeSub(userId, commId).then((success) {
+          if (!success) return;
+          // Update signed-in user state
+          final updatedUser = signedInUser.copyWith(
+            communitiesSubs:
+                signedInUser.communitiesSubs
+                    .where((id) => id != commId)
+                    .toList(),
+          );
+          signedInUserNotifier.update((_) => updatedUser);
+        });
+      });
+    }
   }
 }

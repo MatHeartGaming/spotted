@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
@@ -375,6 +376,14 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
                   ),
                 ),
 
+                Visibility(
+                  visible: !context.canPop() && (signedInUser?.isProfileUrlValid ?? false),
+                  child: TextButton(
+                    onPressed: () => goToHomeScreenUsingContext(context),
+                    child: Text('go_to_home_page_tooltip_text').tr(),
+                  ),
+                ),
+
                 SizedBox(height: 50),
               ],
             ),
@@ -462,13 +471,13 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
       onGalleryChosen: () async {
         await picker.selectPhotos(limit: 1).then((files) {
           onImagesChosen(files.cast<XFile>());
-          if(context.mounted) popContext(context);
+          if (context.mounted) popContext(context);
         });
       },
       onTakePicChosen: () async {
         await picker.takePhoto().then((file) {
           onImagesChosen([file]);
-          if(context.mounted) popContext(context);
+          if (context.mounted) popContext(context);
         });
       },
     );
