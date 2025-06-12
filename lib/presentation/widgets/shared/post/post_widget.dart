@@ -64,6 +64,7 @@ class PostWidget extends ConsumerWidget {
               onTap: onUserInfoTapped,
               user: author,
               formattedDate: formattedDate,
+              isAnonymousPost: post.isAnonymous,
             ),
 
             // Title
@@ -79,13 +80,6 @@ class PostWidget extends ConsumerWidget {
             const SizedBox(height: 8),
             Text(post.content, style: texts.bodySmall),
 
-            /*if (post.pictureUrls.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              _PostImage(
-                urlImages: post.pictureUrls,
-                onImageTap: () => showImagesUrl(context, post.pictureUrls),
-              ),
-            ],*/
             if (post.pictureUrls.isNotEmpty) ...[
               const SizedBox(height: 12),
               ImagesPageViewer(

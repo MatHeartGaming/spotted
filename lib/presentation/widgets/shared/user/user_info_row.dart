@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
@@ -8,25 +9,29 @@ class UserInfoRow extends StatelessWidget {
     required this.onTap,
     required this.user,
     this.formattedDate,
+    this.isAnonymousPost = false,
   });
 
   final VoidCallback onTap;
   final User user;
+  final bool isAnonymousPost;
   final String? formattedDate;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: onTap,
+      onTap: isAnonymousPost ? null : onTap,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CirclePicture(
-            minRadius: 20,
-            maxRadius: 20,
-            urlPicture: user.profileImageUrl,
-          ),
+          isAnonymousPost
+              ? Icon(anonymousIcon)
+              : CirclePicture(
+                minRadius: 20,
+                maxRadius: 20,
+                urlPicture: user.profileImageUrl,
+              ),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -34,14 +39,14 @@ class UserInfoRow extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  user.completeName,
+                  isAnonymousPost ? anonymousText : user.completeName,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
                 ),
                 Text(
-                  '@${user.username}',
+                  isAnonymousPost ? anonymousText : '@${user.username}',
                   style: TextStyle(color: Colors.grey[600], fontSize: 12),
                 ),
               ],
