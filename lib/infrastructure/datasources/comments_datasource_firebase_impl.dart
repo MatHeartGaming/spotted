@@ -81,7 +81,7 @@ class CommentsDatasourceFirebaseImpl implements CommentsDatasource {
     final querySnapshot =
         await _commentsRef
             .where('created_by_id', isEqualTo: createdById)
-            .orderBy('date_created', descending: true)
+            .orderBy('date_created', descending: false)
             .get();
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
@@ -94,7 +94,7 @@ class CommentsDatasourceFirebaseImpl implements CommentsDatasource {
     final querySnapshot =
         await _commentsRef
             .where('created_by_username', isEqualTo: createdByUsername)
-            .orderBy('date_created', descending: true)
+            .orderBy('date_created', descending: false)
             .get();
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
@@ -105,7 +105,7 @@ class CommentsDatasourceFirebaseImpl implements CommentsDatasource {
     final querySnapshot =
         await _commentsRef
             .where('post_id', isEqualTo: postId)
-            .orderBy('date_created', descending: true)
+            .orderBy('date_created', descending: false)
             .get();
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
@@ -116,7 +116,7 @@ class CommentsDatasourceFirebaseImpl implements CommentsDatasource {
     final querySnapshot =
         await _commentsRef
             .where('posted_in', isEqualTo: postedIn)
-            .orderBy('date_created', descending: true)
+            .orderBy('date_created', descending: false)
             .get();
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }

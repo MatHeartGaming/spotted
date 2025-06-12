@@ -202,6 +202,7 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
     final commentsFormState = ref.read(commentsFormProvider);
     final signedInUser = ref.read(signedInUserProvider);
     final loadComments = ref.read(loadCommentsProvider.notifier);
+    final userNotificationRepo = ref.read(userNotificationRepositoryProvider);
 
     if (signedInUser == null || signedInUser.isEmpty) return;
     commentsFormNotifier.onSumbit(
@@ -232,6 +233,16 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
               );
               loadPostsNotifier.addComment(updatedPost.id, newCommentId);
               loadPostsNotifier.updatePostLocally(updatedPost);
+
+              // User Notification
+              final userNotification = UserNotification(
+                senderId: signedInUser.id,
+                receiverId: widget.post.createdById,
+                postId: widget.post.id,
+                content: "user_notifications_screen_user_has_commented_text",
+              );
+
+              userNotificationRepo.createUserNotification(userNotification);
 
               // Only update user with new comment if it is not an anonymous Comment
               if (!commentsFormState.isAnonymous) {

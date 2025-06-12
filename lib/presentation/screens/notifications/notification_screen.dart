@@ -1,11 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotted/config/config.dart';
+import 'package:spotted/config/helpers/haptic_feedback.dart';
 import 'package:spotted/domain/models/user_notification.dart';
+import 'package:spotted/presentation/navigation/navigation.dart';
+import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/providers/user_notifications/load_user_notifications.dart';
 import 'package:spotted/presentation/providers/users/signed_in_user_provider.dart';
 import 'package:spotted/presentation/widgets/shared/loading_default_widget.dart';
 import 'package:spotted/presentation/widgets/shared/user_notification/user_notification_item.dart';
+import 'package:spotted/presentation/widgets/widgets.dart';
 
 class NotificationScreen extends ConsumerStatefulWidget {
   static const name = 'NotificationScreen';
@@ -41,32 +46,48 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     return Scaffold(
       appBar: AppBar(),
       body:
-          /*notificationState.userNotifications.isEmpty
+          notificationState.userNotifications.isEmpty
               ? Center(
                 child:
                     Text(
                       'user_notifications_screen_no_notifications_texts',
                     ).tr(),
               )
-              : */ListView.builder(
-                itemCount: 10, //notificationState.userNotifications.length,
-                /*prototypeItem: UserNotificationItem(
-                  notificationItem: UserNotification.empty(),
-                  onNotificationTapped: () {},
-                ),*/
+              : ListView.builder(
+                itemCount: notificationState.userNotifications.length,
+                itemExtent: 100,
+                padding: EdgeInsets.symmetric(horizontal: 8),
                 itemBuilder: (context, index) {
-                  //final notification = notificationState.userNotifications[index];
+                  final notification =
+                      notificationState.userNotifications[index];
                   return UserNotificationItem(
-                    notificationItem: UserNotification(
-                      senderId: 'Q51xQDfoRxY1txQhdZbIRfEEuJJ3',
-                      receiverId: 'Q51xQDfoRxY1txQhdZbIRfEEuJJ3',
-                      postId: 'MaLdQOEioGm0fVkixvMg',
-                      content: 'Ha commentato',
-                    ),
-                    onNotificationTapped: () {},
+                    notificationItem: notification,
+                    onNotificationTapped:
+                        () => _notificationTapAction(notification.postId),
                   );
                 },
               ),
     );
+  }
+
+  void _notificationTapAction(String postId) {
+    final postRepo = ref.read(postsRepositoryProvider);
+    postRepo.getPostById(postId).then((postInvolved) {
+      if (postInvolved == null) {
+        hardVibration();
+        showCustomSnackbar(
+          context,
+          'profile_screen_error_follow_btn_text'.tr(),
+          backgroundColor: colorNotOkButton,
+        );
+        return;
+      }
+      if (!context.mounted) return;
+      pushToPostListScreen(
+        context,
+        postList: [postInvolved],
+        searched: postInvolved.title,
+      );
+    });
   }
 }

@@ -12,7 +12,7 @@ final currentProfilePostsProvider = StateProvider.autoDispose<List<Post>>((
   return [];
 });
 
-final loadPostFutureProvider = FutureProvider.family<Post?, String>((
+final loadPostByIdFutureProvider = FutureProvider.family<Post?, String>((
   ref,
   postId,
 ) async {

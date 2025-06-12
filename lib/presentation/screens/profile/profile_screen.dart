@@ -90,11 +90,11 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
         }
       },
       child: Scaffold(
-        floatingActionButton: AddFab(
+        floatingActionButton: isUserYou ? AddFab(
           onTap: () => _showAddPostOrCommunitySheet(),
           heroTag: 1,
           tooltip: 'add_fab_home_tooltip_text'.tr(),
-        ),
+        ) : null,
         body: Stack(
           children: [
             NestedScrollView(

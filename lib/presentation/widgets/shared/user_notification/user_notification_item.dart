@@ -20,27 +20,31 @@ class UserNotificationItem extends ConsumerWidget {
     final receiverIdFuture = ref.watch(
       userFutureByIdProvider(notificationItem.senderId),
     );
-    return Card(
-      child: receiverIdFuture.maybeWhen(
-        data:
-            (user) =>
-                user != null
-                    ? _NotificationRow(
-                      sender: user,
-                      content: notificationItem.content,
-                      postId: notificationItem.postId,
-                    )
-                    : SizedBox.shrink(),
-        orElse: () => SizedBox.shrink(),
+    return InkWell(
+      onTap: () => onNotificationTapped(),
+      child: Card(
+        child: receiverIdFuture.maybeWhen(
+          data:
+              (user) =>
+                  user != null
+                      ? _NotificationRow(
+                        sender: user,
+                        content: notificationItem.content,
+                        postId: notificationItem.postId,
+                      )
+                      : SizedBox.shrink(),
+          orElse: () => SizedBox.shrink(),
+        ),
       ),
     );
   }
 }
 
-class _NotificationRow extends StatelessWidget {
+class _NotificationRow extends ConsumerWidget {
   final User sender;
   final String content;
   final String postId;
+
   const _NotificationRow({
     required this.sender,
     required this.content,
@@ -48,15 +52,28 @@ class _NotificationRow extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final texts = TextTheme.of(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final postByIdFuture = ref.watch(loadPostByIdFutureProvider(postId));
+    final textStyle = Theme.of(context).textTheme.bodyMedium;
+
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
-      spacing: 8,
       children: [
         CirclePicture(urlPicture: sender.profileImageUrl, width: 50),
-        Text(content, style: texts.bodyMedium).tr(args: [postId]),
+        const SizedBox(width: 8),
+        // <-- Let the text take up remaining space
+        Flexible(
+          child: postByIdFuture.maybeWhen(
+            data: (post) {
+              return Text(
+                content,
+                style: textStyle,
+                softWrap: true,
+              ).tr(args: [sender.atUsername, post?.title ?? '']);
+            },
+            orElse: () => const SizedBox.shrink(),
+          ),
+        ),
       ],
     );
   }

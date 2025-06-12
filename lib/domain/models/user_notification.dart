@@ -9,6 +9,7 @@ class UserNotification {
   final String postId;
   final String content;
   final bool clicked;
+  final UserNotificationType type;
 
   UserNotification({
     String? id,
@@ -18,6 +19,7 @@ class UserNotification {
     required this.postId,
     required this.content,
     this.clicked = false,
+    this.type = UserNotificationType.Comment,
   }) : id = id ?? const Uuid().v6(),
        dateCreated = dateCreated ?? DateTime.now();
 
@@ -29,6 +31,7 @@ class UserNotification {
     this.postId = '',
     this.content = '',
     this.clicked = false,
+    this.type = UserNotificationType.Comment,
   }) : id = id ?? const Uuid().v6(),
        dateCreated = dateCreated ?? DateTime.now();
 
@@ -46,6 +49,10 @@ class UserNotification {
           (map['date_created'] as Timestamp?)?.toDate() ?? DateTime.now(),
       postId: map['post_id'],
       clicked: map['clicked'] as bool,
+      type:
+          map['type'].toString() == UserNotificationType.Comment.name
+              ? UserNotificationType.Comment
+              : UserNotificationType.Unknown,
     );
   }
 
@@ -58,6 +65,7 @@ class UserNotification {
       'date_created': dateCreated,
       'post_id': postId,
       'clicked': clicked,
+      'type': type.name,
     };
   }
 
@@ -83,6 +91,7 @@ class UserNotification {
     String? postId,
     DateTime? dateCreated,
     bool? clicked,
+    UserNotificationType? type,
   }) {
     return UserNotification(
       id: id ?? this.id,
@@ -92,6 +101,9 @@ class UserNotification {
       postId: postId ?? this.postId,
       dateCreated: dateCreated ?? this.dateCreated,
       clicked: clicked ?? this.clicked,
+      type: type ?? this.type,
     );
   }
 }
+
+enum UserNotificationType { Comment, Unknown }
