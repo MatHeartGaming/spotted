@@ -3,6 +3,10 @@ import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/repositories/user_notification_repository.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 
+final userNotificationUnreadProvider = StateProvider<int>((ref) {
+  return 0;
+});
+
 final loadUserNotificationsProvider = StateNotifierProvider<
   LoadUserNotificationsNotifier,
   LoadUserNotificationsState

@@ -53,4 +53,29 @@ class UserNotificationDatasourceFirebaseImpl
         .toList();
   }
 
+    @override
+  Future<UserNotification?> updateUserNotification(
+    UserNotification updatedNotification,
+  ) async {
+    // Grab a reference to the existing document
+    final docRef = _userNotificationRef.doc(updatedNotification.id);
+
+    // Update all fields in Firestore
+    await docRef.update(updatedNotification.toMap());
+
+    // Re‐read the document so you get the latest data (including any server‐side transforms)
+    final refreshed = await docRef.get();
+    return refreshed.exists ? refreshed.data() : null;
+  }
+
+  @override
+  Future<int> getUnreadCountByReceiverId(String receiverId) async {
+    final aggregate = await _userNotificationRef
+        .where('receiver_id', isEqualTo: receiverId)
+        .where('clicked', isEqualTo: false)
+        .count()
+        .get();
+    return aggregate.count ?? 0;
+  }
+
 }

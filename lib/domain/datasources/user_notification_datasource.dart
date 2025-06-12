@@ -7,4 +7,8 @@ abstract class UserNotificationDatasource {
   Future<UserNotification?> getNotificationById(String id);
   Future<List<UserNotification>> getNotificationsByReceiverId(String id);
   Future<List<UserNotification>> getNotificationsBySenderId(String id);
+  Future<UserNotification?> updateUserNotification(
+    UserNotification updatedNotification,
+  );
+  Future<int> getUnreadCountByReceiverId(String receiverId);
 }

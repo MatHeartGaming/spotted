@@ -45,7 +45,6 @@ class MainApp extends ConsumerStatefulWidget {
 }
 
 class MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
-
   @override
   void initState() {
     super.initState();
@@ -79,9 +78,19 @@ class MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
           ref.read(signedInUserProvider.notifier).update((state) {
             return user;
           });
+          _getUnreadNotifications(user.id);
         }
       });
     }
+  }
+
+  void _getUnreadNotifications(String id) {
+    final notificationsRepo = ref.read(userNotificationRepositoryProvider);
+    notificationsRepo.getUnreadCountByReceiverId(id).then((unread) {
+      ref
+          .read(userNotificationUnreadProvider.notifier)
+          .update((state) => unread);
+    });
   }
 
   void _updateAppThemePrimaryHexColor() {

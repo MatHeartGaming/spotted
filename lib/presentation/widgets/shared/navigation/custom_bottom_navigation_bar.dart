@@ -39,6 +39,8 @@ class CustomBottomNavigationBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final int unreadNotificatons = ref.watch(userNotificationUnreadProvider);
+
     return TabBar(
       isScrollable: false,
       controller: tabController,
@@ -55,7 +57,11 @@ class CustomBottomNavigationBar extends ConsumerWidget {
           text: 'app_bar_chats_btn_tooltip'.tr(),
         ),
         Tab(
-          icon: const Icon(Icons.notifications, size: 35,),
+          icon: Badge.count(
+            count: unreadNotificatons,
+            isLabelVisible: unreadNotificatons > 0,
+            child: const Icon(Icons.notifications, size: 35),
+          ),
           text: 'app_bar_notifications_btn_tooltip'.tr(),
         ),
       ],

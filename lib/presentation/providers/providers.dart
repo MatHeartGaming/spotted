@@ -71,3 +71,4 @@ export 'package:spotted/presentation/providers/interests/assigned_categories_pro
 
 // User Notifications
 export 'package:spotted/presentation/providers/user_notifications/user_notification_repository_provider.dart';
+export 'package:spotted/presentation/providers/user_notifications/load_user_notifications.dart';

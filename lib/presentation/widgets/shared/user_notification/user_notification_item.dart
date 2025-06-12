@@ -8,7 +8,7 @@ import 'package:spotted/presentation/widgets/widgets.dart';
 
 class UserNotificationItem extends ConsumerWidget {
   final UserNotification notificationItem;
-  final Function onNotificationTapped;
+  final VoidCallback onNotificationTapped;
 
   const UserNotificationItem({
     super.key,
@@ -18,29 +18,43 @@ class UserNotificationItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final receiverIdFuture = ref.watch(
+    final senderFuture = ref.watch(
       userFutureByIdProvider(notificationItem.senderId),
     );
+    final colors = Theme.of(context).colorScheme;
+
+    // If not clicked, use primaryContainer as card bg; otherwise default.
+    final cardColor = notificationItem.clicked
+        ? null
+        : colors.primaryContainer;
+
     return InkWell(
-      onTap: () => onNotificationTapped(),
+      onTap: onNotificationTapped,
       child: Card(
-        child: receiverIdFuture.maybeWhen(
-          data:
-              (user) =>
-                  user != null
-                      ? _NotificationRow(
-                        sender: user,
-                        content: notificationItem.content,
-                        postId: notificationItem.postId,
-                        type: notificationItem.type,
-                      )
-                      : SizedBox.shrink(),
-          orElse: () => SizedBox.shrink(),
+        color: cardColor,
+        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: senderFuture.maybeWhen(
+            data: (sender) => sender != null
+                ? _NotificationRow(
+                    sender: sender,
+                    content: notificationItem.content,
+                    postId: notificationItem.postId,
+                    type: notificationItem.type,
+                  )
+                : const SizedBox.shrink(),
+            orElse: () => const SizedBox.shrink(),
+          ),
         ),
       ),
     );
   }
 }
+
 
 class _NotificationRow extends ConsumerWidget {
   final User sender;
@@ -58,7 +72,6 @@ class _NotificationRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textStyle = Theme.of(context).textTheme.bodyMedium!;
-
     // Fast path for “Follow” notifications
     if (type == UserNotificationType.Follow) {
       final msg = content.tr(args: [sender.atUsername]);

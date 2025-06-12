@@ -7,7 +7,6 @@ import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/user_notification.dart';
 import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
-import 'package:spotted/presentation/providers/user_notifications/load_user_notifications.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 class NotificationScreen extends ConsumerStatefulWidget {
@@ -25,13 +24,23 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     _initNotifications();
   }
 
-  void _initNotifications() {
+  Future<void> _initNotifications() async {
     Future(() {
       final signedInUser = ref.read(signedInUserProvider);
       if (signedInUser == null || signedInUser.isEmpty) return;
       ref
           .read(loadUserNotificationsProvider.notifier)
           .getUserNotifications(signedInUser.id);
+      _getUnreadNotifications(signedInUser.id);
+    });
+  }
+
+  void _getUnreadNotifications(String id) {
+    final notificationsRepo = ref.read(userNotificationRepositoryProvider);
+    notificationsRepo.getUnreadCountByReceiverId(id).then((unread) {
+      ref
+          .read(userNotificationUnreadProvider.notifier)
+          .update((state) => unread);
     });
   }
 
@@ -41,8 +50,26 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     if (notificationState.isLoadingUserNotifications) {
       return LoadingDefaultWidget();
     }
+    final texts = TextTheme.of(context);
+    final colors = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: Text('app_bar_notifications_btn_tooltip').tr()),
+      appBar: AppBar(
+        title: Text('app_bar_notifications_btn_tooltip').tr(),
+        actions: [
+          TextButton(
+            onPressed:
+                notificationState.userNotifications.isEmpty
+                    ? null
+                    : _markAllAsRead,
+            child:
+                Text(
+                  'Segna tutte come lette',
+                  style: texts.bodySmall?.copyWith(color: colors.primary),
+                ).tr(),
+          ),
+        ],
+      ),
+
       body:
           notificationState.userNotifications.isEmpty
               ? Center(
@@ -51,81 +78,105 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                       'user_notifications_screen_no_notifications_texts',
                     ).tr(),
               )
-              : ListView.builder(
-                itemCount: notificationState.userNotifications.length,
-                itemExtent: 100,
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                itemBuilder: (context, index) {
-                  final notification =
-                      notificationState.userNotifications[index];
-                  return UserNotificationItem(
-                    notificationItem: notification,
-                    onNotificationTapped:
-                        () => _notificationTapAction(
-                          type: notification.type,
-                          postId: notification.postId,
-                          userId: notification.senderId,
-                        ),
-                  );
-                },
+              : RefreshIndicator(
+                onRefresh: () => _initNotifications(),
+                child: ListView.builder(
+                  itemCount: notificationState.userNotifications.length,
+                  itemExtent: 100,
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  itemBuilder: (context, index) {
+                    final notification =
+                        notificationState.userNotifications[index];
+                    return UserNotificationItem(
+                      notificationItem: notification,
+                      onNotificationTapped:
+                          () => _handleTap(context, ref, notification),
+                    );
+                  },
+                ),
               ),
     );
   }
 
-  void _notificationTapAction({
-    required UserNotificationType type,
-    required String postId,
-    required String userId,
-  }) {
-    switch (type) {
+  Future<void> _handleTap(
+    BuildContext context,
+    WidgetRef ref,
+    UserNotification n,
+  ) async {
+    // 1) mark clicked
+    final repo = ref.read(userNotificationRepositoryProvider);
+    await repo.updateUserNotification(n.copyWith(clicked: true));
+
+    switch (n.type) {
       case UserNotificationType.Comment:
-        _notificationTypeCommentAction(postId);
+        await _goToComment(context, ref, n.postId);
         break;
       case UserNotificationType.Follow:
-        _notificationTypeFollowAction(userId);
+        await _goToFollower(context, ref, n.senderId);
         break;
       case UserNotificationType.Unknown:
         break;
     }
   }
 
-  void _notificationTypeCommentAction(String postId) {
+  Future<void> _goToComment(
+    BuildContext context,
+    WidgetRef ref,
+    String postId,
+  ) async {
     final postRepo = ref.read(postsRepositoryProvider);
-
-    postRepo.getPostById(postId).then((postInvolved) {
-      if (postInvolved == null) {
-        hardVibration();
-        showCustomSnackbar(
-          context,
-          'profile_screen_error_follow_btn_text'.tr(),
-          backgroundColor: colorNotOkButton,
-        );
-        return;
-      }
-      if (!context.mounted) return;
-      pushToPostListScreen(
+    final post = await postRepo.getPostById(postId);
+    if (post == null) {
+      hardVibration();
+      showCustomSnackbar(
         context,
-        postList: [postInvolved],
-        searched: postInvolved.title,
+        'profile_screen_error_follow_btn_text'.tr(),
+        backgroundColor: colorNotOkButton,
       );
-    });
+      return;
+    }
+    if (!context.mounted) return;
+    pushToPostListScreen(context, postList: [post], searched: post.title);
   }
 
-  void _notificationTypeFollowAction(String userId) {
+  Future<void> _goToFollower(
+    BuildContext context,
+    WidgetRef ref,
+    String userId,
+  ) async {
     final userRepo = ref.read(usersRepositoryProvider);
+    final user = await userRepo.getUserById(userId);
+    if (user == null) {
+      hardVibration();
+      showCustomSnackbar(
+        context,
+        'profile_screen_error_follow_btn_text'.tr(),
+        backgroundColor: colorNotOkButton,
+      );
+      return;
+    }
+    if (!context.mounted) return;
+    pushToProfileScreen(context, userId: userId);
+  }
 
-    userRepo.getUserById(userId).then((postInvolved) {
-      if (postInvolved == null) {
-        hardVibration();
-        showCustomSnackbar(
-          context,
-          'profile_screen_error_follow_btn_text'.tr(),
-          backgroundColor: colorNotOkButton,
-        );
-        return;
-      }
-      if (!context.mounted) return;
-      pushToProfileScreen(context, userId: userId);
-    });
+  Future<void> _markAllAsRead() async {
+    final signedInUser = ref.read(signedInUserProvider);
+    if (signedInUser == null || signedInUser.isEmpty) return;
+
+    final repo = ref.read(userNotificationRepositoryProvider);
+    final notifier = ref.read(loadUserNotificationsProvider.notifier);
+    final currentList =
+        ref.read(loadUserNotificationsProvider).userNotifications;
+
+    // Update all unread notifications in parallel
+    final futures = currentList
+        .where((n) => n.receiverId == signedInUser.id && !n.clicked)
+        .map((n) => repo.updateUserNotification(n.copyWith(clicked: true)));
+    await Future.wait(futures);
+
+    // Reload the notifications
+    await notifier.getUserNotifications(signedInUser.id);
+
+    ref.read(userNotificationUnreadProvider.notifier).update((state) => 0);
   }
 }
