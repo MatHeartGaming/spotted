@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
@@ -49,10 +51,7 @@ class UserNotification {
           (map['date_created'] as Timestamp?)?.toDate() ?? DateTime.now(),
       postId: map['post_id'],
       clicked: map['clicked'] as bool,
-      type:
-          map['type'].toString() == UserNotificationType.Comment.name
-              ? UserNotificationType.Comment
-              : UserNotificationType.Unknown,
+      type: UserNotificationTypeX.fromString(map['type'] as String?),
     );
   }
 
@@ -106,4 +105,16 @@ class UserNotification {
   }
 }
 
-enum UserNotificationType { Comment, Unknown }
+enum UserNotificationType { Comment, Follow, Unknown }
+
+extension UserNotificationTypeX on UserNotificationType {
+  /// Parse a Firestore‐stored string back into the enum,
+  /// defaulting to `Unknown` if the value isn’t recognized.
+  static UserNotificationType fromString(String? value) {
+    if (value == null) return UserNotificationType.Unknown;
+    return UserNotificationType.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => UserNotificationType.Unknown,
+    );
+  }
+}

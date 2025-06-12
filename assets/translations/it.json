@@ -156,6 +156,7 @@
     "user_notifications_screen_no_notifications_texts": "Non ci sono notifiche. Interagisci con altri utenti!",
     "user_notifications_screen_user_has_commented_text": "{} ha commentato il post {}",
     "user_notifications_screen_user_has_posted_text": "{} ha postato su {}",
+    "user_notifications_screen_user_started_following_you_text": "{} ha iniziato a seguirti!",
 
     "drawer_following_count": "Mi seguono: {}",
     "drawer_profile_item": "Profilo",

@@ -1,15 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/config/config.dart';
-import 'package:spotted/config/helpers/haptic_feedback.dart';
 import 'package:spotted/domain/models/user_notification.dart';
 import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/providers/user_notifications/load_user_notifications.dart';
-import 'package:spotted/presentation/providers/users/signed_in_user_provider.dart';
-import 'package:spotted/presentation/widgets/shared/loading_default_widget.dart';
-import 'package:spotted/presentation/widgets/shared/user_notification/user_notification_item.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 class NotificationScreen extends ConsumerStatefulWidget {
@@ -44,7 +42,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
       return LoadingDefaultWidget();
     }
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text('app_bar_notifications_btn_tooltip').tr()),
       body:
           notificationState.userNotifications.isEmpty
               ? Center(
@@ -63,15 +61,37 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                   return UserNotificationItem(
                     notificationItem: notification,
                     onNotificationTapped:
-                        () => _notificationTapAction(notification.postId),
+                        () => _notificationTapAction(
+                          type: notification.type,
+                          postId: notification.postId,
+                          userId: notification.senderId,
+                        ),
                   );
                 },
               ),
     );
   }
 
-  void _notificationTapAction(String postId) {
+  void _notificationTapAction({
+    required UserNotificationType type,
+    required String postId,
+    required String userId,
+  }) {
+    switch (type) {
+      case UserNotificationType.Comment:
+        _notificationTypeCommentAction(postId);
+        break;
+      case UserNotificationType.Follow:
+        _notificationTypeFollowAction(userId);
+        break;
+      case UserNotificationType.Unknown:
+        break;
+    }
+  }
+
+  void _notificationTypeCommentAction(String postId) {
     final postRepo = ref.read(postsRepositoryProvider);
+
     postRepo.getPostById(postId).then((postInvolved) {
       if (postInvolved == null) {
         hardVibration();
@@ -88,6 +108,24 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
         postList: [postInvolved],
         searched: postInvolved.title,
       );
+    });
+  }
+
+  void _notificationTypeFollowAction(String userId) {
+    final userRepo = ref.read(usersRepositoryProvider);
+
+    userRepo.getUserById(userId).then((postInvolved) {
+      if (postInvolved == null) {
+        hardVibration();
+        showCustomSnackbar(
+          context,
+          'profile_screen_error_follow_btn_text'.tr(),
+          backgroundColor: colorNotOkButton,
+        );
+        return;
+      }
+      if (!context.mounted) return;
+      pushToProfileScreen(context, userId: userId);
     });
   }
 }

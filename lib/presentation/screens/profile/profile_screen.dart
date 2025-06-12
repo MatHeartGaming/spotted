@@ -90,11 +90,14 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
         }
       },
       child: Scaffold(
-        floatingActionButton: isUserYou ? AddFab(
-          onTap: () => _showAddPostOrCommunitySheet(),
-          heroTag: 1,
-          tooltip: 'add_fab_home_tooltip_text'.tr(),
-        ) : null,
+        floatingActionButton:
+            isUserYou
+                ? AddFab(
+                  onTap: () => _showAddPostOrCommunitySheet(),
+                  heroTag: 1,
+                  tooltip: 'add_fab_home_tooltip_text'.tr(),
+                )
+                : null,
         body: Stack(
           children: [
             NestedScrollView(
@@ -273,6 +276,8 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
 
   void _onFollowTapped() {
     final signedInUser = ref.read(signedInUserProvider);
+    if (signedInUser == null || signedInUser.isEmpty) return;
+    final userNotificationRepo = ref.read(userNotificationRepositoryProvider);
     final isUserYou = signedInUser == widget.user;
     if (isUserYou) return;
     final signedInuserFriendsNotifier = ref.read(
@@ -300,6 +305,18 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
               ),
               backgroundColor: colorSuccess,
             );
+
+            // User Notification
+            final newUserNotification = UserNotification(
+              senderId: signedInUser.id,
+              receiverId: widget.user.id,
+              postId: '',
+              content:
+                  'user_notifications_screen_user_started_following_you_text',
+              type: UserNotificationType.Follow,
+            );
+            userNotificationRepo.createUserNotification(newUserNotification);
+            
           } else {
             showCustomSnackbar(
               context,
