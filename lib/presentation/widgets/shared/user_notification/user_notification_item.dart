@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotted/config/constants/app_constants.dart';
 import 'package:spotted/domain/models/models.dart' show UserNotification, User;
 import 'package:spotted/domain/models/user_notification.dart';
 import 'package:spotted/presentation/providers/providers.dart';
@@ -24,49 +25,57 @@ class UserNotificationItem extends ConsumerWidget {
     final colors = Theme.of(context).colorScheme;
 
     // If not clicked, use primaryContainer as card bg; otherwise default.
-    final cardColor = notificationItem.clicked
-        ? null
-        : colors.primaryContainer;
+    final cardColor = notificationItem.clicked ? null : colors.primaryContainer;
 
     return InkWell(
       onTap: onNotificationTapped,
       child: Card(
         color: cardColor,
         margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: senderFuture.maybeWhen(
-            data: (sender) => sender != null
-                ? _NotificationRow(
-                    sender: sender,
+          child:
+              notificationItem.senderId != anonymousText
+                  ? senderFuture.maybeWhen(
+                    data:
+                        (sender) =>
+                            sender != null
+                                ? _NotificationRow(
+                                  sender: sender,
+                                  content: notificationItem.content,
+                                  postId: notificationItem.postId,
+                                  type: notificationItem.type,
+                                )
+                                : const SizedBox.shrink(),
+                    orElse: () => const SizedBox.shrink(),
+                  )
+                  : _NotificationRow(
+                    sender: null,
                     content: notificationItem.content,
                     postId: notificationItem.postId,
                     type: notificationItem.type,
-                  )
-                : const SizedBox.shrink(),
-            orElse: () => const SizedBox.shrink(),
-          ),
+                    isAnonymous: true,
+                  ),
         ),
       ),
     );
   }
 }
 
-
 class _NotificationRow extends ConsumerWidget {
-  final User sender;
+  final User? sender;
   final String content;
   final String postId;
   final UserNotificationType type;
+  final bool isAnonymous;
 
   const _NotificationRow({
     required this.sender,
     required this.content,
     required this.postId,
     required this.type,
+    this.isAnonymous = false,
   });
 
   @override
@@ -74,11 +83,11 @@ class _NotificationRow extends ConsumerWidget {
     final textStyle = Theme.of(context).textTheme.bodyMedium!;
     // Fast path for “Follow” notifications
     if (type == UserNotificationType.Follow) {
-      final msg = content.tr(args: [sender.atUsername]);
+      final msg = content.tr(args: [sender?.atUsername ?? '']);
       return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CirclePicture(urlPicture: sender.profileImageUrl, width: 50),
+          CirclePicture(urlPicture: sender?.profileImageUrl ?? '', width: 50),
           const SizedBox(width: 8),
           Flexible(child: Text(msg, style: textStyle)),
         ],
@@ -90,13 +99,21 @@ class _NotificationRow extends ConsumerWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CirclePicture(urlPicture: sender.profileImageUrl, width: 50),
+        isAnonymous
+            ? Icon(anonymousIcon)
+            : CirclePicture(
+              urlPicture: sender?.profileImageUrl ?? '',
+              width: 50,
+            ),
         const SizedBox(width: 8),
         Flexible(
           child: postByIdFuture.maybeWhen(
             data: (post) {
               final msg = content.tr(
-                args: [sender.atUsername, post?.title ?? ''],
+                args: [
+                  isAnonymous ? anonymousText : sender?.atUsername ?? '',
+                  post?.title ?? '',
+                ],
               );
               return Text(msg, style: textStyle, softWrap: true);
             },

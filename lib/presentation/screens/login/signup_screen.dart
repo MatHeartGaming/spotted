@@ -274,6 +274,19 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
     final signedInUserNotifier = ref.read(signedInUserProvider.notifier);
     final colors = Theme.of(ref.context).colorScheme;
 
+    if (signupFormState.username.value.trim().toLowerCase() ==
+        anonymousText.trim().toLowerCase()) {
+      hardVibration();
+      showCustomSnackbar(
+        ref.context,
+        'login_screen_username_already_exists_snackbar'.tr(
+          args: [signupFormState.username.value],
+        ),
+        backgroundColor: colors.error,
+      );
+      return;
+    }
+
     signupFormNotifier.onSubmit(
       onPasswordMismatch: () {
         showCustomSnackbar(

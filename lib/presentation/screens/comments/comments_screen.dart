@@ -236,7 +236,10 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
 
               // User Notification
               final userNotification = UserNotification(
-                senderId: signedInUser.id,
+                senderId:
+                    commentsFormState.isAnonymous
+                        ? anonymousText
+                        : signedInUser.id,
                 receiverId: widget.post.createdById,
                 postId: widget.post.id,
                 content: "user_notifications_screen_user_has_commented_text",

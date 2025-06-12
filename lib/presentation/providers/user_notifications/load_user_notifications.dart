@@ -23,9 +23,9 @@ class LoadUserNotificationsNotifier
   LoadUserNotificationsNotifier(this._userNotificationRepository)
     : super(LoadUserNotificationsState());
 
-  Future<List<UserNotification>> getUserNotifications(String userId) async {
+  Future<List<UserNotification>> getUserNotifications(String userId, [bool? refresh]) async {
     if (state.isLoadingUserNotifications) return state.userNotifications;
-    state = state.copyWith(isLoadingUserNotifications: true);
+    state = state.copyWith(isLoadingUserNotifications: refresh ?? true);
 
     final userNotifications = await _userNotificationRepository
         .getNotificationsByReceiverId(userId);

@@ -21,16 +21,16 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   @override
   void initState() {
     super.initState();
-    _initNotifications();
+    _initNotifications(refresh: true);
   }
 
-  Future<void> _initNotifications() async {
+  Future<void> _initNotifications({bool refresh = false}) async {
     Future(() {
       final signedInUser = ref.read(signedInUserProvider);
       if (signedInUser == null || signedInUser.isEmpty) return;
       ref
           .read(loadUserNotificationsProvider.notifier)
-          .getUserNotifications(signedInUser.id);
+          .getUserNotifications(signedInUser.id, refresh);
       _getUnreadNotifications(signedInUser.id);
     });
   }
