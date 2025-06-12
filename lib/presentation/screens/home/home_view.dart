@@ -60,15 +60,12 @@ class HomeViewState extends ConsumerState<HomeView>
           ),
         ),
 
-        // We remove `appBar:` here and build our own “collapsible” bar inside the body.
         body: Column(
           children: [
-            // 1. AnimatedContainer that shrinks height to 0 when `hideAppbar == true`.
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               // When hideAppbar is true, height=0. Otherwise 50 + top padding.
               height: hideAppbar ? 0 : 50,
-              // Clip it so the HomeAppBar doesn’t overflow while collapsing.
               child: ClipRect(
                 child: Align(
                   alignment: Alignment.topCenter,
@@ -89,7 +86,6 @@ class HomeViewState extends ConsumerState<HomeView>
               ),
             ),
 
-            // 2. Expanded ListView: when AnimatedContainer height goes to 0, this expands upward.
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
