@@ -175,7 +175,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     await Future.wait(futures);
 
     // Reload the notifications
-    await notifier.getUserNotifications(signedInUser.id);
+    await notifier.getUserNotifications(signedInUser.id, false);
 
     ref.read(userNotificationUnreadProvider.notifier).update((state) => 0);
   }
