@@ -8,6 +8,7 @@ export 'package:spotted/domain/datasources/feature_datasource.dart';
 export 'package:spotted/domain/datasources/interest_datasource.dart';
 export 'package:spotted/domain/datasources/user_notification_datasource.dart';
 export 'package:spotted/domain/datasources/services/load_images_datasource.dart';
+export 'package:spotted/domain/datasources/chat/chat_datasource.dart';
 
 // Exceptions
 export 'package:spotted/domain/datasources/exceptions/community_exceptions.dart';

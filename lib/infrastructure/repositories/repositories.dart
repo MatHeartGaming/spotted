@@ -7,3 +7,4 @@ export 'package:spotted/infrastructure/repositories/feature_repository_impl.dart
 export 'package:spotted/infrastructure/repositories/interest_repository_impl.dart';
 export 'package:spotted/infrastructure/repositories/user_notification_repository_impl.dart';
 export 'package:spotted/infrastructure/repositories/services/load_images_repository_impl.dart';
+export 'package:spotted/infrastructure/repositories/chat/chat_repository.dart';
