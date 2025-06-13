@@ -157,6 +157,15 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                                 ),
                               ),
 
+                              if (!isUserYou) ...[
+                                IconButton.filledTonal(
+                                  onPressed: () {
+                                    _startChatAction();
+                                  },
+                                  icon: Icon(Icons.message_outlined),
+                                ),
+                              ],
+
                               if (isUserYou)
                                 Visibility(
                                   visible: isUserYou,
@@ -274,6 +283,18 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
     );
   }
 
+  Future<void> _startChatAction() async {
+    final signedInUser = ref.read(signedInUserProvider);
+    if (signedInUser == null || signedInUser.isEmpty) {
+      return;
+    }
+    final convo = await ref
+        .read(chatRepositoryProvider)
+        .getOrCreateDirectChat(signedInUser.id, widget.user.id);
+
+    pushToChatScreen(context, convo.id);
+  }
+
   void _onFollowTapped() {
     final signedInUser = ref.read(signedInUserProvider);
     if (signedInUser == null || signedInUser.isEmpty) return;
@@ -316,7 +337,6 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
               type: UserNotificationType.Follow,
             );
             userNotificationRepo.createUserNotification(newUserNotification);
-            
           } else {
             showCustomSnackbar(
               context,

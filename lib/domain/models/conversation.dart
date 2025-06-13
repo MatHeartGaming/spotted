@@ -13,7 +13,7 @@ class Conversation {
   final ChatType type;
   final String? groupName;
   final String? groupImageUrl;
-  final ChatMessage? lastMessage;
+  final ChatMessageModel? lastMessage;
   final DateTime lastUpdatedAt;
   final Map<String, DateTime> lastRead; // userId -> timestamp
   final List<String> typing; // userIds currently typing
@@ -30,6 +30,20 @@ class Conversation {
     required this.typing,
   });
 
+  Conversation.empty({
+    this.id = '',
+    this.participantIds = const [],
+    this.type = ChatType.direct,
+    this.groupName = '',
+    this.groupImageUrl = '',
+    ChatMessageModel? lastMessage,
+    DateTime? lastUpdatedAt,
+    Map<String, DateTime>? lastRead,
+    this.typing = const [],
+  }) : lastMessage = lastMessage ?? ChatMessageModel.empty(),
+       lastUpdatedAt = lastUpdatedAt ?? DateTime.now(),
+       lastRead = lastRead ?? Map.from({});
+
   factory Conversation.fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data()!;
     return Conversation(
@@ -43,7 +57,7 @@ class Conversation {
       groupImageUrl: data['groupImageUrl'] as String?,
       lastMessage:
           data['lastMessage'] != null
-              ? ChatMessage.fromMap(
+              ? ChatMessageModel.fromMap(
                 Map<String, dynamic>.from(data['lastMessage'] as Map),
                 doc.id,
               )
@@ -75,7 +89,7 @@ class Conversation {
     ChatType? type,
     String? groupName,
     String? groupImageUrl,
-    ChatMessage? lastMessage,
+    ChatMessageModel? lastMessage,
     DateTime? lastUpdatedAt,
     Map<String, DateTime>? lastRead,
     List<String>? typing,
@@ -96,9 +110,8 @@ class Conversation {
   @override
   bool operator ==(covariant Conversation other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id;
+
+    return other.id == id;
   }
 
   @override
@@ -108,7 +121,7 @@ class Conversation {
 }
 
 // Message model
-class ChatMessage {
+class ChatMessageModel {
   final String id;
   final String conversationId;
   final String senderId;
@@ -118,29 +131,43 @@ class ChatMessage {
   final MessageStatus status;
   final String? imageUrl;
 
-  ChatMessage({
+  ChatMessageModel({
     required this.id,
     required this.conversationId,
     required this.senderId,
     this.text,
-    required this.timestamp,
+    DateTime? timestamp,
     required this.type,
     this.status = MessageStatus.sent,
     this.imageUrl,
-  });
+  })  : timestamp = timestamp ?? DateTime.now();
+
+  ChatMessageModel.empty({
+    this.id = '',
+    this.conversationId = '',
+    this.senderId = '',
+    this.text = '',
+    DateTime? timestamp,
+    this.type = MessageType.text,
+    this.status = MessageStatus.sent,
+    this.imageUrl,
+  }) : timestamp = timestamp ?? DateTime.now();
 
   /// For Firestore documents
-  factory ChatMessage.fromDoc(
+  factory ChatMessageModel.fromDoc(
     DocumentSnapshot<Map<String, dynamic>> doc,
     String conversationId,
   ) {
     final data = doc.data()!;
-    return ChatMessage.fromMap({...data, 'id': doc.id}, conversationId);
+    return ChatMessageModel.fromMap({...data, 'id': doc.id}, conversationId);
   }
 
   /// For embedded lastMessage maps
-  factory ChatMessage.fromMap(Map<String, dynamic> map, String conversationId) {
-    return ChatMessage(
+  factory ChatMessageModel.fromMap(
+    Map<String, dynamic> map,
+    String conversationId,
+  ) {
+    return ChatMessageModel(
       id: map['id'] as String,
       conversationId: conversationId,
       senderId: map['senderId'] as String,
@@ -152,7 +179,7 @@ class ChatMessage {
     );
   }
 
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'senderId': senderId,
     if (text != null) 'text': text,
     if (imageUrl != null) 'imageUrl': imageUrl,
@@ -184,7 +211,7 @@ class ChatMessage {
     }
   }
 
-  ChatMessage copyWith({
+  ChatMessageModel copyWith({
     String? id,
     String? conversationId,
     String? senderId,
@@ -194,7 +221,7 @@ class ChatMessage {
     MessageStatus? status,
     String? imageUrl,
   }) {
-    return ChatMessage(
+    return ChatMessageModel(
       id: id ?? this.id,
       conversationId: conversationId ?? this.conversationId,
       senderId: senderId ?? this.senderId,
@@ -207,11 +234,10 @@ class ChatMessage {
   }
 
   @override
-  bool operator ==(covariant ChatMessage other) {
+  bool operator ==(covariant ChatMessageModel other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id;
+
+    return other.id == id;
   }
 
   @override

@@ -3,16 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/presentation/screens/screens.dart';
 
 class ChatHandlerScreen extends ConsumerStatefulWidget {
-  final String user1Id;
-  final String user2Id;
+  final String conversationId;
 
   static const name = 'ChatHandlerScreen';
 
-  const ChatHandlerScreen({
-    super.key,
-    required this.user1Id,
-    required this.user2Id,
-  });
+  const ChatHandlerScreen({super.key, required this.conversationId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -22,6 +17,6 @@ class ChatHandlerScreen extends ConsumerStatefulWidget {
 class _ChatHandlerScreenState extends ConsumerState<ChatHandlerScreen> {
   @override
   Widget build(BuildContext context) {
-    return ChatsScreen();
+    return ChatScreen(conversationId: widget.conversationId,);
   }
 }

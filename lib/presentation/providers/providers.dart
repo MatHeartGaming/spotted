@@ -76,3 +76,4 @@ export 'package:spotted/presentation/providers/user_notifications/load_user_noti
 // Chat
 export 'package:spotted/presentation/providers/chat/chat_repository_provider.dart';
 export 'package:spotted/presentation/providers/chat/conversations_provider.dart';
+export 'package:spotted/presentation/providers/chat/load_chats_provider.dart';

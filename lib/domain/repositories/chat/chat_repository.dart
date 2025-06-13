@@ -5,9 +5,9 @@ abstract class ChatRepository {
 
   Future<Conversation?> createConversation(Conversation convo);
 
-  Stream<List<ChatMessage>> watchMessages(String conversationId);
+  Stream<List<ChatMessageModel>> watchMessages(String conversationId);
 
-  Future<ChatMessage?> sendMessage(ChatMessage message);
+  Future<ChatMessageModel?> sendMessage(ChatMessageModel message);
 
   Future<void> setTyping(String conversationId, List<String> users);
 
@@ -16,4 +16,6 @@ abstract class ChatRepository {
     String userId,
     DateTime timestamp,
   );
+  Future<Conversation> getOrCreateDirectChat(String userA, String userB);
+  Future<Conversation> getConversation(String id);
 }

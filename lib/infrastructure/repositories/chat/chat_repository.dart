@@ -17,11 +17,11 @@ class ChatRepositoryImpl implements ChatRepository {
       _datasource.createConversation(convo);
 
   @override
-  Stream<List<ChatMessage>> watchMessages(String conversationId) =>
+  Stream<List<ChatMessageModel>> watchMessages(String conversationId) =>
       _datasource.getMessages(conversationId);
 
   @override
-  Future<ChatMessage?> sendMessage(ChatMessage message) =>
+  Future<ChatMessageModel?> sendMessage(ChatMessageModel message) =>
       _datasource.sendMessage(message);
 
   @override
@@ -34,4 +34,14 @@ class ChatRepositoryImpl implements ChatRepository {
     String userId,
     DateTime timestamp,
   ) => _datasource.updateLastRead(conversationId, userId, timestamp);
+
+  @override
+  Future<Conversation> getOrCreateDirectChat(String userA, String userB) {
+    return _datasource.getOrCreateDirectChat(userA, userB);
+  }
+
+  @override
+  Future<Conversation> getConversation(String id) {
+    return _datasource.getConversation(id);
+  }
 }

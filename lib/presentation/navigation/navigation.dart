@@ -8,6 +8,11 @@ void pushToChatsScreen(BuildContext context) {
   context.push(chatsPath);
 }
 
+void pushToChatScreen(BuildContext context, String conversationId) {
+  if (!context.mounted) return;
+  context.push('$chatPath/$conversationId');
+}
+
 void goToHomeScreenUsingContext(BuildContext context) {
   if (!context.mounted) return;
   context.go(basePath);

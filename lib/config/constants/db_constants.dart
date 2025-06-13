@@ -8,6 +8,7 @@ class FirestoreDbCollections {
   static const String comments = 'Comments';
   static const String communities = 'Communities';
   static const String appConfigs = 'AppConfigs';
+  static const String conversations = 'Conversations';
   
   // Field keys
   static const String defaultConfigs = 'DefaultConfigs';

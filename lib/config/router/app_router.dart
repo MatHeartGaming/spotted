@@ -138,19 +138,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
       GoRoute(
         name: ChatHandlerScreen.name,
-        path: chatPath,
+        path: '$chatPath/:conversation_id',
         builder: (context, state) {
-          Map<String, dynamic>? mapExtras =
-              state.extra as Map<String, dynamic>?;
           String? id =
-              state.pathParameters.containsKey('')
-                  ? state.pathParameters[''].toString()
+              state.pathParameters.containsKey('conversation_id')
+                  ? state.pathParameters['conversation_id'].toString()
                   : 'no-id';
 
           if (id == 'no-id') {}
           return ChatHandlerScreen(
-            user1Id: mapExtras?['user1Id'] ?? '',
-            user2Id: mapExtras?['user2Id'] ?? '',
+            conversationId: id,
           );
         },
       ),

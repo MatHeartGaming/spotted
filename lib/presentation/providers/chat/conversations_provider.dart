@@ -8,14 +8,14 @@ final conversationsProvider = StreamProvider.autoDispose
     });
 
 final messagesProvider = StreamProvider.autoDispose
-    .family<List<ChatMessage>, String>((ref, convoId) {
+    .family<List<ChatMessageModel>, String>((ref, convoId) {
       return ref.read(chatRepositoryProvider).watchMessages(convoId);
     });
 
 /// Action provider to send a message
 final sendMessageProvider = Provider(
   (ref) =>
-      (ChatMessage msg) => ref.read(chatRepositoryProvider).sendMessage(msg),
+      (ChatMessageModel msg) => ref.read(chatRepositoryProvider).sendMessage(msg),
 );
 
 /// Action provider to update typing status
