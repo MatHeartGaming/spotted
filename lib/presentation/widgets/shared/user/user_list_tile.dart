@@ -4,7 +4,7 @@ import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 class UserListTile extends StatelessWidget {
-  final User user;
+  final UserModel user;
   final VoidCallback? onTap;
   const UserListTile({super.key, required this.user, this.onTap});
 

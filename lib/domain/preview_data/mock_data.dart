@@ -23,7 +23,7 @@ final List<Interest> mockInterests = [
 ];
 
 final mockUsers = [
-  User(
+  UserModel(
     id: '1',
     email: 'user0@example.com',
     name: 'Name0',
@@ -46,7 +46,7 @@ final mockUsers = [
     comments: ['6274f327-2dd2-4960-bb4d-894aadbc13e3'],
     reactions: {},
   ),
-  User(
+  UserModel(
     id: '2',
     email: 'user1@example.com',
     name: 'Name1',
@@ -66,7 +66,7 @@ final mockUsers = [
     comments: ['de48f182-a226-4ccd-bbec-c0e5ec0d96cf'],
     reactions: {},
   ),
-  User(
+  UserModel(
     id: '3',
     email: 'user2@example.com',
     name: 'Name2',
@@ -86,7 +86,7 @@ final mockUsers = [
     comments: ['e3ad6295-2936-4610-a1e0-ce285363edf7'],
     reactions: {},
   ),
-  User(
+  UserModel(
     id: 'user_001',
     email: 'jane.doe@example.com',
     name: 'Jane',
@@ -103,7 +103,7 @@ final mockUsers = [
     comments: ['comment_001'],
     reactions: {'post_002': '👍'},
   ),
-  User(
+  UserModel(
     id: 'user_002',
     email: 'john.smith@example.com',
     name: 'John',
@@ -120,7 +120,7 @@ final mockUsers = [
     comments: ['comment_002'],
     reactions: {'post_001': '💕'},
   ),
-  User(
+  UserModel(
     id: 'user_003',
     email: 'emma.lee@example.com',
     name: 'Emma',

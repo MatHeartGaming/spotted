@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:spotted/domain/models/user.dart';
 
-typedef UserItemBuilder = Widget Function(User u);
+typedef UserItemBuilder = Widget Function(UserModel u);
 
 class HorizontalProductList extends StatelessWidget {
-  final List<User> usersList;
-  final Function(User) onItemTap;
+  final List<UserModel> usersList;
+  final Function(UserModel) onItemTap;
   final UserItemBuilder sectionItemBuilder;
   final EdgeInsetsGeometry? padding;
   final double? width;
@@ -32,7 +32,7 @@ class HorizontalProductList extends StatelessWidget {
         padding: padding,
         scrollDirection: Axis.horizontal,
         prototypeItem: GestureDetector(
-          child: sectionItemBuilder(User.empty()),
+          child: sectionItemBuilder(UserModel.empty()),
         ),
         itemBuilder: (context, index) {
           final p = usersList[index];

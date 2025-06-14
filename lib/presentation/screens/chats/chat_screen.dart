@@ -3,8 +3,12 @@ import 'package:flutter_chat_core/flutter_chat_core.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotted/domain/models/conversation.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:spotted/domain/models/models.dart';
+import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
+import 'package:spotted/presentation/widgets/widgets.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String conversationId;
@@ -21,13 +25,25 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    _initConversation();
   }
 
   void _initConversation() {
     Future(() {
+      final signedInUser = ref.read(signedInUserProvider);
+      if (signedInUser == null || signedInUser.isEmpty) return;
       ref
           .read(loadChatProvider.notifier)
-          .initConversation(widget.conversationId);
+          .initConversation(widget.conversationId)
+          .then((conv) {
+            final otherUserIdIndex = conv.participantIds.indexWhere(
+              (element) => element != signedInUser.id,
+            );
+            if (otherUserIdIndex == -1) return;
+            ref
+                .read(loadChatProvider.notifier)
+                .loadOtherUser(conv.participantIds[otherUserIdIndex]);
+          });
     });
   }
 
@@ -38,14 +54,20 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final chatCtrl = chatState.chatController;
     final isDark = ref.watch(isDarkModeProvider);
 
-    // Listen to chatCtrl.messages or chatCtrl.operationsStream...
-
-    final messagesAsync = ref.watch(messagesProvider(widget.conversationId));
+    final otherUser = chatState.otherUser;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Chat')),
+      appBar: AppBar(
+        title: GestureDetector(
+          onTap: () => pushToProfileScreen(context, user: otherUser),
+          child: Text(otherUser.atUsername),
+        ),
+        leading: _backButton(chatState, signedInUser!, otherUser),
+        leadingWidth: 100,
+      ),
       body: Chat(
-        currentUserId: signedInUser?.id ?? '',
+        chatController: chatCtrl,
+        currentUserId: signedInUser.id,
         theme: isDark ? ChatTheme.dark() : ChatTheme.light(),
         resolveUser: (id) async {
           return User(id: id);
@@ -53,7 +75,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         onMessageSend: (text) {
           _sendMessage(text);
         },
-        chatController: chatCtrl,
+        builders: Builders(),
       ),
     );
   }
@@ -70,5 +92,34 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       text: message,
     );
     chatNotifier.sendMessage(newMessage);
+  }
+
+  Widget _backButton(
+    LoadChatState chatState,
+    UserModel signedInUser,
+    UserModel otherUser,
+  ) {
+    return Padding(
+      padding: EdgeInsetsGeometry.all(0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          IconButton(
+            onPressed: () => context.pop(),
+            icon: Icon(FontAwesomeIcons.chevronLeft),
+          ),
+
+          GestureDetector(
+            onTap: () => pushToProfileScreen(context, user: otherUser),
+            child: CirclePicture(
+              urlPicture: otherUser.profileImageUrl,
+              minRadius: 20,
+              maxRadius: 20,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

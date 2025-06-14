@@ -11,7 +11,7 @@ class ProfileHandlerScreen extends ConsumerStatefulWidget {
 
   final String? userId;
   final String? username;
-  final User? user;
+  final UserModel? user;
 
   const ProfileHandlerScreen({
     super.key,

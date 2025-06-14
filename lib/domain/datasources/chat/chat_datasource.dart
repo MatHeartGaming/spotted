@@ -12,7 +12,7 @@ abstract class ChatDatasource {
   Future<void> updateConversation(Conversation conversation);
 
   /// Streams messages for a specific conversation.
-  Stream<List<ChatMessageModel>> getMessages(String conversationId);
+  Stream<List<ChatMessageModel>> watchMessages(String conversationId);
 
   /// Sends a new message (adds to subcollection).
   Future<ChatMessageModel?> sendMessage(ChatMessageModel message);

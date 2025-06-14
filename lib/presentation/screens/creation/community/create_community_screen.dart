@@ -190,7 +190,7 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     return HorizontalProductList(
       usersList: [
         ...usersFound,
-        User.empty(
+        UserModel.empty(
           name: 'Mat',
           surname: 'B',
           username: 'Mammmdfdfddfd',

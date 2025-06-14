@@ -39,9 +39,9 @@ class LoadPostsNotifier extends StateNotifier<LoadPostsState> {
   LoadPostsNotifier(this._ref, this._postsRepository) : super(LoadPostsState());
 
   /// Helper: get the current signed-in user whenever we need it.
-  User get _signedInUser {
+  UserModel get _signedInUser {
     // We use `read` instead of `watch` to avoid rebuilding the notifier itself.
-    return _ref.read(signedInUserProvider) ?? User.empty();
+    return _ref.read(signedInUserProvider) ?? UserModel.empty();
   }
 
   Future<List<Post>> loadPostedByFriendsId() async {

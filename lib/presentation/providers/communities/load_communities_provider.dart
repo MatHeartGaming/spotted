@@ -18,14 +18,14 @@ final loadCommunitiesProvider =
       final signedInUser = ref.watch(signedInUserProvider);
       final loadCommunityNotifier = LoadCommunitiesNotifier(
         communityRepo,
-        signedInUser ?? User.empty(),
+        signedInUser ?? UserModel.empty(),
       );
       return loadCommunityNotifier;
     });
 
 class LoadCommunitiesNotifier extends StateNotifier<LoadCommunitiesState> {
   final CommunityRepository _communityRepository;
-  final User _signedInUser;
+  final UserModel _signedInUser;
 
   LoadCommunitiesNotifier(this._communityRepository, this._signedInUser)
     : super(LoadCommunitiesState());

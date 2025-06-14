@@ -93,6 +93,6 @@ class FriendsListScreen extends ConsumerWidget {
 
   Widget _prototypeUserInfoRow() => SizedBox(
     height: 60,
-    child: UserInfoRow(onTap: () {}, user: User.empty()),
+    child: UserInfoRow(onTap: () {}, user: UserModel.empty()),
   );
 }

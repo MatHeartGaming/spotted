@@ -50,7 +50,7 @@ void pushToCreateCommunityScreen(BuildContext context, {Community? community}) {
 
 void pushToProfileScreen(
   BuildContext context, {
-  User? user,
+  UserModel? user,
   String userId = 'no-id',
   String? username,
 }) {

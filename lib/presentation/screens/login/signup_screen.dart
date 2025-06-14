@@ -324,7 +324,7 @@ class SignupScreenState extends ConsumerState<SignupScreen> {
             if (uid == null) return false;
 
             // 2) Now build our domain‐level User and try to persist to Firestore:
-            final newUser = User(
+            final newUser = UserModel(
               id: uid,
               name: signupFormState.name.value,
               surname: signupFormState.surname.value,

@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 
 import 'package:spotted/config/constants/app_constants.dart';
 
-class User {
+class UserModel {
   final String id;
   final String email;
   final String name;
@@ -20,12 +20,12 @@ class User {
   final List<String> communitiesSubs;
   final List<String> friendsRefs;
   final List<String> interestsRefs;
-  final List<User> friends;
+  final List<UserModel> friends;
   final List<String> posted;
   final List<String> comments;
   final Map<String, String> reactions;
 
-  User({
+  UserModel({
     String? id,
     required this.email,
     required this.name,
@@ -46,7 +46,7 @@ class User {
   }) : id = id ?? const Uuid().v6(),
        dateCreated = dateCreated ?? DateTime.now();
 
-  User.empty({
+  UserModel.empty({
     String? id,
     this.email = '',
     this.name = '',
@@ -76,7 +76,7 @@ class User {
   String get atUsername => '@$username';
 
   @override
-  bool operator ==(covariant User other) {
+  bool operator ==(covariant UserModel other) {
     if (identical(this, other)) return true;
 
     return other.id == id;
@@ -87,7 +87,7 @@ class User {
     return id.hashCode;
   }
 
-  factory User.fromFirestore(
+  factory UserModel.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   ) {
@@ -96,7 +96,7 @@ class User {
       (key, value) => MapEntry(key.toString(), value.toString()),
     );
     logger.i('Reactions: $map');
-    return User(
+    return UserModel(
       id: map['id'],
       email: map['email'] as String,
       name: map['name'] as String,
@@ -155,11 +155,11 @@ class User {
     };
   }
 
-  factory User.fromMap(Map<String, dynamic> map) {
+  factory UserModel.fromMap(Map<String, dynamic> map) {
     final reactionsMap = (map['reactions'] as Map).map(
       (key, value) => MapEntry(key.toString(), value.toString()),
     );
-    return User(
+    return UserModel(
       id: map['id'] as String,
       email: map['email'] as String,
       name: map['name'] as String,
@@ -199,10 +199,10 @@ class User {
 
   String toJson() => json.encode(toMap());
 
-  factory User.fromJson(String source) =>
-      User.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
-  User copyWith({
+  UserModel copyWith({
     String? id,
     String? email,
     String? name,
@@ -216,12 +216,12 @@ class User {
     List<String>? communitiesSubs,
     List<String>? friendsRefs,
     List<String>? interestsRefs,
-    List<User>? friends,
+    List<UserModel>? friends,
     List<String>? posted,
     List<String>? comments,
     Map<String, String>? reactions,
   }) {
-    return User(
+    return UserModel(
       id: id ?? this.id,
       email: email ?? this.email,
       name: name ?? this.name,

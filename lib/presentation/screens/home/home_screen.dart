@@ -67,7 +67,7 @@ class HomeScreenState extends ConsumerState<HomeScreen>
   Widget build(BuildContext context) {
     final signedInUser =
         ref.watch(signedInUserProvider) ??
-        User.empty(dateCreated: DateTime.now());
+        UserModel.empty(dateCreated: DateTime.now());
     final viewRoutes = [
       widget.homeView,
       widget.exploreView,

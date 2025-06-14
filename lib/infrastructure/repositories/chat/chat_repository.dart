@@ -18,7 +18,7 @@ class ChatRepositoryImpl implements ChatRepository {
 
   @override
   Stream<List<ChatMessageModel>> watchMessages(String conversationId) =>
-      _datasource.getMessages(conversationId);
+      _datasource.watchMessages(conversationId);
 
   @override
   Future<ChatMessageModel?> sendMessage(ChatMessageModel message) =>

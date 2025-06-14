@@ -8,7 +8,7 @@ import 'package:spotted/presentation/widgets/widgets.dart';
 /// A widget that displays a Post along with its author information.
 class PostWidget extends ConsumerWidget {
   final Post post;
-  final User author;
+  final UserModel author;
   final String? reaction;
   final VoidCallback? onCommunityTapped;
   final VoidCallback onUserInfoTapped;

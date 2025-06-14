@@ -16,7 +16,7 @@ import 'package:transparent_image/transparent_image.dart';
 class VerifyEmailScreen extends ConsumerStatefulWidget {
   static const name = 'VerifyEmailScreen';
 
-  final User user;
+  final UserModel user;
 
   const VerifyEmailScreen({super.key, required this.user});
 

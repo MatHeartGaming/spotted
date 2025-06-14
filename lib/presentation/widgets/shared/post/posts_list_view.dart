@@ -8,7 +8,7 @@ import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 typedef CommunityTapCallback = void Function(Post post);
-typedef UserTapCallback = void Function(User user);
+typedef UserTapCallback = void Function(UserModel user);
 typedef ReactionCallback = FutureOr<void> Function(Post post, String reaction);
 typedef ContextMenuCallback = void Function(Post post, MenuItem item);
 typedef CommentTapCallback = void Function(Post post);

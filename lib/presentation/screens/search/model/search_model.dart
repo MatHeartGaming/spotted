@@ -2,7 +2,7 @@
 import 'package:spotted/domain/models/models.dart';
 
 class SearchModel {
-  final User? user;
+  final UserModel? user;
   final Post? post;
   final Community? community;
 
@@ -29,7 +29,7 @@ class SearchModel {
   String toString() => 'SearchModel(user: $user, post: $post, community: $community)';
 
   SearchModel copyWith({
-    User? user,
+    UserModel? user,
     Post? post,
     Community? community,
   }) {

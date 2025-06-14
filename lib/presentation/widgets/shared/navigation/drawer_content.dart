@@ -10,7 +10,7 @@ import 'package:spotted/presentation/screens/screens.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
 
 class DrawerContent extends ConsumerWidget {
-  final User user;
+  final UserModel user;
 
   const DrawerContent({super.key, required this.user});
 

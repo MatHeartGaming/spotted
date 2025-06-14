@@ -6,7 +6,7 @@ import 'package:spotted/domain/preview_data/mock_data.dart';
 
 class UsersDatasourceMockImpl implements UsersDatasource {
   @override
-  Future<User?> createUser(User user, String uid) async {
+  Future<UserModel?> createUser(UserModel user, String uid) async {
     var rng = Random();
     int randomTime = rng.nextInt(300);
     return await Future.delayed(Duration(milliseconds: randomTime), () {
@@ -16,7 +16,7 @@ class UsersDatasourceMockImpl implements UsersDatasource {
   }
 
   @override
-  Future<User?> updateUser(User user) async {
+  Future<UserModel?> updateUser(UserModel user) async {
     final rng = Random();
     final randomTime = rng.nextInt(300);
 
@@ -34,7 +34,7 @@ class UsersDatasourceMockImpl implements UsersDatasource {
   }
 
   @override
-  Future<List<User>> getAllUsers() async {
+  Future<List<UserModel>> getAllUsers() async {
     var rng = Random();
     int randomTime = rng.nextInt(500);
     return await Future.delayed(
@@ -44,16 +44,16 @@ class UsersDatasourceMockImpl implements UsersDatasource {
   }
 
   @override
-  Future<List<User>?> getUsersById(List<String> listRef) async {
-    List<Future<User?>> futures = [];
+  Future<List<UserModel>?> getUsersById(List<String> listRef) async {
+    List<Future<UserModel?>> futures = [];
 
     for (String r in listRef) {
-      Future<User?> future = getUserById(r);
+      Future<UserModel?> future = getUserById(r);
       futures.add(future);
     }
-    List<User?> list = await Future.wait(futures);
-    List<User> nonNullUsers = [];
-    for (User? c in list) {
+    List<UserModel?> list = await Future.wait(futures);
+    List<UserModel> nonNullUsers = [];
+    for (UserModel? c in list) {
       if (c != null) {
         nonNullUsers.add(c);
       }
@@ -62,7 +62,7 @@ class UsersDatasourceMockImpl implements UsersDatasource {
   }
 
   @override
-  Future<User?> getUserById(String id) async {
+  Future<UserModel?> getUserById(String id) async {
     var rng = Random();
     int randomTime = rng.nextInt(300);
     return await Future.delayed(Duration(milliseconds: randomTime), () {
@@ -78,7 +78,7 @@ class UsersDatasourceMockImpl implements UsersDatasource {
   }
 
   @override
-  Future<User?> getUserByUsername(String username) async {
+  Future<UserModel?> getUserByUsername(String username) async {
     var rng = Random();
     int randomTime = rng.nextInt(300);
     return await Future.delayed(
@@ -88,7 +88,7 @@ class UsersDatasourceMockImpl implements UsersDatasource {
   }
 
   @override
-  Future<List<User>?> getUsersByUsername(String username) async {
+  Future<List<UserModel>?> getUsersByUsername(String username) async {
     var rng = Random();
     int randomTime = rng.nextInt(300);
     return await Future.delayed(
@@ -105,7 +105,7 @@ class UsersDatasourceMockImpl implements UsersDatasource {
   }
 
   @override
-  Future<User?> getUserByEmail(String email) async {
+  Future<UserModel?> getUserByEmail(String email) async {
     var rng = Random();
     int randomTime = rng.nextInt(300);
     return await Future.delayed(
@@ -115,7 +115,7 @@ class UsersDatasourceMockImpl implements UsersDatasource {
   }
 
   @override
-  Future<bool> deleteUserById(User user) async {
+  Future<bool> deleteUserById(UserModel user) async {
     var rng = Random();
     int randomTime = rng.nextInt(300);
     return await Future.delayed(Duration(milliseconds: randomTime), () {

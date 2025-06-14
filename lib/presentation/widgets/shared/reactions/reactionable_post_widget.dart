@@ -12,7 +12,7 @@ import 'package:spotted/presentation/widgets/widgets.dart';
 class ReactionablePostWidget extends ConsumerWidget {
   final bool isLiked;
   final Post post;
-  final User author;
+  final UserModel author;
   final String? reaction;
   final VoidCallback onUserInfoTapped;
   final VoidCallback onCommentTapped;

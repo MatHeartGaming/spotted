@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 
-final ownerUsersSearchBarProvider = StateProvider.autoDispose<List<User>>((
+final ownerUsersSearchBarProvider = StateProvider.autoDispose<List<UserModel>>((
   ref,
 ) {
   final text = ref.watch(communityUsersSearchBarTextProvider);

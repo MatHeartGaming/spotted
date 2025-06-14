@@ -10,47 +10,47 @@ class UsersRepositoryImplementation implements UsersRepository {
     : _db = db ?? UsersDatasourceMockImpl();
 
   @override
-  Future<List<User>> getAllUsers() {
+  Future<List<UserModel>> getAllUsers() {
     return _db.getAllUsers();
   }
 
   @override
-  Future<User?> getUserByEmail(String email) {
+  Future<UserModel?> getUserByEmail(String email) {
     return _db.getUserByEmail(email);
   }
 
   @override
-  Future<User?> getUserById(String id) {
+  Future<UserModel?> getUserById(String id) {
     return _db.getUserById(id);
   }
 
   @override
-  Future<User?> getUserByUsername(String username) {
+  Future<UserModel?> getUserByUsername(String username) {
     return _db.getUserByUsername(username);
   }
 
   @override
-  Future<User?> createUser(User user, String uid) {
+  Future<UserModel?> createUser(UserModel user, String uid) {
     return _db.createUser(user, uid);
   }
 
   @override
-  Future<void> updateUser(User user) {
+  Future<void> updateUser(UserModel user) {
     return _db.updateUser(user);
   }
 
   @override
-  Future<List<User>?> getUsersById(List<String> listRef) {
+  Future<List<UserModel>?> getUsersById(List<String> listRef) {
     return _db.getUsersById(listRef);
   }
 
   @override
-  Future<bool> deleteUserById(User user) {
+  Future<bool> deleteUserById(UserModel user) {
     return _db.deleteUserById(user);
   }
 
   @override
-  Future<List<User>?> getUsersByUsername(String username) {
+  Future<List<UserModel>?> getUsersByUsername(String username) {
     return _db.getUsersByUsername(username);
   }
 

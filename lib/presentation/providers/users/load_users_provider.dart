@@ -7,8 +7,8 @@ import 'package:spotted/domain/repositories/repositories.dart';
 import 'package:spotted/infrastructure/datasources/datasources.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 
-final userScreenCurrentUserProvider = StateProvider.autoDispose<User>((ref) {
-  return User.empty();
+final userScreenCurrentUserProvider = StateProvider.autoDispose<UserModel>((ref) {
+  return UserModel.empty();
 });
 
 final loadUserProvider =
@@ -22,9 +22,9 @@ class LoadUserNotifier extends StateNotifier<LoadUserState> {
   final UsersRepository _usersRepository;
 
   LoadUserNotifier(this._usersRepository)
-    : super(LoadUserState(userForProfileScreen: User.empty()));
+    : super(LoadUserState(userForProfileScreen: UserModel.empty()));
 
-  Future<User?> loadUserById(String userId) async {
+  Future<UserModel?> loadUserById(String userId) async {
     if (state.isLoadingUser) return state.userForProfileScreen;
     state = state.copyWith(isLoadingUser: true);
     final userById = await _usersRepository.getUserById(userId);
@@ -35,7 +35,7 @@ class LoadUserNotifier extends StateNotifier<LoadUserState> {
     return userById;
   }
 
-  Future<User?> loadUserByUsername(String username) async {
+  Future<UserModel?> loadUserByUsername(String username) async {
     if (state.isLoadingUser) return state.userForProfileScreen;
     state = state.copyWith(isLoadingUser: true);
     final userById = await _usersRepository.getUserByUsername(username);
@@ -46,16 +46,16 @@ class LoadUserNotifier extends StateNotifier<LoadUserState> {
     return userById;
   }
 
-  Future<void> updateUser(User user) async {
+  Future<void> updateUser(UserModel user) async {
     await _usersRepository.updateUser(user);
   }
 
-  Future<List<User>> getUsersById(List<String> userRefs) async {
+  Future<List<UserModel>> getUsersById(List<String> userRefs) async {
     final users = await _usersRepository.getUsersById(userRefs);
     return users ?? [];
   }
 
-  Future<User?> createUser({required User user, required String authId}) async {
+  Future<UserModel?> createUser({required UserModel user, required String authId}) async {
     try {
       final newUser = await _usersRepository.createUser(user, authId);
       return newUser;
@@ -77,7 +77,7 @@ class LoadUserNotifier extends StateNotifier<LoadUserState> {
 }
 
 class LoadUserState {
-  final User userForProfileScreen;
+  final UserModel userForProfileScreen;
   final bool isLoadingUser;
 
   LoadUserState({
@@ -96,7 +96,7 @@ class LoadUserState {
   @override
   int get hashCode => userForProfileScreen.hashCode ^ isLoadingUser.hashCode;
 
-  LoadUserState copyWith({User? userForProfileScreen, bool? isLoadingUser}) {
+  LoadUserState copyWith({UserModel? userForProfileScreen, bool? isLoadingUser}) {
     return LoadUserState(
       userForProfileScreen: userForProfileScreen ?? this.userForProfileScreen,
       isLoadingUser: isLoadingUser ?? this.isLoadingUser,

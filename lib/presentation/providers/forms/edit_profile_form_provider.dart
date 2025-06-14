@@ -45,7 +45,7 @@ class EditProfileNotifierNotifier extends StateNotifier<EditProfileFormState> {
     super.dispose();
   }
 
-  void initFormField(User user) {
+  void initFormField(UserModel user) {
     state.nameController?.text = user.name;
     state.surnameController?.text = user.surname;
     state.emailController?.text = user.email;

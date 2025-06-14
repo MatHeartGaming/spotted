@@ -5,7 +5,7 @@ import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/widgets/shared/user/user_info_row.dart';
 
 class UsersListScreen extends ConsumerWidget {
-  final List<User> users;
+  final List<UserModel> users;
 
   const UsersListScreen({
     super.key,
@@ -33,6 +33,6 @@ class UsersListScreen extends ConsumerWidget {
 
   SizedBox prorotypeUserInfoRow() => SizedBox(
     height: 60,
-    child: UserInfoRow(onTap: () {}, user: User.empty()),
+    child: UserInfoRow(onTap: () {}, user: UserModel.empty()),
   );
 }

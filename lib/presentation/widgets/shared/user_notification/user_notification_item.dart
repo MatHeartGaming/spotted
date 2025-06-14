@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotted/config/constants/app_constants.dart';
-import 'package:spotted/domain/models/models.dart' show UserNotification, User;
+import 'package:spotted/domain/models/models.dart' show UserNotification, UserModel;
 import 'package:spotted/domain/models/user_notification.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 import 'package:spotted/presentation/widgets/widgets.dart';
@@ -64,7 +64,7 @@ class UserNotificationItem extends ConsumerWidget {
 }
 
 class _NotificationRow extends ConsumerWidget {
-  final User? sender;
+  final UserModel? sender;
   final String content;
   final String postId;
   final UserNotificationType type;

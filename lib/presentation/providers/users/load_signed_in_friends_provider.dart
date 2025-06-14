@@ -12,7 +12,7 @@ final loadSignedInFriendsProvider = StateNotifierProvider<
   LoadSignedInFriendsUserState
 >((ref) {
   final usersRepo = ref.watch(usersRepositoryProvider);
-  final signedInUser = ref.watch(signedInUserProvider) ?? User.empty();
+  final signedInUser = ref.watch(signedInUserProvider) ?? UserModel.empty();
   final userNotifier = LoadSignedInFriendsNotifier(usersRepo, signedInUser);
   return userNotifier;
 });
@@ -20,7 +20,7 @@ final loadSignedInFriendsProvider = StateNotifierProvider<
 class LoadSignedInFriendsNotifier
     extends StateNotifier<LoadSignedInFriendsUserState> {
   final UsersRepository _usersRepository;
-  final User _signedInUser;
+  final UserModel _signedInUser;
 
   LoadSignedInFriendsNotifier(this._usersRepository, this._signedInUser)
     : super(
@@ -29,7 +29,7 @@ class LoadSignedInFriendsNotifier
         ),
       );
 
-  Future<List<User>?> loadUserSignedInUserFriends() async {
+  Future<List<UserModel>?> loadUserSignedInUserFriends() async {
     if (state.isLoadingSignedInUserFriendsList) {
       return state.signedInUserFriendsList;
     }
@@ -45,7 +45,7 @@ class LoadSignedInFriendsNotifier
     return friends;
   }
 
-  Future<(User?, bool)> addOrRemoveSignedInUserFriend(String friendRef) async {
+  Future<(UserModel?, bool)> addOrRemoveSignedInUserFriend(String friendRef) async {
     List<String> newFriendList = List.from(_signedInUser.friendsRefs);
     final indexFriend = newFriendList.indexOf(friendRef);
     bool isAdd = true;
@@ -69,19 +69,19 @@ class LoadSignedInFriendsNotifier
     return (updatedUser, isAdd);
   }
 
-  Future<User?> updateUser(User user) async {
+  Future<UserModel?> updateUser(UserModel user) async {
     await _usersRepository.updateUser(user);
     return user;
   }
 
-  Future<List<User>> getUsersById(List<String> userRefs) async {
+  Future<List<UserModel>> getUsersById(List<String> userRefs) async {
     final users = await _usersRepository.getUsersById(userRefs);
     return users ?? [];
   }
 }
 
 class LoadSignedInFriendsUserState {
-  final List<User> signedInUserFriendsList;
+  final List<UserModel> signedInUserFriendsList;
   final bool isLoadingSignedInUserFriendsList;
 
   LoadSignedInFriendsUserState({
@@ -104,7 +104,7 @@ class LoadSignedInFriendsUserState {
       isLoadingSignedInUserFriendsList.hashCode;
 
   LoadSignedInFriendsUserState copyWith({
-    List<User>? signedInUserFriendsList,
+    List<UserModel>? signedInUserFriendsList,
     bool? isLoadingSignedInUserFriendsList,
   }) {
     return LoadSignedInFriendsUserState(

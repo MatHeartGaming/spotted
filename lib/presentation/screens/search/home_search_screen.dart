@@ -131,7 +131,7 @@ class _HomeSearchScreenState extends ConsumerState<HomeSearchScreen> {
   }
 
   /// A little helper to show a section header + list of User tiles
-  Widget _buildUsersSection(List<User> users) {
+  Widget _buildUsersSection(List<UserModel> users) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

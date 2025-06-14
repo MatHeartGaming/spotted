@@ -7,23 +7,23 @@ import 'package:spotted/infrastructure/datasources/exceptions/user_exceptions.da
 class UsersDatasourceFirebaseImpl implements UsersDatasource {
   final _db = FirebaseFirestore.instance;
 
-  final CollectionReference<User> _usersRef = FirebaseFirestore
+  final CollectionReference<UserModel> _usersRef = FirebaseFirestore
       .instance
       .collection(FirestoreDbCollections.users)
-      .withConverter<User>(
-        fromFirestore: User.fromFirestore,
-        toFirestore: (User user, _) => user.toMap(),
+      .withConverter<UserModel>(
+        fromFirestore: UserModel.fromFirestore,
+        toFirestore: (UserModel user, _) => user.toMap(),
       );
 
   @override
-  Future<List<User>> getAllUsers() async {
-    List<User> result = [];
+  Future<List<UserModel>> getAllUsers() async {
+    List<UserModel> result = [];
     return await _db
         .collection(FirestoreDbCollections.users)
         .get()
         .then((querySnapshot) {
           for (var docSnapshot in querySnapshot.docs) {
-            final user = User.fromFirestore(docSnapshot, null);
+            final user = UserModel.fromFirestore(docSnapshot, null);
             result.add(user.copyWith(id: docSnapshot.id));
           }
           return result;
@@ -35,13 +35,13 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
   }
 
   @override
-  Future<User?> getUserByEmail(String email) async {
+  Future<UserModel?> getUserByEmail(String email) async {
     return await _db
         .collection(FirestoreDbCollections.users)
         .where('email', isEqualTo: email)
         .limit(1)
         .withConverter(
-          fromFirestore: User.fromFirestore,
+          fromFirestore: UserModel.fromFirestore,
           toFirestore: (user, options) => user.toMap(),
         )
         .get()
@@ -63,12 +63,12 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
   }
 
   @override
-  Future<User?> getUserById(String id) async {
+  Future<UserModel?> getUserById(String id) async {
     return await _db
         .collection(FirestoreDbCollections.users)
         .doc(id)
         .withConverter(
-          fromFirestore: User.fromFirestore,
+          fromFirestore: UserModel.fromFirestore,
           toFirestore: (user, options) => user.toMap(),
         )
         .get()
@@ -88,13 +88,13 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
   }
 
   @override
-  Future<User?> getUserByUsername(String username) async {
+  Future<UserModel?> getUserByUsername(String username) async {
     return await _db
         .collection(FirestoreDbCollections.users)
         .where('username', isEqualTo: username)
         .limit(1)
         .withConverter(
-          fromFirestore: User.fromFirestore,
+          fromFirestore: UserModel.fromFirestore,
           toFirestore: (user, options) => user.toMap(),
         )
         .get()
@@ -116,16 +116,16 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
   }
 
   @override
-  Future<List<User>?> getUsersByUsername(String username) async {
+  Future<List<UserModel>?> getUsersByUsername(String username) async {
     try {
       final querySnapshot =
           await _db
               .collection(FirestoreDbCollections.users)
               .where('username', isGreaterThanOrEqualTo: username)
               .where('username', isLessThan: '$username\uf8ff')
-              .withConverter<User>(
-                fromFirestore: User.fromFirestore,
-                toFirestore: (User u, _) => u.toMap(),
+              .withConverter<UserModel>(
+                fromFirestore: UserModel.fromFirestore,
+                toFirestore: (UserModel u, _) => u.toMap(),
               )
               .get();
 
@@ -134,7 +134,7 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
         return [];
       }
 
-      final List<User> users =
+      final List<UserModel> users =
           querySnapshot.docs
               .map((docSnap) => docSnap.data().copyWith(id: docSnap.id))
               .toList();
@@ -147,7 +147,7 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
   }
 
   @override
-  Future<User?> createUser(User user, String uid) async {
+  Future<UserModel?> createUser(UserModel user, String uid) async {
     // Prepare the “lookup” document references:
     final emailDocRef = _db
         .collection('user_emails')
@@ -166,7 +166,7 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
 
     try {
       // Run everything in one transaction so that “check & write” is atomic:
-      final createdUser = await _db.runTransaction<User?>((transaction) async {
+      final createdUser = await _db.runTransaction<UserModel?>((transaction) async {
         // 1) Read the email‐lookup document.
         final emailSnapshot = await transaction.get(emailDocRef);
         if (emailSnapshot.exists) {
@@ -215,7 +215,7 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
   }
 
   @override
-  Future<void> updateUser(User user) async {
+  Future<void> updateUser(UserModel user) async {
     await _db
         .collection(FirestoreDbCollections.users)
         .doc(user.id)
@@ -231,7 +231,7 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
   }
 
   @override
-  Future<List<User>?> getUsersById(List<String> listRef) async {
+  Future<List<UserModel>?> getUsersById(List<String> listRef) async {
     // If the list is empty, bail out early
     if (listRef.isEmpty) return [];
     assert(listRef.length <= 10, 'List of doc id must be at most 10!');
@@ -243,13 +243,13 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
           await _db
               .collection(FirestoreDbCollections.users)
               .where(FieldPath.documentId, whereIn: listRef)
-              .withConverter<User>(
-                fromFirestore: User.fromFirestore,
-                toFirestore: (User u, _) => u.toMap(),
+              .withConverter<UserModel>(
+                fromFirestore: UserModel.fromFirestore,
+                toFirestore: (UserModel u, _) => u.toMap(),
               )
               .get();
 
-      final List<User> users =
+      final List<UserModel> users =
           querySnapshot.docs
               .map((docSnap) => docSnap.data().copyWith(id: docSnap.id))
               .toList();
@@ -262,7 +262,7 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
   }
 
   @override
-  Future<bool> deleteUserById(User user) async {
+  Future<bool> deleteUserById(UserModel user) async {
     final exists = await userExists(user);
     if (!exists) return false;
     return await _db
@@ -279,7 +279,7 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
         });
   }
 
-  Future<bool> userExists(User user) async {
+  Future<bool> userExists(UserModel user) async {
     final emailExists = await getUserByUsername(user.email);
     if (emailExists != null) return true;
     final usernameExists = await getUserByUsername(user.username);

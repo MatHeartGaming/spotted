@@ -4,12 +4,12 @@ import 'package:spotted/presentation/providers/providers.dart';
 
 /// 1A) Search Users by a partial username (or however your repo does it)
 ///    Replace `.getUsersByUsernameContains(query)` with your own repo method.
-final searchUsersProvider = FutureProvider.family.autoDispose<List<User>, String>((
+final searchUsersProvider = FutureProvider.family.autoDispose<List<UserModel>, String>((
   ref,
   query,
 ) async {
   if (query.trim().isEmpty) {
-    return <User>[];
+    return <UserModel>[];
   }
   final usersRepo = ref.watch(usersRepositoryProvider);
   // Assume your UsersRepository has a method like:
@@ -17,7 +17,7 @@ final searchUsersProvider = FutureProvider.family.autoDispose<List<User>, String
   // If you only have `getUserByUsername(String)`, you can call that and
   // wrap in a one‐element list (or return empty if null). For demo:
   final matches = await usersRepo.getUsersByUsername(query);
-  return matches ?? <User>[];
+  return matches ?? <UserModel>[];
 });
 
 /// 1B) Search Posts by a partial title/content (adapt to your repo)

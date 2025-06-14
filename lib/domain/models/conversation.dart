@@ -180,6 +180,7 @@ class ChatMessageModel {
   }
 
   Map<String, Object?> toMap() => {
+    'id': id,
     'senderId': senderId,
     if (text != null) 'text': text,
     if (imageUrl != null) 'imageUrl': imageUrl,

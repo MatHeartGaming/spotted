@@ -14,7 +14,7 @@ import 'package:spotted/presentation/widgets/widgets.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
-  final User user;
+  final UserModel user;
   const ProfileScreen({super.key, required this.user});
   @override
   ProfileScreenState createState() => ProfileScreenState();
@@ -144,7 +144,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                                   onPressed: () => _onFollowTapped(),
                                   child:
                                       Text(
-                                        (signedInUser ?? User.empty())
+                                        (signedInUser ?? UserModel.empty())
                                                 .friendsRefs
                                                 .contains(widget.user.id)
                                             ? 'profile_screen_stop_follow_btn_text'

@@ -13,7 +13,7 @@ class UserInfoRow extends StatelessWidget {
   });
 
   final VoidCallback onTap;
-  final User user;
+  final UserModel user;
   final bool isAnonymousPost;
   final String? formattedDate;
 

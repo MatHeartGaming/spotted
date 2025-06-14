@@ -29,8 +29,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           Map<String, dynamic>? mapExtras =
               state.extra as Map<String, dynamic>?;
-          User? newUser = mapExtras?['newUser'] as User?;
-          final signedInUser = ref.read(signedInUserProvider) ?? User.empty();
+          UserModel? newUser = mapExtras?['newUser'] as UserModel?;
+          final signedInUser = ref.read(signedInUserProvider) ?? UserModel.empty();
           return VerifyEmailScreen(user: newUser ?? signedInUser);
         },
       ),
@@ -84,7 +84,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   : 'no-id';
 
           if (id == 'no-id') {
-            User? user = mapExtras?['user'];
+            UserModel? user = mapExtras?['user'];
             String? username = mapExtras?['username'];
             if (user == null && username == null) {
               final errorMsg = 'community_screen_user_not_found_error'.tr();

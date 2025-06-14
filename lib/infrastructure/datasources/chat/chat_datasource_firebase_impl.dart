@@ -66,11 +66,12 @@ class ChatDatasourceFirebaseImpl implements ChatDatasource {
       _convoRef.doc(conversation.id).set(conversation);
 
   @override
-  Stream<List<ChatMessageModel>> getMessages(String conversationId) {
-    return _msgRef(conversationId)
-        .orderBy('timestamp')
+  Stream<List<ChatMessageModel>> watchMessages(String conversationId) {
+    final messageStream = _msgRef(conversationId)
+        .orderBy('timestamp', descending: false)
         .snapshots()
         .map((snap) => snap.docs.map((d) => d.data()).toList());
+    return messageStream;
   }
 
   @override
