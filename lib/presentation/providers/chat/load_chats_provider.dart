@@ -8,7 +8,7 @@ import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/repositories/repositories.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 
-final loadChatProvider = StateNotifierProvider<LoadChatNotifier, LoadChatState>(
+final loadChatProvider = StateNotifierProvider.autoDispose<LoadChatNotifier, LoadChatState>(
   (ref) {
     final chatRepo = ref.watch(chatRepositoryProvider);
     final userRepo = ref.watch(usersRepositoryProvider);
@@ -39,6 +39,7 @@ class LoadChatNotifier extends StateNotifier<LoadChatState> {
     super.dispose();
   }
 
+  // ignore: unused_element
   UserModel get _signedInUser {
     // We use `read` instead of `watch` to avoid rebuilding the notifier itself.
     return _ref.read(signedInUserProvider) ?? UserModel.empty();
@@ -88,6 +89,16 @@ class LoadChatNotifier extends StateNotifier<LoadChatState> {
 
   Future<void> sendMessage(ChatMessageModel message) async {
     await _chatRepository.sendMessage(message);
+  }
+
+  Future markLastMessageAsRead() async {
+    if (state.conversation.lastMessage?.senderId == _signedInUser.id) return;
+    _chatRepository.updateLastRead(
+      state.conversation.id,
+      _signedInUser.id,
+      markAsRead: true,
+      DateTime.now(),
+    );
   }
 }
 

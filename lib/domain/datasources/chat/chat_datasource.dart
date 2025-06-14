@@ -24,10 +24,15 @@ abstract class ChatDatasource {
   Future<void> updateLastRead(
     String conversationId,
     String userId,
-    DateTime timestamp,
-  );
+    DateTime timestamp, {
+    bool markAsRead = false,
+  });
 
-  Future<Conversation> getOrCreateDirectChat(String userA, String userB);
+  Future<Conversation> getOrCreateDirectChat(
+    String userA,
+    String userB, {
+    bool isAnonymous = false,
+  });
 
   Future<Conversation> getConversation(String id);
 }

@@ -25,11 +25,12 @@ class ChatDatasourceFirebaseImpl implements ChatDatasource {
 
   @override
   Stream<List<Conversation>> getConversations(String userId) {
-    return _convoRef
+    final conversations = _convoRef
         .where('participantIds', arrayContains: userId)
         .orderBy('lastUpdatedAt', descending: true)
         .snapshots()
         .map((snap) => snap.docs.map((d) => d.data()).toList());
+    return conversations;
   }
 
   @override
@@ -102,18 +103,27 @@ class ChatDatasourceFirebaseImpl implements ChatDatasource {
   Future<void> updateLastRead(
     String conversationId,
     String userId,
-    DateTime timestamp,
-  ) => _convoRef.doc(conversationId).update({
-    'lastRead.$userId': Timestamp.fromDate(timestamp),
-  });
+    DateTime timestamp, {
+    bool markAsRead = false,
+  }) {
+    return _convoRef.doc(conversationId).update({
+      'lastRead.$userId': Timestamp.fromDate(timestamp),
+      if (markAsRead) 'lastMessage.status': 'read',
+    });
+  }
 
   @override
-  Future<Conversation> getOrCreateDirectChat(String userA, String userB) async {
+  Future<Conversation> getOrCreateDirectChat(
+    String userA,
+    String userB, {
+    bool isAnonymous = false,
+  }) async {
     // 1) Try to find an existing direct chat
     final snap =
         await _convoRef
             .where('type', isEqualTo: 'direct')
             .where('participantIds', arrayContains: userA)
+            .where('is_anonymous', isEqualTo: isAnonymous)
             .get();
     for (var doc in snap.docs) {
       final convo = doc.data();
@@ -134,6 +144,7 @@ class ChatDatasourceFirebaseImpl implements ChatDatasource {
       lastMessage: null,
       groupName: null,
       groupImageUrl: null,
+      isAnonymous: isAnonymous,
     );
 
     final created = await createConversation(newConvo);

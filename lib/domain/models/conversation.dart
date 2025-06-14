@@ -4,7 +4,7 @@ enum ChatType { direct, group }
 
 enum MessageType { text, image }
 
-enum MessageStatus { sent, delivered, read }
+enum MyMessageStatus { sent, delivered, read }
 
 // Conversation (room) model
 class Conversation {
@@ -17,6 +17,7 @@ class Conversation {
   final DateTime lastUpdatedAt;
   final Map<String, DateTime> lastRead; // userId -> timestamp
   final List<String> typing; // userIds currently typing
+  final bool isAnonymous;
 
   Conversation({
     required this.id,
@@ -28,6 +29,7 @@ class Conversation {
     required this.lastUpdatedAt,
     required this.lastRead,
     required this.typing,
+    this.isAnonymous = false,
   });
 
   Conversation.empty({
@@ -39,6 +41,7 @@ class Conversation {
     ChatMessageModel? lastMessage,
     DateTime? lastUpdatedAt,
     Map<String, DateTime>? lastRead,
+    this.isAnonymous = false,
     this.typing = const [],
   }) : lastMessage = lastMessage ?? ChatMessageModel.empty(),
        lastUpdatedAt = lastUpdatedAt ?? DateTime.now(),
@@ -69,6 +72,7 @@ class Conversation {
           ) ??
           {},
       typing: List<String>.from(data['typing'] ?? []),
+      isAnonymous: data['is_anonymous'] as bool? ?? false,
     );
   }
 
@@ -81,6 +85,7 @@ class Conversation {
     'lastUpdatedAt': Timestamp.fromDate(lastUpdatedAt),
     'lastRead': lastRead.map((k, v) => MapEntry(k, Timestamp.fromDate(v))),
     'typing': typing,
+    'is_anonymous': isAnonymous,
   };
 
   Conversation copyWith({
@@ -93,6 +98,7 @@ class Conversation {
     DateTime? lastUpdatedAt,
     Map<String, DateTime>? lastRead,
     List<String>? typing,
+    bool? isAnonymous,
   }) {
     return Conversation(
       id: id ?? this.id,
@@ -104,6 +110,7 @@ class Conversation {
       lastUpdatedAt: lastUpdatedAt ?? this.lastUpdatedAt,
       lastRead: lastRead ?? this.lastRead,
       typing: typing ?? this.typing,
+      isAnonymous: isAnonymous ?? this.isAnonymous,
     );
   }
 
@@ -128,7 +135,7 @@ class ChatMessageModel {
   final String? text;
   final DateTime timestamp;
   final MessageType type;
-  final MessageStatus status;
+  final MyMessageStatus status;
   final String? imageUrl;
 
   ChatMessageModel({
@@ -138,9 +145,9 @@ class ChatMessageModel {
     this.text,
     DateTime? timestamp,
     required this.type,
-    this.status = MessageStatus.sent,
+    this.status = MyMessageStatus.sent,
     this.imageUrl,
-  })  : timestamp = timestamp ?? DateTime.now();
+  }) : timestamp = timestamp ?? DateTime.now();
 
   ChatMessageModel.empty({
     this.id = '',
@@ -149,7 +156,7 @@ class ChatMessageModel {
     this.text = '',
     DateTime? timestamp,
     this.type = MessageType.text,
-    this.status = MessageStatus.sent,
+    this.status = MyMessageStatus.sent,
     this.imageUrl,
   }) : timestamp = timestamp ?? DateTime.now();
 
@@ -189,25 +196,25 @@ class ChatMessageModel {
     'status': _statusToString(status),
   };
 
-  static MessageStatus _statusFromString(String? s) {
+  static MyMessageStatus _statusFromString(String? s) {
     switch (s) {
       case 'delivered':
-        return MessageStatus.delivered;
+        return MyMessageStatus.delivered;
       case 'read':
-        return MessageStatus.read;
+        return MyMessageStatus.read;
       case 'sent':
       default:
-        return MessageStatus.sent;
+        return MyMessageStatus.sent;
     }
   }
 
-  static String _statusToString(MessageStatus status) {
+  static String _statusToString(MyMessageStatus status) {
     switch (status) {
-      case MessageStatus.delivered:
+      case MyMessageStatus.delivered:
         return 'delivered';
-      case MessageStatus.read:
+      case MyMessageStatus.read:
         return 'read';
-      case MessageStatus.sent:
+      case MyMessageStatus.sent:
         return 'sent';
     }
   }
@@ -219,7 +226,7 @@ class ChatMessageModel {
     String? text,
     DateTime? timestamp,
     MessageType? type,
-    MessageStatus? status,
+    MyMessageStatus? status,
     String? imageUrl,
   }) {
     return ChatMessageModel(

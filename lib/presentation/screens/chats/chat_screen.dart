@@ -5,6 +5,7 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spotted/config/config.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
@@ -32,17 +33,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     Future(() {
       final signedInUser = ref.read(signedInUserProvider);
       if (signedInUser == null || signedInUser.isEmpty) return;
-      ref
-          .read(loadChatProvider.notifier)
+      final chatNotifier = ref.read(loadChatProvider.notifier);
+      chatNotifier
           .initConversation(widget.conversationId)
           .then((conv) {
             final otherUserIdIndex = conv.participantIds.indexWhere(
               (element) => element != signedInUser.id,
             );
             if (otherUserIdIndex == -1) return;
-            ref
-                .read(loadChatProvider.notifier)
-                .loadOtherUser(conv.participantIds[otherUserIdIndex]);
+            chatNotifier.loadOtherUser(conv.participantIds[otherUserIdIndex]);
+          })
+          .then((value) {
+            chatNotifier.markLastMessageAsRead();
           });
     });
   }
@@ -52,15 +54,19 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final signedInUser = ref.watch(signedInUserProvider);
     final chatState = ref.watch(loadChatProvider);
     final chatCtrl = chatState.chatController;
-    final isDark = ref.watch(isDarkModeProvider);
+    final colors = Theme.of(context).colorScheme;
+    final texts = TextTheme.of(context);
 
     final otherUser = chatState.otherUser;
+    final conversation = chatState.conversation;
 
     return Scaffold(
       appBar: AppBar(
         title: GestureDetector(
           onTap: () => pushToProfileScreen(context, user: otherUser),
-          child: Text(otherUser.atUsername),
+          child: Text(
+            conversation.isAnonymous ? anonymousText : otherUser.atUsername,
+          ),
         ),
         leading: _backButton(chatState, signedInUser!, otherUser),
         leadingWidth: 100,
@@ -68,7 +74,27 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       body: Chat(
         chatController: chatCtrl,
         currentUserId: signedInUser.id,
-        theme: isDark ? ChatTheme.dark() : ChatTheme.light(),
+        theme: ChatTheme(
+          colors: ChatColors(
+            primary: colors.primary,
+            onPrimary: colors.onPrimary,
+            surface: colors.surface,
+            onSurface: colors.onSurface,
+            surfaceContainer: colors.surfaceContainer,
+            surfaceContainerLow: colors.surfaceContainerLow,
+            surfaceContainerHigh: colors.surfaceContainerHigh,
+          ),
+          typography: ChatTypography(
+            bodyLarge: texts.bodyLarge!,
+            bodyMedium: texts.bodyMedium!,
+            bodySmall: texts.bodySmall!,
+            labelLarge: texts.labelLarge!,
+            labelMedium: texts.labelMedium!,
+            labelSmall: texts.labelSmall!,
+          ),
+          shape: BorderRadiusGeometry.circular(10),
+        ),
+        userCache: UserCache(),
         resolveUser: (id) async {
           return User(id: id);
         },
@@ -99,6 +125,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     UserModel signedInUser,
     UserModel otherUser,
   ) {
+    final conversation = chatState.conversation;
     return Padding(
       padding: EdgeInsetsGeometry.all(0),
       child: Row(
@@ -112,11 +139,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
           GestureDetector(
             onTap: () => pushToProfileScreen(context, user: otherUser),
-            child: CirclePicture(
-              urlPicture: otherUser.profileImageUrl,
-              minRadius: 20,
-              maxRadius: 20,
-            ),
+            child:
+                conversation.isAnonymous
+                    ? Icon(anonymousIcon)
+                    : CirclePicture(
+                      urlPicture: otherUser.profileImageUrl,
+                      minRadius: 20,
+                      maxRadius: 20,
+                    ),
           ),
         ],
       ),

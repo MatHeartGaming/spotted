@@ -11,11 +11,16 @@ abstract class ChatRepository {
 
   Future<void> setTyping(String conversationId, List<String> users);
 
-  Future<void> markRead(
+  Future<void> updateLastRead(
     String conversationId,
     String userId,
-    DateTime timestamp,
-  );
-  Future<Conversation> getOrCreateDirectChat(String userA, String userB);
+    DateTime timestamp, {
+    bool markAsRead = false,
+  });
+  Future<Conversation> getOrCreateDirectChat(
+    String userA,
+    String userB, {
+    bool isAnonymous = false,
+  });
   Future<Conversation> getConversation(String id);
 }

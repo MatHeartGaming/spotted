@@ -115,6 +115,7 @@
     "profile_screen_error_follow_btn_text": "Qualcosa è andato storto... Riprova",
     "profile_screen_success_follow_btn_text": "Ora segui {}",
     "profile_screen_success_unfollow_btn_text": "Ora non segui più {}",
+    "chats_screen_app_bar_start_anonymous_chat_tooltip": "Inizia conversazione anonuma",
 
     "edit_info_screen_load_profile_pic_tooltip_text": "Carica foto profilo",
     "edit_info_screen_load_profile_pic_snackbar_text": "Carica una foto prodilo, per favore",
@@ -157,6 +158,11 @@
     "user_notifications_screen_user_has_commented_text": "{} ha commentato il post {}",
     "user_notifications_screen_user_has_posted_text": "{} ha postato su {}",
     "user_notifications_screen_user_started_following_you_text": "{} ha iniziato a seguirti!",
+
+    "chats_screen_app_bar_title": "Conversazioni",
+    "chats_screen_no_chats_yet": "Non ci sono conversazioni",
+    "chats_screen_group_chat_text": "Chat di gruppo",
+    "chats_screen_error_loading_chats": "Errore al caricare le chat...",
 
     "drawer_following_count": "Mi seguono: {}",
     "drawer_profile_item": "Profilo",

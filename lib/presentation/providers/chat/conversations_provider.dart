@@ -4,30 +4,30 @@ import 'package:spotted/presentation/providers/providers.dart';
 
 final conversationsProvider = StreamProvider.autoDispose
     .family<List<Conversation>, String>((ref, userId) {
-      return ref.read(chatRepositoryProvider).watchUserConversations(userId);
+      return ref.watch(chatRepositoryProvider).watchUserConversations(userId);
     });
 
 final messagesProvider = StreamProvider.autoDispose
     .family<List<ChatMessageModel>, String>((ref, convoId) {
-      return ref.read(chatRepositoryProvider).watchMessages(convoId);
+      return ref.watch(chatRepositoryProvider).watchMessages(convoId);
     });
 
 /// Action provider to send a message
 final sendMessageProvider = Provider(
   (ref) =>
-      (ChatMessageModel msg) => ref.read(chatRepositoryProvider).sendMessage(msg),
+      (ChatMessageModel msg) => ref.watch(chatRepositoryProvider).sendMessage(msg),
 );
 
 /// Action provider to update typing status
 final setTypingProvider = Provider(
   (ref) =>
       (String convoId, List<String> users) =>
-          ref.read(chatRepositoryProvider).setTyping(convoId, users),
+          ref.watch(chatRepositoryProvider).setTyping(convoId, users),
 );
 
 /// Action provider to mark messages read
 final markReadProvider = Provider(
   (ref) =>
       (String convoId, String userId, DateTime timestamp) =>
-          ref.read(chatRepositoryProvider).markRead(convoId, userId, timestamp),
+          ref.watch(chatRepositoryProvider).updateLastRead(convoId, userId, timestamp),
 );

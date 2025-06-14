@@ -29,15 +29,29 @@ class ChatRepositoryImpl implements ChatRepository {
       _datasource.updateTyping(conversationId, users);
 
   @override
-  Future<void> markRead(
+  Future<void> updateLastRead(
     String conversationId,
     String userId,
-    DateTime timestamp,
-  ) => _datasource.updateLastRead(conversationId, userId, timestamp);
+    DateTime timestamp, {
+    bool markAsRead = false,
+  }) => _datasource.updateLastRead(
+    conversationId,
+    userId,
+    timestamp,
+    markAsRead: markAsRead,
+  );
 
   @override
-  Future<Conversation> getOrCreateDirectChat(String userA, String userB) {
-    return _datasource.getOrCreateDirectChat(userA, userB);
+  Future<Conversation> getOrCreateDirectChat(
+    String userA,
+    String userB, {
+    bool isAnonymous = false,
+  }) {
+    return _datasource.getOrCreateDirectChat(
+      userA,
+      userB,
+      isAnonymous: isAnonymous,
+    );
   }
 
   @override

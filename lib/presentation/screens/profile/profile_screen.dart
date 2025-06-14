@@ -272,8 +272,9 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                   0,
                 ),
                 child: ProfileAppBar(
+                  showAnonymousChatButton: true,
                   onBackTapped: () => context.pop(),
-                  onMessageTapped: () => pushToChatsScreen(context),
+                  onMessageTapped: () => _startAnonymousChatAction(),
                 ),
               ),
             ),
@@ -291,6 +292,23 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
     final convo = await ref
         .read(chatRepositoryProvider)
         .getOrCreateDirectChat(signedInUser.id, widget.user.id);
+
+    pushToChatScreen(context, convo.id);
+  }
+
+  Future<void> _startAnonymousChatAction() async {
+    final signedInUser = ref.read(signedInUserProvider);
+    if (signedInUser == null || signedInUser.isEmpty) {
+      return;
+    }
+    mediumVibration();
+    final convo = await ref
+        .read(chatRepositoryProvider)
+        .getOrCreateDirectChat(
+          signedInUser.id,
+          widget.user.id,
+          isAnonymous: true,
+        );
 
     pushToChatScreen(context, convo.id);
   }
