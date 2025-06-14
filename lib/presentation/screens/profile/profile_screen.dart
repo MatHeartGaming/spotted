@@ -275,7 +275,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                   0,
                 ),
                 child: ProfileAppBar(
-                  showAnonymousChatButton: true,
+                  showAnonymousChatButton: !isUserYou,
                   onBackTapped: () => context.pop(),
                   onMessageTapped: () => _startAnonymousChatAction(),
                 ),

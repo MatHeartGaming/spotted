@@ -154,6 +154,14 @@ class EditProfileNotifierNotifier extends StateNotifier<EditProfileFormState> {
     state = state.copyWith(profileImageFile: file);
   }
 
+  void clearInterestsController() {
+    state.interestsController?.clear();
+  }
+
+  void clearFeatureController() {
+    state.featureController?.clear();
+  }
+
   void _validateForm() {
     List<FormzInput> fields = [
       state.name,

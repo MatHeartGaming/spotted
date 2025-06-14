@@ -233,6 +233,7 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
 
                 SizedBox(height: 10),
                 CustomTextFormField(
+                  controller: editProfileState.featureController,
                   label: 'edit_info_screen_features_text'.tr(),
                   formatter: FormInputFormatters.text,
                   icon: Icons.featured_play_list,
@@ -250,6 +251,9 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
                   },
                   onSubmitForm: (newFeature) {
                     _submitNewFeaureAction(loadFeaturesState, newFeature);
+                    ref
+                        .read(editProfileFormProvider.notifier)
+                        .clearFeatureController();
                   },
                 ),
 
@@ -298,6 +302,7 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
                 CustomTextFormField(
                   label: 'edit_info_screen_interests_text'.tr(),
                   formatter: FormInputFormatters.text,
+                  controller: editProfileState.interestsController,
                   icon: Icons.featured_play_list,
                   onChanged: (newValue) {
                     final interstsNotifier = ref.read(
@@ -313,6 +318,9 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
                   },
                   onSubmitForm: (newInterest) {
                     _submitNewInterestAction(loadInterestsState, newInterest);
+                    ref
+                        .read(editProfileFormProvider.notifier)
+                        .clearInterestsController();
                   },
                 ),
                 Text(
@@ -377,7 +385,9 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
                 ),
 
                 Visibility(
-                  visible: !context.canPop() && (signedInUser?.isProfileUrlValid ?? false),
+                  visible:
+                      !context.canPop() &&
+                      (signedInUser?.isProfileUrlValid ?? false),
                   child: TextButton(
                     onPressed: () => goToHomeScreenUsingContext(context),
                     child: Text('go_to_home_page_tooltip_text').tr(),
