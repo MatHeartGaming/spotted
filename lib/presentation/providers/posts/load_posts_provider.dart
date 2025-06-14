@@ -80,11 +80,16 @@ class LoadPostsNotifier extends StateNotifier<LoadPostsState> {
     return postedByMe;
   }
 
-  Future<List<Post>> loadPostsWithListRef(List<String> postRefs) async {
+  Future<List<Post>> loadPostsWithListRef(
+    List<String> postRefs, {
+    bool showAnonymousPosts = false,
+  }) async {
     final postedByMe = await _postsRepository.getPostsUsingUsersPostedIdList(
       postRefs,
     );
-    return postedByMe;
+    return postedByMe
+        .where((p) => p.isAnonymous == showAnonymousPosts)
+        .toList();
   }
 
   Future<Post?> updatePost(Post updatedPost) async {

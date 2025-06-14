@@ -32,18 +32,21 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
 
   Future<void> _initUserInfos() async {
     Future(() {
+      final signedInUser = ref.read(signedInUserProvider);
+      if (signedInUser == null) return;
+      final isOtherUserProfile = signedInUser != widget.user;
       ref
           .read(loadPostsProvider.notifier)
-          .loadPostsWithListRef(widget.user.posted)
+          .loadPostsWithListRef(
+            widget.user.posted,
+            showAnonymousPosts: !isOtherUserProfile,
+          )
           .then((postList) {
             ref
                 .read(currentProfilePostsProvider.notifier)
                 .update((state) => postList);
           });
 
-      final signedInUser = ref.read(signedInUserProvider);
-      if (signedInUser == null) return;
-      final isOtherUserProfile = signedInUser != widget.user;
       ref.read(editProfileFormProvider.notifier).initFormField(signedInUser);
       ref
           .read(featureRepositoryProvider)

@@ -34,7 +34,7 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
       final communityToUse = ref.read(communityScreenCurrentCommunityProvider);
       ref
           .read(loadPostsProvider.notifier)
-          .loadPostsWithListRef(communityToUse.postsRefs)
+          .loadPostsWithListRef(communityToUse.postsRefs, showAnonymousPosts: true)
           .then((posts) {
             ref
                 .read(communityScreenCurrentCommunityProvider.notifier)
