@@ -139,9 +139,13 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                           .removeImageAt(deleteIndex);
                     },
                     onImageTap:
-                        (index) => showImagesGalleryBytes(
+                        (index) => (communityFormState.imagesBytes?.isNotEmpty ?? false) ? showImagesGalleryBytes(
                           context,
                           communityFormState.imagesBytes ?? [],
+                          initialIndex: index,
+                        ) : showImagesUrl(
+                          context,
+                          communityFormState.imagesUrl ?? [],
                           initialIndex: index,
                         ),
                   ),
@@ -187,19 +191,13 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     final usersFound = ref.watch(ownerUsersSearchBarProvider);
     final communityFormState = ref.watch(createCommunityFormProvder);
 
-    return HorizontalProductList(
-      usersList: [
-        ...usersFound,
-        UserModel.empty(
-          name: 'Mat',
-          surname: 'B',
-          username: 'Mammmdfdfddfd',
-          email: 'm@ciao.com',
-        ),
-      ],
+    return HorizontalUsersList(
+      usersList: [...usersFound],
       onItemTap: (user) {
         if (!user.isEmpty) return;
-        ref.read(createCommunityFormProvder.notifier).onAddAdmin(user.id);
+        ref
+            .read(createCommunityFormProvder.notifier)
+            .onAddOrRemoveAdmin(user.id);
       },
       sectionItemBuilder: (user) {
         return UserMiniItem(
@@ -209,7 +207,9 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
           onTap: () {
             // only fire for non‐empty users
             if (!user.isEmpty) {
-              ref.read(createCommunityFormProvder.notifier).onAddAdmin(user.id);
+              ref
+                  .read(createCommunityFormProvder.notifier)
+                  .onAddOrRemoveAdmin(user.id);
             }
           },
         );

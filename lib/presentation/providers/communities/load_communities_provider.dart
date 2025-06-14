@@ -1,8 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotted/domain/datasources/datasources.dart';
 
+import 'package:spotted/domain/datasources/datasources.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/repositories/repositories.dart';
 import 'package:spotted/presentation/providers/providers.dart';
@@ -15,9 +15,11 @@ final communityScreenCurrentCommunityProvider =
 final loadCommunitiesProvider =
     StateNotifierProvider<LoadCommunitiesNotifier, LoadCommunitiesState>((ref) {
       final communityRepo = ref.watch(communityRepositoryProvider);
+      final userRepo = ref.watch(usersRepositoryProvider);
       final signedInUser = ref.watch(signedInUserProvider);
       final loadCommunityNotifier = LoadCommunitiesNotifier(
         communityRepo,
+        userRepo,
         signedInUser ?? UserModel.empty(),
       );
       return loadCommunityNotifier;
@@ -25,10 +27,14 @@ final loadCommunitiesProvider =
 
 class LoadCommunitiesNotifier extends StateNotifier<LoadCommunitiesState> {
   final CommunityRepository _communityRepository;
+  final UsersRepository _userRepository;
   final UserModel _signedInUser;
 
-  LoadCommunitiesNotifier(this._communityRepository, this._signedInUser)
-    : super(LoadCommunitiesState());
+  LoadCommunitiesNotifier(
+    this._communityRepository,
+    this._userRepository,
+    this._signedInUser,
+  ) : super(LoadCommunitiesState());
 
   Future<List<Community>?> loadUsersCommunities() async {
     if (state.isLoadingUsersCommunities) return state.usersCommunities;
@@ -43,6 +49,24 @@ class LoadCommunitiesNotifier extends StateNotifier<LoadCommunitiesState> {
     );
 
     return usersCommmunity;
+  }
+
+  Future<List<UserModel>> loadAdmins(List<String> adminsRef) async {
+    List<Future<UserModel?>> futures = [];
+    for (String ref in adminsRef) {
+      futures.add(_userRepository.getUserById(ref));
+    }
+    List<UserModel?> list = await Future.wait(futures);
+    List<UserModel> nonNullUsers = [];
+    for (UserModel? c in list) {
+      if (c != null) {
+        nonNullUsers.add(c);
+      }
+    }
+    state = state.copyWith(
+      admins: nonNullUsers,
+    );
+    return nonNullUsers;
   }
 
   Future<Community?> loadUsersCommunityById(String id) async {
@@ -103,7 +127,7 @@ class LoadCommunitiesNotifier extends StateNotifier<LoadCommunitiesState> {
       isUpdatingUsersCommunities: false,
       usersCommunities: updatedList,
     );
-  
+
     return community;
   }
 
@@ -160,11 +184,13 @@ class LoadCommunitiesNotifier extends StateNotifier<LoadCommunitiesState> {
 
 class LoadCommunitiesState {
   final List<Community> usersCommunities;
+  final List<UserModel> admins;
   final bool isLoadingUsersCommunities;
   final bool isUpdatingUsersCommunities;
 
   LoadCommunitiesState({
     this.usersCommunities = const [],
+    this.admins = const [],
     this.isLoadingUsersCommunities = false,
     this.isUpdatingUsersCommunities = false,
   });
@@ -186,11 +212,13 @@ class LoadCommunitiesState {
 
   LoadCommunitiesState copyWith({
     List<Community>? usersCommunities,
+    List<UserModel>? admins,
     bool? isLoadingUsersCommunities,
     bool? isUpdatingUsersCommunities,
   }) {
     return LoadCommunitiesState(
       usersCommunities: usersCommunities ?? this.usersCommunities,
+      admins: admins ?? this.admins,
       isLoadingUsersCommunities:
           isLoadingUsersCommunities ?? this.isLoadingUsersCommunities,
       isUpdatingUsersCommunities:

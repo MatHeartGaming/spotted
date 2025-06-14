@@ -3,7 +3,7 @@ import 'package:spotted/domain/models/user.dart';
 
 typedef UserItemBuilder = Widget Function(UserModel u);
 
-class HorizontalProductList extends StatelessWidget {
+class HorizontalUsersList extends StatelessWidget {
   final List<UserModel> usersList;
   final Function(UserModel) onItemTap;
   final UserItemBuilder sectionItemBuilder;
@@ -11,7 +11,7 @@ class HorizontalProductList extends StatelessWidget {
   final double? width;
   final double? height;
 
-  const HorizontalProductList({
+  const HorizontalUsersList({
     super.key,
     required this.usersList,
     required this.onItemTap,
@@ -31,9 +31,6 @@ class HorizontalProductList extends StatelessWidget {
         itemCount: usersList.length,
         padding: padding,
         scrollDirection: Axis.horizontal,
-        prototypeItem: GestureDetector(
-          child: sectionItemBuilder(UserModel.empty()),
-        ),
         itemBuilder: (context, index) {
           final p = usersList[index];
           return GestureDetector(

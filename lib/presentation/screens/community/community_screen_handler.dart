@@ -37,6 +37,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreenHandler> {
   void _fetchCommunity() {
     if (widget.community != null) {
       ref
+          .read(loadCommunitiesProvider.notifier)
+          .loadAdmins(widget.community?.admins ?? []);
+      ref
           .read(communityScreenCurrentCommunityProvider.notifier)
           .update((state) => widget.community!);
       return;
@@ -50,6 +53,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreenHandler> {
             ref
                 .read(communityScreenCurrentCommunityProvider.notifier)
                 .update((state) => communityFound);
+            ref
+                .read(loadCommunitiesProvider.notifier)
+                .loadAdmins(communityFound.admins);
           });
       return;
     }

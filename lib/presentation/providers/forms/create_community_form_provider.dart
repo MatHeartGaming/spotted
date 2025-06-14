@@ -86,10 +86,23 @@ class CreateCommunityNotifier extends StateNotifier<CreateCommunityFormState> {
     );
   }
 
-  void onAddAdmin(String newAdminRef) {
+  void _onAddAdmin(String newAdminRef) {
+    state = state.copyWith(adminsRefs: [...state.adminsRefs, newAdminRef]);
+  }
+
+  void _onRemoveAdmin(String adminRef) {
     state = state.copyWith(
-      adminsRefs: [...state.adminsRefs, newAdminRef],
+      adminsRefs:
+          state.adminsRefs.where((element) => element != adminRef).toList(),
     );
+  }
+
+  void onAddOrRemoveAdmin(String adminRef) {
+    if (!state.adminsRefs.contains(adminRef)) {
+      _onAddAdmin(adminRef);
+    } else {
+      _onRemoveAdmin(adminRef);
+    }
   }
 
   void imagesFilesChanged(XFile value) {
@@ -114,7 +127,7 @@ class CreateCommunityNotifier extends StateNotifier<CreateCommunityFormState> {
     if (index < 0) return;
 
     if (files.isNotEmpty) files.removeAt(index);
-    if(bytes.isNotEmpty) bytes.removeAt(index);
+    if (bytes.isNotEmpty) bytes.removeAt(index);
 
     if (urls.isNotEmpty) urls.removeAt(index);
 

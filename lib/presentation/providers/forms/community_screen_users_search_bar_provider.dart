@@ -12,7 +12,9 @@ final ownerUsersSearchBarProvider = StateProvider.autoDispose<List<UserModel>>((
       .read(loadSignedInFriendsProvider)
       .signedInUserFriendsList
       .where((f) => f != signedInUser);
-  return friends.where((f) => f.username.contains(searchText)).toList();
+  return friends
+      .where((f) => f.username.toLowerCase().contains(searchText))
+      .toList();
 });
 
 final communityUsersSearchBarTextProvider = StateProvider.autoDispose<String>((

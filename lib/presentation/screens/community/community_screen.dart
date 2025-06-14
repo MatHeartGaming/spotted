@@ -40,6 +40,9 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
                 .read(communityScreenCurrentCommunityProvider.notifier)
                 .update((state) => communityToUse.copyWith(posts: posts));
           });
+      ref
+          .read(loadCommunitiesProvider.notifier)
+          .loadAdmins(widget.community.admins);
     });
   }
 
@@ -58,6 +61,7 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
     final signedInUser = ref.watch(signedInUserProvider);
     final communityToUse = ref.watch(communityScreenCurrentCommunityProvider);
     final isUserAdmin = communityToUse.admins.contains(signedInUser?.id);
+    final loadCommunityState = ref.watch(loadCommunitiesProvider);
     if (communityToUse.isEmpty) {
       return LoadingDefaultWidget();
     }
@@ -148,6 +152,32 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
                               ),
                             ],
                           ),
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 4,
+                          horizontal: 8,
+                        ),
+                        child: Text(
+                          'admin_text',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ).tr(
+                          args: [loadCommunityState.admins.length.toString()],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                        child: HorizontalUsersList(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          usersList: loadCommunityState.admins,
+                          onItemTap:
+                              (user) =>
+                                  pushToProfileScreen(context, user: user),
+                          sectionItemBuilder: (u) {
+                            return _AdminItem(user: u);
+                          },
                         ),
                       ),
                       SizedBox(height: 20),
@@ -283,5 +313,27 @@ class CommunityScreenState extends ConsumerState<CommunityScreen>
         });
       });
     }
+  }
+}
+
+class _AdminItem extends StatelessWidget {
+  final UserModel user;
+
+  const _AdminItem({required this.user});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        spacing: 4,
+        children: [
+          CirclePicture(urlPicture: user.profileImageUrl, width: 30),
+          Text(user.atUsername),
+        ],
+      ),
+    );
   }
 }

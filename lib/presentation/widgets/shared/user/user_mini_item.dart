@@ -15,22 +15,21 @@ class UserMiniItem extends StatelessWidget {
     required this.username,
     this.isSelected = false,
     this.onTap,
-    this.width = 150,
+    this.width = 100,
   });
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: SizedBox(
-        width: width,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Card(
+    return SizedBox(
+      width: width,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          GestureDetector(
+            onTap: onTap,
+            child: Card(
               margin: const EdgeInsets.all(8),
               elevation: 4,
               shape: RoundedRectangleBorder(
@@ -64,18 +63,18 @@ class UserMiniItem extends StatelessWidget {
                 ),
               ),
             ),
-            if (isSelected)
-              Positioned(
-                top: 4,
-                right: 4,
-                child: Icon(
-                  Icons.check_circle,
-                  color: colors.primary,
-                  size: 18,
-                ),
+          ),
+          if (isSelected)
+            Positioned(
+              top: 10,
+              right: 10,
+              child: Icon(
+                Icons.check_circle,
+                color: colors.primary,
+                size: 18,
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
