@@ -85,7 +85,7 @@
     "create_post_screen_post_success_snackbar_text": "Post creato con successo!",
     "create_post_screen_post_error_snackbar_text": "Errore durante la creazione del post",
     "create_post_screen_post_anonymous_switch_text": "Pubblica anonimamente",
-    "create_post_screen_post_anonymous_dialog_text": "Ricorda che i post anonimi non possono essere eliminati.\nInoltre, ricorda che se che li vede segue pochi utenti, potrebbe essere facile risalire a chi abbia fatto la pubblicazione.",
+    "create_post_screen_post_anonymous_dialog_text": "Ricorda che se che vede un post anonimo segue pochi utenti, potrebbe essere facile risalire a chi abbia fatto la pubblicazione.",
 
     "post_text_copied_success_snackbar_text": "Testo del post copiato!",
     "post_delete_success_snackbar_text": "Post {} eliminato con successo!",
@@ -115,7 +115,7 @@
     "profile_screen_error_follow_btn_text": "Qualcosa è andato storto... Riprova",
     "profile_screen_success_follow_btn_text": "Ora segui {}",
     "profile_screen_success_unfollow_btn_text": "Ora non segui più {}",
-    "chats_screen_app_bar_start_anonymous_chat_tooltip": "Inizia conversazione anonuma",
+    "chats_screen_app_bar_start_anonymous_chat_tooltip": "Inizia conversazione anonima",
 
     "edit_info_screen_load_profile_pic_tooltip_text": "Carica foto profilo",
     "edit_info_screen_load_profile_pic_snackbar_text": "Carica una foto prodilo, per favore",

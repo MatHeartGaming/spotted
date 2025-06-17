@@ -93,6 +93,18 @@ class MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
     });
   }
 
+  /*void _getUnreadChats() {
+    final signedInUser = ref.read(signedInUserProvider);
+    if (signedInUser == null || signedInUser.isEmpty) return;
+    ref.listen(conversationsProvider(signedInUser.id), (previous, next) async {
+      final lastMsg = next.valueOrNull?.last.lastMessage;
+      final bool showBadge =
+          (lastMsg?.status != MyMessageStatus.read &&
+              lastMsg?.senderId != signedInUser.id);
+      ref.read(chatBottomBadgeProvider.notifier).update((state) => showBadge);
+    });
+  }*/
+
   void _updateAppThemePrimaryHexColor() {
     /*ref.read(appConfigsProvider.notifier).loadAppConfigs().then(
       (configs) {
@@ -125,6 +137,8 @@ class MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
     );*/
 
     //IosDeepLinksPlugin.setupIosDeepLinksAtLaunch(ref);
+
+   //_getUnreadChats();
 
     return MaterialApp.router(
       scaffoldMessengerKey: rootScaffoldMessengerKey,

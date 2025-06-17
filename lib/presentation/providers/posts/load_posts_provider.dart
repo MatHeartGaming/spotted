@@ -87,9 +87,10 @@ class LoadPostsNotifier extends StateNotifier<LoadPostsState> {
     final postedByMe = await _postsRepository.getPostsUsingUsersPostedIdList(
       postRefs,
     );
-    return postedByMe
-        .where((p) => p.isAnonymous == showAnonymousPosts)
-        .toList();
+    if (showAnonymousPosts) {
+      return postedByMe;
+    }
+    return postedByMe.where((p) => p.isAnonymous == false).toList();
   }
 
   Future<Post?> updatePost(Post updatedPost) async {

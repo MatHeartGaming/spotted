@@ -23,6 +23,8 @@ class AddProfileInfoScreen extends ConsumerStatefulWidget {
 }
 
 class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
+  bool _showGoToHomeButton = false;
+
   @override
   void initState() {
     super.initState();
@@ -387,7 +389,8 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
                 Visibility(
                   visible:
                       !context.canPop() &&
-                      (signedInUser?.isProfileUrlValid ?? false),
+                      ((signedInUser?.isProfileUrlValid ?? false) ||
+                          _showGoToHomeButton),
                   child: TextButton(
                     onPressed: () => goToHomeScreenUsingContext(context),
                     child: Text('go_to_home_page_tooltip_text').tr(),
@@ -626,6 +629,9 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
                   'edit_info_screen_update_success_snackbar'.tr(),
                   backgroundColor: colorSuccess,
                 );
+                setState(() {
+                  _showGoToHomeButton = true;
+                });
               })
               .whenComplete(() {
                 editProfileNotifier.resetFormStatus();

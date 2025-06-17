@@ -40,6 +40,7 @@ class CustomBottomNavigationBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final int unreadNotificatons = ref.watch(userNotificationUnreadProvider);
+    final bool showChatsbadge = ref.watch(chatBottomBadgeProvider);
 
     return TabBar(
       isScrollable: false,
@@ -53,7 +54,9 @@ class CustomBottomNavigationBar extends ConsumerWidget {
         ),
         Tab(icon: const Icon(Icons.explore), text: 'nav_bar_explore_item'.tr()),
         Tab(
-          icon: const Icon(FontAwesomeIcons.solidMessage),
+          icon: Badge(
+            isLabelVisible: showChatsbadge,
+            child: const Icon(FontAwesomeIcons.solidMessage)),
           text: 'app_bar_chats_btn_tooltip'.tr(),
         ),
         Tab(

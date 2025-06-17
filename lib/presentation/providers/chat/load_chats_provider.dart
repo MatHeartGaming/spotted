@@ -19,8 +19,7 @@ final loadChatProvider = StateNotifierProvider.autoDispose<LoadChatNotifier, Loa
 class LoadChatNotifier extends StateNotifier<LoadChatState> {
   final ChatRepository _chatRepository;
   final UsersRepository _userRepo;
-  final Ref
-  _ref; //! <–– In order to not trigger rebuilds of this Notifier and loose posts!!!
+  final Ref _ref;
   StreamSubscription<List<ChatMessageModel>>? _messagesSub;
 
   LoadChatNotifier(this._chatRepository, this._userRepo, this._ref)
