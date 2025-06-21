@@ -294,7 +294,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               return verifyEmailPath;
             }
 
-            if (authStatus == AuthStatus.authenticated) {
+            if (authStatus == AuthStatus.authenticated && emailVerified) {
               final signedInUser = ref.read(signedInUserProvider);
               if (!(signedInUser?.isProfileUrlValid ?? false)) {
                 return addProfileInfoPath;

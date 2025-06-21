@@ -130,6 +130,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                                     widget.user.completeName,
                                     style: texts.titleLarge?.copyWith(
                                       fontWeight: FontWeight.w600,
+                                      fontSize: 18
                                     ),
                                   ),
                                   Text(
@@ -156,7 +157,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen>
                                             )
                                             ? 'profile_screen_follow_you_too_btn_text'
                                             : 'profile_screen_follow_btn_text',
-                                      ).tr(),
+                                      style: TextStyle(fontSize: 11),).tr(),
                                 ),
                               ),
 

@@ -658,6 +658,9 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
           await userRepo
               .updateUser(updatedUser)
               .then((_) {
+                ref
+                    .read(signedInUserProvider.notifier)
+                    .update((state) => updatedUser);
                 showCustomSnackbar(
                   context,
                   'edit_info_screen_update_success_snackbar'.tr(),
