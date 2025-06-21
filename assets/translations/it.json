@@ -137,6 +137,7 @@
     "search_results_communities_header": "Risultati per Comunità",
 
     "friends_screen_title": "Persone che segui",
+    "friends_screen_no_friends": "Non segui nessuno",
     "friends_screen_confirm_delete_friend_dialog_title": "Attenzione",
     "friends_screen_confirm_delete_friend_dialog_message": "Stai per smettere di seguire {}. Sei sicuro?",
 
