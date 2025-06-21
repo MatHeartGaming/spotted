@@ -98,11 +98,20 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     );
   }
 
+  void _showLoadingSnackbar() {
+    showCustomSnackbar(
+      context,
+      'user_notifications_screen_loading_snackbar_text'.tr(),
+    );
+  }
+
   Future<void> _handleTap(
     BuildContext context,
     WidgetRef ref,
     UserNotification n,
   ) async {
+    _showLoadingSnackbar();
+    smallVibration();
     // 1) mark clicked
     final repo = ref.read(userNotificationRepositoryProvider);
     await repo.updateUserNotification(n.copyWith(clicked: true));
@@ -162,6 +171,8 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   Future<void> _markAllAsRead() async {
     final signedInUser = ref.read(signedInUserProvider);
     if (signedInUser == null || signedInUser.isEmpty) return;
+
+    mediumVibration();
 
     final repo = ref.read(userNotificationRepositoryProvider);
     final notifier = ref.read(loadUserNotificationsProvider.notifier);

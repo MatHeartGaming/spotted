@@ -158,6 +158,7 @@
     "user_notifications_screen_user_has_commented_text": "{} ha commentato il post {}",
     "user_notifications_screen_user_has_posted_text": "{} ha postato su {}",
     "user_notifications_screen_user_started_following_you_text": "{} ha iniziato a seguirti!",
+    "user_notifications_screen_loading_snackbar_text": "Caricamento notifica...",
 
     "chats_screen_app_bar_title": "Conversazioni",
     "chats_screen_no_chats_yet": "Non ci sono conversazioni",

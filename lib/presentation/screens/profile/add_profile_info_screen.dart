@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:animate_do/animate_do.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -7,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotted/config/config.dart';
+import 'package:spotted/config/helpers/firebase/auth_shared_functions.dart';
 import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/presentation/navigation/navigation.dart';
 import 'package:spotted/presentation/providers/providers.dart';
@@ -397,12 +400,43 @@ class _AddProfileInfoScreenState extends ConsumerState<AddProfileInfoScreen> {
                   ),
                 ),
 
+                _resetPasswordButton(),
+
                 SizedBox(height: 50),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _resetPasswordButton() {
+    final colors = Theme.of(context).colorScheme;
+    return TextButton(
+      onPressed: () => sendResetPasswordEmail(ref),
+      style: ButtonStyle(
+        // this controls the text (foreground) color for each state
+        foregroundColor: WidgetStateProperty.resolveWith<Color>((
+          Set<WidgetState> states,
+        ) {
+          if (states.contains(WidgetState.pressed)) {
+            return colors.surfaceContainer;
+          }
+          return colorWarning;
+        }),
+        // this controls the splash/highlight overlay
+        overlayColor: WidgetStateProperty.resolveWith<Color>((
+          Set<WidgetState> states,
+        ) {
+          if (states.contains(WidgetState.pressed)) {
+            // semi‐transparent overlay of the original color
+            return colorWarning;
+          }
+          return Colors.transparent;
+        }),
+      ),
+      child: Text('login_screen_reset_password_text'.tr()),
     );
   }
 
