@@ -55,6 +55,7 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
   @override
   Widget build(BuildContext context) {
     final communityFormState = ref.watch(createCommunityFormProvder);
+    final signedInUser = ref.watch(signedInUserProvider);
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         _refreshCommunityPage();
@@ -112,21 +113,27 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                           .onDescriptionChanged(newValue);
                     },
                   ),
-                  CustomTextFormField(
-                    label:
-                        'create_community_screen_admins_textfield_placeholder'
-                            .tr(),
-                    icon: Icons.title_outlined,
-                    errorMessage: null,
-                    onSubmitForm: (_) => _onSubmit(),
-                    onChanged: (newValue) {
-                      ref
-                          .read(communityUsersSearchBarTextProvider.notifier)
-                          .update((state) => newValue);
-                    },
+                  Visibility(
+                    visible: widget.community?.createdById == signedInUser?.id,
+                    child: CustomTextFormField(
+                      label:
+                          'create_community_screen_admins_textfield_placeholder'
+                              .tr(),
+                      icon: Icons.title_outlined,
+                      errorMessage: null,
+                      onSubmitForm: (_) => _onSubmit(),
+                      onChanged: (newValue) {
+                        ref
+                            .read(communityUsersSearchBarTextProvider.notifier)
+                            .update((state) => newValue);
+                      },
+                    ),
                   ),
 
-                  SizedBox(height: 120, child: _showAllUsers()),
+                  Visibility(
+                    visible: widget.community?.createdById == signedInUser?.id,
+                    child: SizedBox(height: 120, child: _showAllUsers()),
+                  ),
 
                   SizedBox(height: 30),
 
@@ -139,15 +146,19 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                           .removeImageAt(deleteIndex);
                     },
                     onImageTap:
-                        (index) => (communityFormState.imagesBytes?.isNotEmpty ?? false) ? showImagesGalleryBytes(
-                          context,
-                          communityFormState.imagesBytes ?? [],
-                          initialIndex: index,
-                        ) : showImagesUrl(
-                          context,
-                          communityFormState.imagesUrl ?? [],
-                          initialIndex: index,
-                        ),
+                        (index) =>
+                            (communityFormState.imagesBytes?.isNotEmpty ??
+                                    false)
+                                ? showImagesGalleryBytes(
+                                  context,
+                                  communityFormState.imagesBytes ?? [],
+                                  initialIndex: index,
+                                )
+                                : showImagesUrl(
+                                  context,
+                                  communityFormState.imagesUrl ?? [],
+                                  initialIndex: index,
+                                ),
                   ),
 
                   Visibility(
@@ -191,8 +202,12 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     final usersFound = ref.watch(ownerUsersSearchBarProvider);
     final communityFormState = ref.watch(createCommunityFormProvder);
 
+    final usersFoundWithoutCreator = usersFound.where(
+      (u) => u.id != widget.community?.createdById,
+    );
+
     return HorizontalUsersList(
-      usersList: [...usersFound],
+      usersList: [...usersFoundWithoutCreator],
       onItemTap: (user) {
         if (!user.isEmpty) return;
         ref

@@ -132,10 +132,10 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
 
   Future<void> logout() async {
     state = state.copyWith(authStatus: AuthStatus.checking);
-    await authPasswordRepository.logout().then(
-      (value) =>
-          state = state.copyWith(authStatus: AuthStatus.notAuthenticated),
-    );
+    await authPasswordRepository.logout().then((value) {
+      state = state.copyWith(authStatus: AuthStatus.notAuthenticated);
+      AuthState.emailVerified = false;
+    });
   }
 }
 
