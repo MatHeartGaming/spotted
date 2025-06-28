@@ -25,13 +25,12 @@ class ChatDatasourceFirebaseImpl implements ChatDatasource {
 
   @override
   Stream<List<Conversation>> getConversations(String userId) {
-    final conversations = _convoRef
-        .where('participantIds', arrayContains: userId)
-        .orderBy('lastUpdatedAt', descending: true)
-        .snapshots()
-        .map((snap) => snap.docs.map((d) => d.data()).toList());
-    return conversations;
-  }
+  return _convoRef
+      .where('participantIds', arrayContains: userId)
+      .orderBy('lastUpdatedAt', descending: true)
+      .snapshots()
+      .map((snap) => snap.docs.map((d) => d.data()).toList());
+}
 
   @override
   Future<Conversation> getConversation(String id) async {
@@ -68,11 +67,17 @@ class ChatDatasourceFirebaseImpl implements ChatDatasource {
 
   @override
   Stream<List<ChatMessageModel>> watchMessages(String conversationId) {
-    final messageStream = _msgRef(conversationId)
-        .orderBy('timestamp', descending: false)
+    return _msgRef(conversationId)
+        .orderBy('timestamp')
         .snapshots()
-        .map((snap) => snap.docs.map((d) => d.data()).toList());
-    return messageStream;
+        .map((snap) {
+          if (snap.docs.isEmpty) return <ChatMessageModel>[];
+          return snap.docs.map((d) => d.data()).toList();
+        })
+        .handleError((error) {
+          logger.e('There is likely no message', error: error);
+          return <ChatMessageModel>[];
+        });
   }
 
   @override
@@ -148,7 +153,8 @@ class ChatDatasourceFirebaseImpl implements ChatDatasource {
     );
 
     final created = await createConversation(newConvo);
+    if (created == null) return Conversation.empty();
     // we know it cannot be null here
-    return created!;
+    return created;
   }
 }

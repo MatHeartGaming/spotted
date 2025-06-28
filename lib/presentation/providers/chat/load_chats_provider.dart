@@ -8,13 +8,12 @@ import 'package:spotted/domain/models/models.dart';
 import 'package:spotted/domain/repositories/repositories.dart';
 import 'package:spotted/presentation/providers/providers.dart';
 
-final loadChatProvider = StateNotifierProvider.autoDispose<LoadChatNotifier, LoadChatState>(
-  (ref) {
-    final chatRepo = ref.watch(chatRepositoryProvider);
-    final userRepo = ref.watch(usersRepositoryProvider);
-    return LoadChatNotifier(chatRepo, userRepo, ref);
-  },
-);
+final loadChatProvider =
+    StateNotifierProvider.autoDispose<LoadChatNotifier, LoadChatState>((ref) {
+      final chatRepo = ref.watch(chatRepositoryProvider);
+      final userRepo = ref.watch(usersRepositoryProvider);
+      return LoadChatNotifier(chatRepo, userRepo, ref);
+    });
 
 class LoadChatNotifier extends StateNotifier<LoadChatState> {
   final ChatRepository _chatRepository;

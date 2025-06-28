@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:spotted/config/constants/app_constants.dart';
 
 enum ChatType { direct, group }
 
@@ -49,6 +50,23 @@ class Conversation {
 
   factory Conversation.fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data()!;
+
+    // try to parse the embedded lastMessage, but don't throw if it's malformed
+    ChatMessageModel? lastMsg;
+    final rawLast = data['lastMessage'];
+    if (rawLast is Map<String, dynamic>) {
+      try {
+        lastMsg = ChatMessageModel.fromMap(rawLast, doc.id);
+      } catch (e, st) {
+        logger.w(
+          'Could not parse lastMessage for conversation ${doc.id}: $e',
+          error: e,
+          stackTrace: st,
+        );
+        lastMsg = null;
+      }
+    }
+
     return Conversation(
       id: doc.id,
       participantIds: List<String>.from(data['participantIds'] ?? []),
@@ -58,13 +76,7 @@ class Conversation {
               : ChatType.direct,
       groupName: data['groupName'] as String?,
       groupImageUrl: data['groupImageUrl'] as String?,
-      lastMessage:
-          data['lastMessage'] != null
-              ? ChatMessageModel.fromMap(
-                Map<String, dynamic>.from(data['lastMessage'] as Map),
-                doc.id,
-              )
-              : null,
+      lastMessage: lastMsg,
       lastUpdatedAt: (data['lastUpdatedAt'] as Timestamp).toDate(),
       lastRead:
           (data['lastRead'] as Map<String, dynamic>?)?.map(
@@ -77,6 +89,7 @@ class Conversation {
   }
 
   Map<String, dynamic> toMap() => {
+    'id': id,
     'participantIds': participantIds,
     'type': type == ChatType.group ? 'group' : 'direct',
     if (groupName != null) 'groupName': groupName,
