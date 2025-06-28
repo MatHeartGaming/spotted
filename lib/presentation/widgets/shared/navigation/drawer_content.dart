@@ -89,6 +89,7 @@ class DrawerContent extends ConsumerWidget {
                         showCustomBottomSheet(
                           context,
                           child: FriendsListScreen(
+                            users: _getSignedinUsersFriends(ref),
                             onUserDeleted:
                                 (userToDeleteRef) =>
                                     _onUserDeletedAction(ref, userToDeleteRef),
@@ -96,9 +97,13 @@ class DrawerContent extends ConsumerWidget {
                         );
                       },
                       borderRadius: BorderRadius.circular(10),
-                      child: Text(
-                        'drawer_following_count',
-                      ).tr(args: [user.friends.isEmpty ? '0' : '${user.friends.length - 1}']),
+                      child: Text('drawer_following_count').tr(
+                        args: [
+                          user.friends.isEmpty
+                              ? '0'
+                              : '${user.friends.length - 1}',
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -187,6 +192,16 @@ class DrawerContent extends ConsumerWidget {
           loadPostsNotifier.loadPostedByMe();
           loadPostsNotifier.loadPostedByFriendsId();
         });
+  }
+
+  List<UserModel> _getSignedinUsersFriends(WidgetRef ref) {
+    final signedInUser = ref.read(signedInUserProvider);
+    final friendsState = ref.read(loadSignedInFriendsProvider);
+    final allSignedInUsersFriends = friendsState.signedInUserFriendsList;
+
+    return allSignedInUsersFriends
+        .where((f) => f.id != signedInUser?.id)
+        .toList(growable: false);
   }
 
   void _logout(WidgetRef ref) {

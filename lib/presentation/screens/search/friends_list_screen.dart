@@ -9,9 +9,10 @@ import 'package:spotted/presentation/widgets/shared/custom_dialogs.dart';
 import 'package:spotted/presentation/widgets/shared/user/user_info_row.dart';
 
 class FriendsListScreen extends ConsumerWidget {
-  final void Function(String) onUserDeleted;
+  final List<UserModel> users;
+  final void Function(String)? onUserDeleted;
 
-  const FriendsListScreen({super.key, required this.onUserDeleted});
+  const FriendsListScreen({super.key, required this.users, required this.onUserDeleted});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,29 +25,27 @@ class FriendsListScreen extends ConsumerWidget {
       );
     }
 
-    /// 2) Watch the friends‐list provider
-    final friendsState = ref.watch(loadSignedInFriendsProvider);
-    final allFriends = friendsState.signedInUserFriendsList;
-
-    // 3) Optionally filter out the signed-in user if needed:
-    final visibleFriends = allFriends
-        .where((f) => f.id != signedInUser.id)
-        .toList(growable: false);
-
     return Scaffold(
       appBar: AppBar(title: Text('friends_screen_title').tr()),
       body:
-          visibleFriends.isEmpty
+          users.isEmpty
               ? Center(child: Text('friends_screen_no_friends').tr())
               : ListView.builder(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 16,
                 ),
-                itemCount: visibleFriends.length,
+                itemCount: users.length,
                 prototypeItem: _prototypeUserInfoRow(),
                 itemBuilder: (context, index) {
-                  final user = visibleFriends[index];
+                  final user = users[index];
+                  final child = UserInfoRow(
+                    onTap: () => pushToProfileScreen(context, user: user),
+                    user: user,
+                  );
+                  if (onUserDeleted == null) {
+                    return child;
+                  }
                   return Dismissible(
                     key: Key(user.id),
                     behavior: HitTestBehavior.translucent,
@@ -79,12 +78,9 @@ class FriendsListScreen extends ConsumerWidget {
                       return shouldDelete;
                     },
                     onDismissed: (direction) {
-                      onUserDeleted(user.id);
+                      onUserDeleted?.call(user.id);
                     },
-                    child: UserInfoRow(
-                      onTap: () => pushToProfileScreen(context, user: user),
-                      user: user,
-                    ),
+                    child: child,
                   );
                 },
               ),
