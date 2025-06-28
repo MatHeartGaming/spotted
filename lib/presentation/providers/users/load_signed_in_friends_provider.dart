@@ -45,6 +45,12 @@ class LoadSignedInFriendsNotifier
     return friends;
   }
 
+  Future<List<UserModel>> getSignedinUserFollwers() async {
+    if (_signedInUser.isEmpty) return [];
+    final followers = await _usersRepository.getFollowers(_signedInUser.id);
+    return followers;
+  }
+
   Future<(UserModel?, bool)> addOrRemoveSignedInUserFriend(String friendRef) async {
     List<String> newFriendList = List.from(_signedInUser.friendsRefs);
     final indexFriend = newFriendList.indexOf(friendRef);

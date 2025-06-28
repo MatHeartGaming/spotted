@@ -140,6 +140,7 @@
     "friends_screen_no_friends": "Non segui nessuno",
     "friends_screen_confirm_delete_friend_dialog_title": "Attenzione",
     "friends_screen_confirm_delete_friend_dialog_message": "Stai per smettere di seguire {}. Sei sicuro?",
+    "friends_screen_no_user_logged_in_text": "Nessun utente loggato",
 
     "post_list_screen_app_bar_title": "Posts per {}",
 
@@ -167,6 +168,7 @@
     "chats_screen_error_loading_chats": "Errore al caricare le chat...",
 
     "drawer_following_count": "Utenti seguiti: {}",
+    "drawer_followers_count": "Mi seguono: {}",
     "drawer_profile_item": "Profilo",
     "drawer_home_item": "Inizio",
     "drawer_explore_item": "Esplora",

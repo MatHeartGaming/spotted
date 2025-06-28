@@ -7,8 +7,7 @@ import 'package:spotted/infrastructure/datasources/exceptions/user_exceptions.da
 class UsersDatasourceFirebaseImpl implements UsersDatasource {
   final _db = FirebaseFirestore.instance;
 
-  final CollectionReference<UserModel> _usersRef = FirebaseFirestore
-      .instance
+  final CollectionReference<UserModel> _usersRef = FirebaseFirestore.instance
       .collection(FirestoreDbCollections.users)
       .withConverter<UserModel>(
         fromFirestore: UserModel.fromFirestore,
@@ -166,7 +165,9 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
 
     try {
       // Run everything in one transaction so that “check & write” is atomic:
-      final createdUser = await _db.runTransaction<UserModel?>((transaction) async {
+      final createdUser = await _db.runTransaction<UserModel?>((
+        transaction,
+      ) async {
         // 1) Read the email‐lookup document.
         final emailSnapshot = await transaction.get(emailDocRef);
         if (emailSnapshot.exists) {
@@ -336,6 +337,25 @@ class UsersDatasourceFirebaseImpl implements UsersDatasource {
     } catch (e) {
       logger.e('Error removing post $postId from User $userId: $e');
       return false;
+    }
+  }
+
+  @override
+  Future<List<UserModel>> getFollowers(String userId) async {
+    try {
+      final querySnapshot =
+          await _usersRef.where('friendsRefs', arrayContains: userId).get();
+
+      // Map each document to a UserModel, injecting its document ID
+      final followers =
+          querySnapshot.docs
+              .map((doc) => doc.data().copyWith(id: doc.id))
+              .toList();
+
+      return followers;
+    } catch (error, stackTrace) {
+      logger.e("Error in getFollowers: ", error: error, stackTrace: stackTrace);
+      throw Exception("Error fetching followers: $error");
     }
   }
 }

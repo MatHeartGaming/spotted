@@ -73,4 +73,9 @@ class UsersRepositoryImplementation implements UsersRepository {
   Future<bool> removePost(String userId, String postId) {
     return _db.removePost(userId, postId);
   }
+
+  @override
+  Future<List<UserModel>> getFollowers(String userId) {
+    return _db.getFollowers(userId);
+  }
 }

@@ -12,7 +12,11 @@ class FriendsListScreen extends ConsumerWidget {
   final List<UserModel> users;
   final void Function(String)? onUserDeleted;
 
-  const FriendsListScreen({super.key, required this.users, required this.onUserDeleted});
+  const FriendsListScreen({
+    super.key,
+    required this.users,
+    required this.onUserDeleted,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,7 +25,7 @@ class FriendsListScreen extends ConsumerWidget {
     if (signedInUser == null) {
       return Scaffold(
         appBar: AppBar(),
-        body: const Center(child: Text('No user logged in')),
+        body: Center(child: Text('friends_screen_no_user_logged_in_text').tr()),
       );
     }
 

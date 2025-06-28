@@ -147,4 +147,10 @@ class UsersDatasourceMockImpl implements UsersDatasource {
     // TODO: implement removePost
     throw UnimplementedError();
   }
+  
+  @override
+  Future<List<UserModel>> getFollowers(String userId) {
+    // TODO: implement getFollowers
+    throw UnimplementedError();
+  }
 }
