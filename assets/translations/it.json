@@ -167,6 +167,11 @@
     "chats_screen_group_chat_text": "Chat di gruppo",
     "chats_screen_error_loading_chats": "Errore al caricare le chat...",
 
+    "chat_times_just_now_text": "Adesso",
+    "chat_times_minutes_ago_text": "{}m fa",
+    "chat_times_hours_ago_text": "{} ore fa",
+    "chat_times_days_ago_text": "{} giorni fa",
+
     "drawer_following_count": "Utenti seguiti: {}",
     "drawer_followers_count": "Mi seguono: {}",
     "drawer_profile_item": "Profilo",

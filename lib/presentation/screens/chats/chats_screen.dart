@@ -62,7 +62,7 @@ class ChatsScreen extends ConsumerWidget {
                                 ),
                         subtitle: Text(lastMsgText),
                         trailing: Text(
-                          timeAgo(convo.lastUpdatedAt),
+                          convo.lastUpdatedAt.timeAgo,
                           style: TextStyle(fontSize: 12),
                         ),
                         onTap: () => pushToChatScreen(context, convo.id),
@@ -83,10 +83,4 @@ class ChatsScreen extends ConsumerWidget {
   }
 }
 
-String timeAgo(DateTime dt) {
-  final diff = DateTime.now().difference(dt);
-  if (diff.inMinutes < 1) return 'Just now';
-  if (diff.inHours < 1) return '${diff.inMinutes}m ago';
-  if (diff.inDays < 1) return '${diff.inHours}h ago';
-  return '${diff.inDays}d ago';
-}
+
