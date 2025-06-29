@@ -56,6 +56,9 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
   Widget build(BuildContext context) {
     final communityFormState = ref.watch(createCommunityFormProvder);
     final signedInUser = ref.watch(signedInUserProvider);
+    final showAdminsSection =
+        widget.community?.createdById == signedInUser?.id ||
+        widget.community == null;
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         _refreshCommunityPage();
@@ -114,7 +117,7 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                     },
                   ),
                   Visibility(
-                    visible: widget.community?.createdById == signedInUser?.id,
+                    visible: showAdminsSection,
                     child: CustomTextFormField(
                       label:
                           'create_community_screen_admins_textfield_placeholder'
@@ -131,7 +134,7 @@ class CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                   ),
 
                   Visibility(
-                    visible: widget.community?.createdById == signedInUser?.id,
+                    visible: showAdminsSection,
                     child: SizedBox(height: 120, child: _showAllUsers()),
                   ),
 
