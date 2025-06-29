@@ -1,3 +1,5 @@
+import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:spotted/config/config.dart';
@@ -31,85 +33,94 @@ class CommentTile extends StatelessWidget {
       comment.dateCreated,
     );
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 1) Avatar or anonymous icon:
-          comment.createdById == anonymousText
-              ? Icon(anonymousIcon)
-              : GestureDetector(
-                onTap: onUserInfoTapped,
-                child: CirclePicture(
-                  minRadius: 18,
-                  maxRadius: 18,
-                  urlPicture: userProfilePicUrl ?? '',
-                ),
-              ),
-          const SizedBox(width: 8),
-
-          // 2) Author name + timestamp + body
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Author + date
-                GestureDetector(
-                  onDoubleTap: onUserInfoTapped,
-                  child: Row(
-                    children: [
-                      Text(
-                        comment.createdByUsername,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        formattedDate,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+    return Material(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 1) Avatar or anonymous icon:
+            comment.createdById == anonymousText
+                ? Icon(anonymousIcon)
+                : GestureDetector(
+                  onTap: onUserInfoTapped,
+                  child: CirclePicture(
+                    minRadius: 18,
+                    maxRadius: 18,
+                    urlPicture: userProfilePicUrl ?? '',
                   ),
                 ),
+            const SizedBox(width: 8),
 
-                const SizedBox(height: 4),
-
-                // Body text
-                Text(comment.text, style: const TextStyle(fontSize: 14)),
-              ],
-            ),
-          ),
-
-          // 3) If this is *your* comment, show the “vertical dots” menu
-          if (isOwnComment)
-            PopupMenuButton<_CommentAction>(
-              onSelected: (action) {
-                switch (action) {
-                  case _CommentAction.edit:
-                    if (onEditPressed != null) onEditPressed!();
-                    break;
-                  case _CommentAction.delete:
-                    if (onDeletePressed != null) onDeletePressed!();
-                    break;
-                }
-              },
-              itemBuilder:
-                  (context) => [
-                    PopupMenuItem(
-                      value: _CommentAction.edit,
-                      child: Text('edit_text').tr(),
+            // 2) Author name + timestamp + body
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Author + date
+                  GestureDetector(
+                    onTap: onUserInfoTapped,
+                    child: Row(
+                      children: [
+                        Text(
+                          comment.createdByUsername,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          formattedDate,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
-                    PopupMenuItem(
-                      value: _CommentAction.delete,
-                      child: Text('delete_text').tr(),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  // Body text
+                  InkWell(
+                    onDoubleTap:
+                        !isOwnComment ? null : () => onEditPressed?.call(),
+                    child: Text(
+                      comment.text,
+                      style: const TextStyle(fontSize: 14),
                     ),
-                  ],
-              icon: const Icon(Icons.more_vert, size: 20),
+                  ),
+                ],
+              ),
             ),
-        ],
+
+            // 3) If this is *your* comment, show the “vertical dots” menu
+            if (isOwnComment)
+              PopupMenuButton<_CommentAction>(
+                onSelected: (action) {
+                  switch (action) {
+                    case _CommentAction.edit:
+                      if (onEditPressed != null) onEditPressed!();
+                      break;
+                    case _CommentAction.delete:
+                      if (onDeletePressed != null) onDeletePressed!();
+                      break;
+                  }
+                },
+                itemBuilder:
+                    (context) => [
+                      PopupMenuItem(
+                        value: _CommentAction.edit,
+                        child: Text('edit_text').tr(),
+                      ),
+                      PopupMenuItem(
+                        value: _CommentAction.delete,
+                        child: Text('delete_text').tr(),
+                      ),
+                    ],
+                icon: const Icon(Icons.more_vert, size: 20),
+              ),
+          ],
+        ),
       ),
     );
   }
